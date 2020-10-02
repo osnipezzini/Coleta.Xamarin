@@ -1,16 +1,18 @@
-﻿using System;
+﻿using AppColeta.Models;
+using AppColeta.Services;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace AppColeta
 {
     public partial class App : Application
     {
+        public static Inventario Inventario { get; set; }
         public App()
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            DependencyService.Register<MockDataStore>();
+            MainPage = new AppShell();
         }
 
         protected override void OnStart()

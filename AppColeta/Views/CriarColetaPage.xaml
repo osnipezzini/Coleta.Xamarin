@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppColeta.Views.CriarColetaPage"
+             Shell.PresentationMode="ModalAnimated"
+             Title="Coletar produto">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Capturar código" IconImageSource="barcodeScanner.png" Command="{Binding ReadCodeCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Spacing="3" Padding="15">
+            <Button HorizontalOptions="End" ImageSource="barcodeScanner.png" Text="Capturar código" Command="{Binding ReadCodeCommand}" Padding="5" Margin="0, 15, 0, 5"/>
+            <Label Text="Codigo de Barras" FontSize="Medium" />
+            <Frame>
+            <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" />
+            </Frame>
+            <Label Text="Quantidade" FontSize="Medium" />
+            <Frame>
+                <Entry Text="{Binding Quantidade, Mode=TwoWay}" FontSize="Medium" />
+            </Frame>
+            <Button Text="Adicionar" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"/>
+            <BoxView VerticalOptions="FillAndExpand"/>
+            <Button Text="Terminar" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" VerticalOptions="End"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
