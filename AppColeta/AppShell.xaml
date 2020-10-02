@@ -85,7 +85,7 @@
         <ShellContent Title="Criar Inventário" Icon="barcodeReader.png" Route="CriarInventario" ContentTemplate="{DataTemplate local:CriarInventarioPage}" />
         <ShellContent Title="Meus inventários" Icon="reminder.png" Route="MeusInventarios" ContentTemplate="{DataTemplate local:MeusInventariosPage}" />
     </FlyoutItem>
-    <ShellContent Title="Configurações" Icon="job.png" Route="Config" ContentTemplate="{DataTemplate local:ConfigPage}" />
+    <!--<ShellContent Title="Configurações" Icon="job.png" Route="Config" ContentTemplate="{DataTemplate local:ConfigPage}" />-->
 
     <!--
         This defines content that won't show up in a flyout menu. When this content is active the flyout menu won't be available.
@@ -93,7 +93,7 @@
         If you would like to navigate to this content you can do so by calling
         await Shell.Current.GoToAsync("//LoginPage");
     -->
-    <ShellContent Route="LoginPage" Shell.FlyoutBehavior="Disabled" ContentTemplate="{DataTemplate local:LoginPage}" />
+    <!--<ShellContent Route="LoginPage" Shell.FlyoutBehavior="Disabled" ContentTemplate="{DataTemplate local:LoginPage}" />-->
 
     <!-- Optional Templates 
     // These may be provided inline as below or as separate classes.

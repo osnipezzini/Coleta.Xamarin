@@ -6,6 +6,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\font-awesome.otf" />
+    <None Remove="Assets\Fonts\gotham-black.ttf" />
+    <None Remove="Assets\Fonts\gotham-light.ttf" />
+    <None Remove="Assets\Fonts\gotham.ttf" />
+    <None Remove="Assets\Fonts\Montserrat-Bold.ttf" />
+    <None Remove="Assets\Fonts\Montserrat-Light.ttf" />
+    <None Remove="Assets\Fonts\Montserrat-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Fonts\font-awesome.otf" />
+    <EmbeddedResource Include="Assets\Fonts\gotham-black.ttf" />
+    <EmbeddedResource Include="Assets\Fonts\gotham-light.ttf" />
+    <EmbeddedResource Include="Assets\Fonts\gotham.ttf" />
+    <EmbeddedResource Include="Assets\Fonts\Montserrat-Bold.ttf" />
+    <EmbeddedResource Include="Assets\Fonts\Montserrat-Light.ttf" />
+    <EmbeddedResource Include="Assets\Fonts\Montserrat-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.8" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.1141" />  

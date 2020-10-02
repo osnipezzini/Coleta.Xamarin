@@ -10,6 +10,7 @@
             <Color x:Key="White">#FFFFFF</Color>
             <Color x:Key="Black">#000000</Color>
 
+            <Color x:Key="ElliteBlue">#003664</Color>
             <Color x:Key="Purple">#623CEA</Color>
             <Color x:Key="LightPurple">#D7CCFF</Color>
 
@@ -29,6 +30,9 @@
                 <Setter Property="Margin" Value="15, 5"/>
                 <Setter Property="CornerRadius" Value="20"/>
                 <Setter Property="BackgroundColor" Value="{StaticResource GrayBlue}"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="Montserrat" />
             </Style>
         </ResourceDictionary>        
     </Application.Resources>
