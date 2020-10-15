@@ -16,5 +16,10 @@ namespace AppColeta.Views
             InitializeComponent();
             BindingContext = viewModel = new CriarColetaViewModel();
         }
+
+        private void BuscarCodigo(object sender, FocusEventArgs e)
+        {
+            viewModel.GetCodigoCommand.Execute(sender);
+        }
     }
 }

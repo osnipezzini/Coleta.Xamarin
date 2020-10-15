@@ -1,9 +1,11 @@
-﻿using AppColeta.Models;
+﻿using AppColeta.Data;
+using AppColeta.Models;
 using AppColeta.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 
 namespace AppColeta.ViewModels
 {
@@ -11,17 +13,22 @@ namespace AppColeta.ViewModels
     {
         private string codigo;
         private string quantidade;
+        private string nome;
+        private double precoVenda;
+        private double precoCompra;
 
         public CriarColetaViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
             ReadCodeCommand = new Command(OpenScan);
+            GetCodigoCommand = new Command(async() => await GetCodigo());
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
         }
         private async void OpenScan(object obj)
         {
+            
             var scanner = DependencyService.Get<IQrCodeScanningService>();
             var result = await scanner.ScanAsync();
             if (!string.IsNullOrEmpty(result))
@@ -29,6 +36,17 @@ namespace AppColeta.ViewModels
                 // Sua logica.
                 Codigo = result;
                 return;
+            }
+        }
+        async Task GetCodigo()
+        {
+            var contexto = new AppDbContext();
+            var produto = await contexto.Produtos.Where(x => x.Codigo == codigo).FirstOrDefaultAsync();
+            if (produto != null)
+            {
+                PrecoCusto = produto.PrecoCusto;
+                Nome = produto.Nome;
+                PrecoVenda = produto.PrecoVenda;
             }
         }
         private bool ValidateSave()
@@ -42,6 +60,21 @@ namespace AppColeta.ViewModels
             get => codigo;
             set => SetProperty(ref codigo, value);
         }
+        public string Nome
+        {
+            get => nome;
+            set => SetProperty(ref nome, value);
+        }
+        public double PrecoCusto
+        {
+            get => precoCompra;
+            set => SetProperty(ref precoCompra, value);
+        }
+        public double PrecoVenda
+        {
+            get => precoVenda;
+            set => SetProperty(ref precoVenda, value);
+        }
 
         public string Quantidade
         {
@@ -52,6 +85,7 @@ namespace AppColeta.ViewModels
         public Command SaveCommand { get; }
         public Command CancelCommand { get; }
         public Command ReadCodeCommand { get; }
+        public Command GetCodigoCommand { get; }
 
         private async void OnCancel()
         {

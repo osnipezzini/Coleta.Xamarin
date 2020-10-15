@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AppColeta.ViewModels"
+             x:Class="AppColeta.Views.ImportFilePage"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:ImportFileViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Margin="25" Text="{Binding Filename}" FontSize="25">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Arquivo selecionado: " TextColor="Teal"/>
+                        <Span Text="{Binding Filename}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Button Text="Selecione o arquivo que deseja importar"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" Command="{Binding ChooseFileCommand}"/>
+            <Button Text="Iniciar importação" Margin="30" Command="{Binding StartImportCommand}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

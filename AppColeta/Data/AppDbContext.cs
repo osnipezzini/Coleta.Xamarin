@@ -8,6 +8,7 @@ namespace AppColeta.Data
     {
         public DbSet<Coleta> Coletas { get; set; }
         public DbSet<Inventario> Inventarios { get; set; }
+        public DbSet<Produto> Produtos { get; set; }
         public AppDbContext()
         {
             Database.EnsureCreated();

@@ -69,14 +69,14 @@ namespace AppColeta.ViewModels
         {
             var obj = SelectedItem;
             var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), obj.NomeArquivo);
-            var arquivoString = "Codigo;Quantidade;Data;\n";
+            var arquivoString = string.Empty;
             var context = new AppDbContext();
             obj = await context.Inventarios.Include(x => x.ProdutosColetados).Where(x => x.Id == obj.Id).FirstOrDefaultAsync();
             if (obj != null)
             {
                 foreach (Coleta coleta in obj.ProdutosColetados)
                 {
-                    arquivoString += $"{coleta.Codigo};{coleta.Quantidade};{obj.DataCriacao.ToString("dd/MM/yyyy")};\n";
+                    arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{obj.DataCriacao.ToString("dd/MM/yyHH:mm:ss")}\n";
                 }
                 File.WriteAllText(arquivo, arquivoString);
                 await MailSender.SendEmail("Arquivo de inventário", "Você solicitou um arquivo de formulário, o mesmo se encontra em anexo", new List<string>(), arquivo);

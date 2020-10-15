@@ -22,10 +22,12 @@
             <Color x:Key="DarkGray">#4E5C69</Color>
             <Style TargetType="Frame" ApplyToDerivedTypes="True">
                 <Setter Property="CornerRadius" Value="15" />
+                <Setter Property="Visual" Value="Material"/>
                 <Setter Property="BorderColor" Value="{StaticResource Purple}"/>
                 <Setter Property="Padding" Value="0"/>
             </Style>
             <Style TargetType="Button" ApplyToDerivedTypes="True">
+                <Setter Property="Visual" Value="Material"/>
                 <Setter Property="TextColor" Value="{StaticResource Purple}"/>
                 <Setter Property="Margin" Value="15, 5"/>
                 <Setter Property="CornerRadius" Value="20"/>
@@ -33,6 +35,7 @@
             </Style>
             <Style TargetType="Label">
                 <Setter Property="FontFamily" Value="Montserrat" />
+                <Setter Property="Visual" Value="Material"/>
             </Style>
         </ResourceDictionary>        
     </Application.Resources>

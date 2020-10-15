@@ -45,6 +45,7 @@ namespace AppColeta.UWP
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            global::Xamarin.Forms.Forms.SetFlags("Shell_UWP_Experimental");
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -56,7 +57,7 @@ namespace AppColeta.UWP
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
-
+                
                 Xamarin.Forms.Forms.Init(e);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)

@@ -32,11 +32,11 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="AppColeta.UWP.App">
       <uap:VisualElements
-        DisplayName="AppColeta.UWP"
+        DisplayName="AppColeta"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="AppColeta.UWP"
-        BackgroundColor="transparent">
+        Description="Sistema para inventário de produtos"
+        BackgroundColor="#003664">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />

@@ -12,7 +12,35 @@
             <Button HorizontalOptions="End" ImageSource="barcodeScanner.png" Text="Capturar código" Command="{Binding ReadCodeCommand}" Padding="5" Margin="0, 15, 0, 5"/>
             <Label Text="Codigo de Barras" FontSize="Medium" />
             <Frame>
-            <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" />
+            <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" Unfocused="BuscarCodigo" />
+            </Frame>
+            <Frame Margin="5" Padding="5">
+                <StackLayout>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Nome: "/>
+                                <Span Text="{Binding Nome}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Preço de venda: "/>
+                                <Span Text="{Binding PrecoVenda}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Preço de custo: "/>
+                                <Span Text="{Binding PrecoCusto}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
             </Frame>
             <Label Text="Quantidade" FontSize="Medium" />
             <Frame>
