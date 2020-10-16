@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:AppColeta.ViewModels"
+             xmlns:vm="clr-namespace:AppColeta.ViewModels"
              xmlns:model="clr-namespace:AppColeta.Models"
              x:Class="AppColeta.Views.CriarInventarioPage"
-             Title="Inventário">
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:CriarInventarioViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Iniciar coleta" Command="{Binding IniciarColetaCommand}"/>
     </ContentPage.ToolbarItems>
@@ -14,7 +17,7 @@
                 Margin="0, 20" FontSize="30" TextColor="{StaticResource Purple}"
                 HorizontalOptions="CenterAndExpand" />
             <DatePicker HorizontalOptions="Center" Format="dd/MM/yyyy" Date="{Binding DataCriacao, Mode=TwoWay}"/>
-            <RefreshView x:DataType="local:CriarInventarioViewModel" Command="{Binding LoadColetasCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <RefreshView x:DataType="vm:CriarInventarioViewModel" Command="{Binding LoadColetasCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
                 <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Coletas, Mode=TwoWay}"
                 SelectionMode="Single">
@@ -29,7 +32,7 @@
                                 <StackLayout.GestureRecognizers>
                                     <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:CriarInventarioViewModel}}, Path=ItemTapped}"		
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CriarInventarioViewModel}}, Path=ItemTapped}"		
                                 CommandParameter="{Binding .}">
                                     </TapGestureRecognizer>
                                 </StackLayout.GestureRecognizers>

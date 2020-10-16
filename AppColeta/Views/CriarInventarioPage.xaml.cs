@@ -8,16 +8,15 @@ namespace AppColeta.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CriarInventarioPage : ContentPage
     {
-        CriarInventarioViewModel _viewModel;
+        CriarInventarioViewModel viewModel => BindingContext as CriarInventarioViewModel;
         public CriarInventarioPage()
         {
-            BindingContext = _viewModel = new CriarInventarioViewModel();
             InitializeComponent();            
         }
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await _viewModel.ExecuteLoadColetasCommand();
+            await viewModel.ExecuteLoadColetasCommand();
         }
     }
 }

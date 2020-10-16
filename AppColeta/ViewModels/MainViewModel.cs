@@ -1,10 +1,17 @@
-﻿namespace AppColeta.ViewModels
+﻿using SOTechLib.Utils;
+
+namespace AppColeta.ViewModels
 {
     class MainViewModel : BaseViewModel
     {
         public MainViewModel()
         {
-            Title = "Inicio";
+            string titulo = "AppColeta";
+            if (Helper.TKT)
+                titulo += " - TKT";
+            if (Helper.Debug)
+                titulo += " - Debug";
+            Title = titulo;
         }
     }
 }

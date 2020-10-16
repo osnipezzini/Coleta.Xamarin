@@ -57,6 +57,29 @@
     <AndroidSigningStorePass>Dw@6458995</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SOTech</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>Dw@6458995</AndroidSigningKeyPass>
+    <DefineConstants>RELEASE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TKT|AnyCPU'">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\TKT\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>none</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <BundleAssemblies>false</BundleAssemblies>
+    <AndroidKeyStore>false</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\osnip\AppData\Local\Xamarin\Mono for Android\Keystore\SOTECH-Key\SOTECH-Key.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>Dw@6458995</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>SOTech</AndroidSigningKeyAlias>
+    <DefineConstants>TKT</DefineConstants>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -100,6 +123,10 @@
     <AndroidResource Include="Resources\drawable\tab_feed.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Library\SOTechLib\SOTechLib.csproj">
+      <Project>{4E70CD16-F50D-4D23-BC5C-DE6A61FAD733}</Project>
+      <Name>SOTechLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AppColeta\AppColeta.csproj">
       <Project>{0C77C764-91CF-4949-8760-0B967ACB8B48}</Project>
       <Name>AppColeta</Name>

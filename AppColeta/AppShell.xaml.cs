@@ -1,5 +1,4 @@
 ﻿using AppColeta.Views;
-using System;
 using Xamarin.Forms;
 
 namespace AppColeta
@@ -14,6 +13,11 @@ namespace AppColeta
             Routing.RegisterRoute(nameof(CriarColetaPage), typeof(CriarColetaPage));
             Routing.RegisterRoute(nameof(MeusInventariosPage), typeof(MeusInventariosPage));
             Routing.RegisterRoute(nameof(ConfigPage), typeof(ConfigPage));
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            App.CheckValid();
         }
     }
 }

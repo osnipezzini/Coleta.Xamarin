@@ -8,11 +8,15 @@ namespace AppColeta.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
-        MainViewModel viewModel;
+        MainViewModel viewModel => BindingContext as MainViewModel;
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = viewModel = new MainViewModel();
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            App.CheckValid();
         }
     }
 }

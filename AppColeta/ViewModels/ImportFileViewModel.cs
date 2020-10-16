@@ -3,7 +3,9 @@ using AppColeta.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -40,7 +42,7 @@ namespace AppColeta.ViewModels
             };
             try
             {
-                var result = await FilePicker.PickAsync(options);
+                var result = await FilePicker.PickAsync();
                 if (result != null)
                 {
                     Filename = result.FileName;
@@ -65,29 +67,40 @@ namespace AppColeta.ViewModels
             string[] file = contents.Split('\n');
             foreach (string line in file)
             {
-                char splitter = line.Contains(";") ? ';' : ',';
-                var reader = line.Replace("\r", "").Split(splitter);
-                double custo = 0;
-                double venda = 0;
+                if (!string.IsNullOrWhiteSpace(line) && (line.Contains(";") || line.Contains(",")))
+                {
+                    try
+                    {
+                        char splitter = line.Contains(";") ? ';' : ',';
+                        var reader = line.Replace("\r", "").Split(splitter);
+                        double custo = 0;
+                        double venda = 0;
 
-                if (reader.Length >= 4)
-                    double.TryParse(reader[3].Replace('.', ','), out custo);
-                if (reader.Length >= 3)
-                    double.TryParse(reader[2].Replace('.', ','), out venda);
+                        if (reader.Length >= 4)
+                            double.TryParse(reader[3].Replace('.', ','), out custo);
+                        if (reader.Length >= 3)
+                            double.TryParse(reader[2].Replace('.', ','), out venda);
 
-                var produto = await contexto.Produtos.FirstOrDefaultAsync(x => x.Codigo == reader[0]);
+                        var produto = await contexto.Produtos.FirstOrDefaultAsync(x => x.Codigo == reader[0]);
 
-                if (produto == null)
-                    produto = new Produto();
+                        if (produto == null)
+                            produto = new Produto();
 
-                produto.Codigo = reader[0];
-                produto.Nome = reader[1];
-                produto.PrecoVenda = venda;
-                produto.PrecoCusto = custo;
-                if (produto.Id > 0)
-                    contexto.Produtos.Update(produto);
-                else
-                    contexto.Produtos.Add(produto);
+                        produto.Codigo = reader[0];
+                        produto.Nome = reader[1];
+                        produto.PrecoVenda = venda;
+                        produto.PrecoCusto = custo;
+                        if (produto.Id > 0)
+                            contexto.Produtos.Update(produto);
+                        else
+                            contexto.Produtos.Add(produto);
+                    }
+                    catch (Exception)
+                    {
+                        Debug.WriteLine("Não foi possível validar a linha selecionada.");
+                    }
+                    
+                }
             }
             var reg = await contexto.SaveChangesAsync();
 

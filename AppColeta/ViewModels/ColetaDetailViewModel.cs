@@ -7,6 +7,10 @@ namespace AppColeta.ViewModels
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class ColetaDetailViewModel : BaseViewModel
     {
+        public ColetaDetailViewModel()
+        {
+            Title = "Coleta " + itemId;
+        }
         private string itemId;
         private string codigo;
         private string quantidade;

@@ -1,9 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <Configurations>Debug;Release;TKT</Configurations>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+		<DebugSymbols>false</DebugSymbols>
+		<OutputPath>bin\Release\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<Optimize>true</Optimize>
+		<DefineConstants>RELEASE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TKT|AnyCPU'">
+		<DebugSymbols>false</DebugSymbols>
+		<OutputPath>bin\TKT\</OutputPath>
+		<Optimize>true</Optimize>
+		<DefineConstants>TKT</DefineConstants>
+	</PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\Fonts\font-awesome.otf" />
@@ -33,6 +47,10 @@
     <PackageReference Include="Xamarin.Forms.Visual.Material" Version="4.8.0.1560" />  
     <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />  
     <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Library\SOTechLib\SOTechLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

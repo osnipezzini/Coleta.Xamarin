@@ -19,7 +19,7 @@ namespace AppColeta.ViewModels
         public Command SaveCommand { get; }
         public CriarInventarioViewModel()
         {
-            
+            Title = "Criar inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
             IniciarColetaCommand = new Command(async () => await ExecuteIniciarColetaCommand());
             SaveCommand = new Command(async () => await ExecuteSaveCommand());

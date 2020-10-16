@@ -9,6 +9,7 @@ namespace AppColeta.ViewModels
 
         public LoginViewModel()
         {
+            Title = "Login";
             LoginCommand = new Command(OnLoginClicked);
         }
 

@@ -19,6 +19,7 @@ namespace AppColeta.ViewModels
 
         public CriarColetaViewModel()
         {
+            Title = "Criar coleta";
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
             ReadCodeCommand = new Command(OpenScan);

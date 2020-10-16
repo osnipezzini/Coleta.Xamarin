@@ -9,11 +9,10 @@ namespace AppColeta.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MeusInventariosPage : ContentPage
     {
-        MeusInventariosViewModel viewModel;
+        MeusInventariosViewModel viewModel => BindingContext as MeusInventariosViewModel;
         public MeusInventariosPage()
         {
             InitializeComponent();
-            BindingContext = viewModel = new MeusInventariosViewModel();
         }
         protected async override void OnAppearing()
         {

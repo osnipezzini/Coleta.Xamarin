@@ -7,10 +7,10 @@ namespace AppColeta.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ColetaDetailPage : ContentPage
     {
+        ColetaDetailViewModel viewModel => BindingContext as ColetaDetailViewModel;
         public ColetaDetailPage()
         {
             InitializeComponent();
-            BindingContext = new ColetaDetailViewModel();
         }
     }
 }
