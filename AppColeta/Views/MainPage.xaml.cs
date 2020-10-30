@@ -1,5 +1,4 @@
 ﻿using AppColeta.ViewModels;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -13,10 +12,10 @@ namespace AppColeta.Views
         {
             InitializeComponent();
         }
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
             base.OnAppearing();
-            App.CheckValid();
+            await viewModel.OnAppearing();
         }
     }
 }

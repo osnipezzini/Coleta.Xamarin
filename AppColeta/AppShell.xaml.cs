@@ -13,11 +13,12 @@ namespace AppColeta
             Routing.RegisterRoute(nameof(CriarColetaPage), typeof(CriarColetaPage));
             Routing.RegisterRoute(nameof(MeusInventariosPage), typeof(MeusInventariosPage));
             Routing.RegisterRoute(nameof(ConfigPage), typeof(ConfigPage));
+            Routing.RegisterRoute(nameof(LicensePage), typeof(LicensePage));
         }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            App.CheckValid();
-        }
+        }        
     }
 }

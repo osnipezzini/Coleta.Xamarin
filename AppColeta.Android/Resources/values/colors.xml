@@ -4,4 +4,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+	<color name="Purple">#623CEA</color>
+	<color name="LightPurple">#D7CCFF</color>
+	<color name="GrayBlue">#F1F3F6</color>
+	<color name="DarkGrayBlue">#B3BDC8</color>
+	<color name="Gray">#8FA0AC</color>
+	<color name="LightGray">#CAD1DC</color>
+	<color name="DarkGray">#4E5C69</color>
 </resources>

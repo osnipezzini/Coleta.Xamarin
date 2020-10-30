@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <Configurations>Debug;Release;TKT</Configurations>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
 		<DebugSymbols>false</DebugSymbols>
@@ -27,6 +28,8 @@
     <None Remove="Assets\Fonts\Montserrat-Bold.ttf" />
     <None Remove="Assets\Fonts\Montserrat-Light.ttf" />
     <None Remove="Assets\Fonts\Montserrat-Regular.ttf" />
+    <None Remove="ellitedevDDNS.cer" />
+    <None Remove="Licensing.cer" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,11 +40,14 @@
     <EmbeddedResource Include="Assets\Fonts\Montserrat-Bold.ttf" />
     <EmbeddedResource Include="Assets\Fonts\Montserrat-Light.ttf" />
     <EmbeddedResource Include="Assets\Fonts\Montserrat-Regular.ttf" />
+    <EmbeddedResource Include="ellitedevDDNS.cer" />
+    <EmbeddedResource Include="Licensing.cer" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.9" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.7.0" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.6.0-pre2" />  
     <PackageReference Include="Xamarin.Forms.Visual.Material" Version="4.8.0.1560" />  
@@ -70,6 +76,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ImportFilePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\LicensePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\MainPage.xaml">

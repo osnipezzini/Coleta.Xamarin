@@ -16,7 +16,6 @@ namespace AppColeta.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            App.CheckValid();
         }
     }
 }

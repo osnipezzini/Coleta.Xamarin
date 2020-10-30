@@ -74,7 +74,8 @@
             </Style>
         </ResourceDictionary>
     </Shell.Resources>
-
+    
+    
     <!-- 
         When the Flyout is visible this defines the content to display in the flyout.
         FlyoutDisplayOptions="AsMultipleItems" will create a separate flyout item for each child element    

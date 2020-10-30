@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AppColeta.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
+             x:Class="AppColeta.Views.LicensePage">
+    <ContentPage.BindingContext>
+        <vm:LicenseViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="{StaticResource DarkGrayBlue}">
+            <StackLayout Margin="15, 15, 15, 15">
+                <Frame HorizontalOptions="FillAndExpand">
+                <Label Padding="15">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Para usar esse aplicativo é obrigatório efetuar o licenciamento."/>
+                            <Span Text="{x:Static system:Environment.NewLine}"/>
+                            <Span Text="{x:Static system:Environment.NewLine}"/>
+                            <Span Text="Informe os dados fornecidos por seu gestor para registrar o aplicativo no seu dispositivo!"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                </Frame>
+                <Frame HorizontalOptions="FillAndExpand">
+                    <Entry x:Name="TextDocument" 
+                  Focused="TextDocument_Focused" Unfocused="TextDocument_Unfocused" 
+                  Text="{Binding Document, Mode=TwoWay}" Placeholder="CPF / CNPJ"
+                   />
+                </Frame>
+                <Frame HorizontalOptions="FillAndExpand">
+                    <Entry Text="{Binding Password, Mode=TwoWay}" IsPassword="True" 
+                   HorizontalTextAlignment="Center"
+                   Placeholder="Senha de instalação"/>
+                </Frame>
+                <Frame HorizontalOptions="FillAndExpand">
+                    <Entry Text="{Binding Serial}" IsReadOnly="True"
+                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </Frame>
+                <Frame HorizontalOptions="CenterAndExpand">
+                    <Button Text="Registrar aplicativo" Command="{Binding LicenseGenerateCommand}" HorizontalOptions="CenterAndExpand"/>
+                </Frame>
+            </StackLayout>
+            <Grid VerticalOptions="EndAndExpand" Margin="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="logo_sotech.png" HeightRequest="48" WidthRequest="48"/>
+                <Label Grid.Column="1" Text="SOTech Sistemas" 
+                       HeightRequest="48" VerticalTextAlignment="Center" 
+                       TextColor="{StaticResource Black}" FontSize="16" Margin="10, 0, 0, 0"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

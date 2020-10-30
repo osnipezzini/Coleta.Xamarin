@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 	<item>
-		<color android:color="@color/launcher_background"/>
+		<color android:color="@color/DarkGrayBlue"/>
 	</item>
 	<item>
 		<bitmap
-			android:src="@drawable/LogoSOTechSplash"
+			android:src="@drawable/splash_sotech"
 			android:tileMode="disabled"
-			android:gravity="fill"/>
+			android:gravity="center_horizontal"/>
 	</item>
 </layer-list>
