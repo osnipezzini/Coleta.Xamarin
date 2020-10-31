@@ -1,5 +1,4 @@
-﻿using SOTechLib.Utils;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace AppColeta.ViewModels
 {
@@ -10,10 +9,6 @@ namespace AppColeta.ViewModels
         public MainViewModel()
         {
             string titulo = "AppColeta";
-            if (Helper.TKT)
-                titulo += " - TKT";
-            if (Helper.Debug)
-                titulo += " - Debug";
             Title = titulo;
         }
 
@@ -23,6 +18,8 @@ namespace AppColeta.ViewModels
             try
             {
                 LicenseFooter = "Sistema licenciado para: " + Helpers.License.ClientName;
+                if (Helpers.License.IsTimeTrial)
+                    Title += " - DEMO";
             }
             catch
             {

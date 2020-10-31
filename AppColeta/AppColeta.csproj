@@ -41,7 +41,6 @@
     <EmbeddedResource Include="Assets\Fonts\Montserrat-Light.ttf" />
     <EmbeddedResource Include="Assets\Fonts\Montserrat-Regular.ttf" />
     <EmbeddedResource Include="ellitedevDDNS.cer" />
-    <EmbeddedResource Include="Licensing.cer" />
   </ItemGroup>
 
   <ItemGroup>

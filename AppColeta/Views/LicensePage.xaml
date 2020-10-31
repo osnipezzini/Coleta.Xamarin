@@ -9,6 +9,7 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout BackgroundColor="{StaticResource DarkGrayBlue}">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" />
             <StackLayout Margin="15, 15, 15, 15">
                 <Frame HorizontalOptions="FillAndExpand">
                 <Label Padding="15">
@@ -24,21 +25,22 @@
                 </Frame>
                 <Frame HorizontalOptions="FillAndExpand">
                     <Entry x:Name="TextDocument" 
-                  Focused="TextDocument_Focused" Unfocused="TextDocument_Unfocused" 
+                  Focused="TextDocument_Focused" Unfocused="TextDocument_Unfocused" Completed="TextDocument_Completed"
                   Text="{Binding Document, Mode=TwoWay}" Placeholder="CPF / CNPJ"
                    />
                 </Frame>
                 <Frame HorizontalOptions="FillAndExpand">
-                    <Entry Text="{Binding Password, Mode=TwoWay}" IsPassword="True" 
-                   HorizontalTextAlignment="Center"
+                    <Entry Text="{Binding Password, Mode=TwoWay}" IsPassword="True" x:Name="TextPassword"
+                   HorizontalTextAlignment="Center" Completed="TextPassword_Completed"
                    Placeholder="Senha de instalação"/>
                 </Frame>
                 <Frame HorizontalOptions="FillAndExpand">
                     <Entry Text="{Binding Serial}" IsReadOnly="True"
                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
                 </Frame>
-                <Frame HorizontalOptions="CenterAndExpand">
-                    <Button Text="Registrar aplicativo" Command="{Binding LicenseGenerateCommand}" HorizontalOptions="CenterAndExpand"/>
+                <Frame HorizontalOptions="FillAndExpand" Margin="30, 5">
+                    <Button Text="Registrar aplicativo" Command="{Binding LicenseGenerateCommand}"
+                            Margin="0"/>
                 </Frame>
             </StackLayout>
             <Grid VerticalOptions="EndAndExpand" Margin="15">

@@ -30,6 +30,7 @@ namespace AppColeta.ViewModels
 
         private async void OnLicenseGenerateClicked(object obj)
         {
+            IsBusy = true;
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
                 try
@@ -47,6 +48,7 @@ namespace AppColeta.ViewModels
             {
                 await Application.Current.MainPage.DisplayAlert("Uma conexão ativa com a internet é necessária para licenciar o sistema.", "Sem Internet", "OK");
             }
+            IsBusy = false;
         }
     }
 }

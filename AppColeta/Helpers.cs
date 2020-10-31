@@ -75,11 +75,11 @@ namespace AppColeta
                 switch (Helpers.License.Type)
                 {
                     case LicenseTypes.TKT:
-                        if (License.ExpirationDate < last_check || attempts > 10)
+                        if (License.ValidUntil < last_check || attempts > 5)
                             _status = LicenseStatus.TRIALEXPIRED;
                         break;
                     default:
-                        if (License.ExpirationDate < last_check || attempts > 10)
+                        if (License.ValidUntil < last_check || attempts > 10)
                             _status = LicenseStatus.TRIALEXPIRED;
                         break;
                 }
@@ -108,6 +108,10 @@ namespace AppColeta
         }
         public static async Task<bool> GetLicense(string doc, string uuid, string password, bool new_registry = true)
         {
+            ERPLicense license = new ERPLicense();
+            string save_folder = DependencyService.Get<IAppPath>().Path;
+            string license_file = Path.Combine(save_folder, "license.lic");
+            string license_log = Path.Combine(save_folder, "license_log");
             var status = LicenseStatus.UNDEFINED;
             try
             {
@@ -128,9 +132,6 @@ namespace AppColeta
                 var response = await request.Content.ReadAsStringAsync();
                 if (request.StatusCode == HttpStatusCode.OK)
                 {
-                    string save_folder = DependencyService.Get<IAppPath>().Path;
-                    string license_file = Path.Combine(save_folder, "license.lic");
-                    string license_log = Path.Combine(save_folder, "license_log");
                     byte[] public_key;
                     //Read public key from assembly
                     Assembly _assembly = Assembly.GetExecutingAssembly();
@@ -139,32 +140,39 @@ namespace AppColeta
                         _assembly.GetManifestResourceStream("AppColeta.ellitedevDDNS.cer").CopyTo(_mem);
                         public_key = _mem.ToArray();
                     }
-                    var lic = LicenseHandler.ParseLicenseFromBASE64String(
-                typeof(ERPLicense),
-                response, public_key, out status) as ERPLicense;
-                    if (status == LicenseStatus.VALID)
-                    {
-                        var log = JObject.FromObject(new { last_check = lic.LastCheck, attempts = 0 });
-                        File.WriteAllText(license_log, Helper.Encrypt(log.ToString()));
-                        //If license if valid, save the license string into a local file
-                        File.WriteAllText(license_file, response);
-                        InfoMessage("Licença instalada com sucesso.", "Sistema licenciado");
-                        return true;
-                    }
+                    license = LicenseHandler.ParseLicenseFromBASE64String(typeof(ERPLicense), response, public_key, out status) as ERPLicense;
                 }
                 else if (request.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    WarnMessage(response, "Não licenciado");
+                    await WarnMessage(response, "Não licenciado");
                 }
-                else
+                switch (status)
                 {
-                    throw new Exception();
+                    case LicenseStatus.VALID:
+                        var log = JObject.FromObject(new { last_check = license.CreateDateTime, attempts = 0 });
+                        File.WriteAllText(license_log, Helper.Encrypt(log.ToString()));
+                        //If license if valid, save the license string into a local file
+                        File.WriteAllText(license_file, response);
+                        await InfoMessage("Licença instalada com sucesso.", "Sistema licenciado");
+                        return true;
+                    case LicenseStatus.INVALID:
+                        await WarnMessage("Licença inválida! Entre em contato com o suporte para regularizar a situação.", "Não licenciado");
+                        break;
+                    case LicenseStatus.CRACKED:
+                        await ErrorMessage("Verificado uma alteração ilegal na licença", "Cópia ilegal");
+                        break;
+                    case LicenseStatus.TRIALEXPIRED:
+                        await WarnMessage("Licença expirada! Entre em contato com o suporte para efetuar uma renovação.", "Não licenciado");
+                        break;
+                    default:
+                        throw new Exception("Ocorreu um erro inesperado ao buscar a licença");
                 }
             }
             catch (Exception exc)
             {
-                ErrorMessage("Erro ao gerar licença. \n" + exc.Message, ".: ERRO FATAL :.");
+                await ErrorMessage("Erro ao gerar licença. \n" + exc.Message + "\n" + exc.StackTrace, ".: ERRO FATAL :.");
             }
+
             return false;
         }
     }

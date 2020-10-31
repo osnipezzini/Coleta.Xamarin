@@ -17,7 +17,7 @@ namespace AppColeta.Views
         private void TextDocument_Focused(object sender, FocusEventArgs e)
         {
             if (ViewModel.Document != null)
-            ViewModel.Document = Regex.Replace(ViewModel.Document, "[^0-9a-zA-Z]+", "");
+                ViewModel.Document = Regex.Replace(ViewModel.Document, "[^0-9a-zA-Z]+", "");
         }
 
         private void TextDocument_Unfocused(object sender, FocusEventArgs e)
@@ -30,6 +30,17 @@ namespace AppColeta.Views
                 if (doc.Length == 14)
                     ViewModel.Document = $"{doc.Substring(0, 2)}.{doc.Substring(2, 3)}.{doc.Substring(5, 3)}/{doc.Substring(8, 4)}-{doc.Substring(12, 2)}";
             }
+        }
+
+        private void TextPassword_Completed(object sender, System.EventArgs e)
+        {
+            if (ViewModel.LicenseGenerateCommand.CanExecute(null))
+                ViewModel.LicenseGenerateCommand.Execute(null);
+        }
+
+        private void TextDocument_Completed(object sender, System.EventArgs e)
+        {
+            TextPassword.Focus();
         }
     }
 }
