@@ -17,14 +17,14 @@ namespace AppColeta.Views
         private void TextDocument_Focused(object sender, FocusEventArgs e)
         {
             if (ViewModel.Document != null)
-                ViewModel.Document = Regex.Replace(ViewModel.Document, "[^0-9a-zA-Z]+", "");
+                ViewModel.Document = Regex.Replace(ViewModel.Document, "[^0-9]+", "");
         }
 
         private void TextDocument_Unfocused(object sender, FocusEventArgs e)
         {
             if (ViewModel.Document != null)
             {
-                string doc = Regex.Replace(ViewModel.Document, "[^0-9a-zA-Z]+", "");
+                string doc = Regex.Replace(ViewModel.Document, "[^0-9]+", "");
                 if (doc.Length == 11)
                     ViewModel.Document = $"{doc.Substring(0, 3)}/{doc.Substring(2, 6)}/{doc.Substring(5, 9)}-{doc.Substring(8, 11)}";
                 if (doc.Length == 14)
