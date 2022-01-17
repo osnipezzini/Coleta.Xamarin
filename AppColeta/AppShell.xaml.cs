@@ -1,19 +1,31 @@
 ﻿using SOColeta.Views;
+
+using SOTech.Core.Services;
+
 using Xamarin.Forms;
 
 namespace SOColeta
 {
     public partial class AppShell
     {
+        private readonly ILicenseService licenseService;
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
-            Routing.RegisterRoute(nameof(CriarInventarioPage), typeof(CriarInventarioPage));
             Routing.RegisterRoute(nameof(CriarColetaPage), typeof(CriarColetaPage));
-            Routing.RegisterRoute(nameof(MeusInventariosPage), typeof(MeusInventariosPage));
             Routing.RegisterRoute(nameof(ConfigPage), typeof(ConfigPage));
-            Routing.RegisterRoute(nameof(LicensePage), typeof(LicensePage));
-        }       
+            licenseService = Module.GetService<ILicenseService>();
+        }
+
+        protected override async void OnNavigated(ShellNavigatedEventArgs args)
+        {
+            base.OnNavigated(args);
+
+            if (args.Current.Location.OriginalString == "///LicensePage")
+                return;
+
+            if (!licenseService.HasLicense)
+                await GoToAsync("///LicensePage");
+        }
     }
 }

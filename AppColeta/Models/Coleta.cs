@@ -1,4 +1,6 @@
-﻿namespace SOColeta.Models
+﻿using System;
+
+namespace SOColeta.Models
 {
     public class Coleta
     {
@@ -7,5 +9,6 @@
         public double Quantidade { get; set; }
         public string InventarioId { get; set; }
         public Inventario Inventario { get; set; }
+        public DateTime Hora { get; set; }
     }
 }

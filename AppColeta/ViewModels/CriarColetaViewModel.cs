@@ -42,10 +42,14 @@ namespace SOColeta.ViewModels
                 return;
             }
         }
-        async Task GetCodigo()
+        public async Task GetCodigo()
         {
             var contexto = new AppDbContext();
-            var produto = await contexto.Produtos.Where(x => x.Codigo == codigo).FirstOrDefaultAsync();
+            var produto = await contexto.Produtos
+                .Where(x => x.Codigo == codigo)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+
             if (produto != null)
             {
                 PrecoCusto = produto.PrecoCusto;
@@ -55,8 +59,8 @@ namespace SOColeta.ViewModels
         }
         private bool ValidateSave()
         {
-            return !String.IsNullOrWhiteSpace(codigo)
-                && !String.IsNullOrWhiteSpace(quantidade) && double.TryParse(quantidade, out double valor);
+            return !string.IsNullOrWhiteSpace(codigo)
+                && !string.IsNullOrWhiteSpace(quantidade) && double.TryParse(quantidade, out double valor);
         }
 
         public string Codigo
@@ -99,13 +103,14 @@ namespace SOColeta.ViewModels
 
         private async void OnSave()
         {
-            Coleta newItem = new Coleta()
+            var newItem = new Coleta()
             {
                 Id = Guid.NewGuid().ToString(),
                 Codigo = codigo,
                 Quantidade = double.Parse(quantidade),
                 InventarioId = App.Inventario.Id,
-                Inventario = App.Inventario
+                Inventario = App.Inventario,
+                Hora = DateTime.Now
             };
 
             await dataStore.AddItemAsync(newItem);

@@ -33,6 +33,7 @@ namespace SOColeta
             _services.AddScoped<CriarColetaViewModel>();
             _services.AddScoped<CriarInventarioViewModel>();
             _services.AddScoped<ImportFileViewModel>();
+            _services.AddScoped<LicenseViewModel>();
             _services.AddScoped<LoginViewModel>();
             _services.AddScoped<MainViewModel>();
             _services.AddScoped<MeusInventariosViewModel>();

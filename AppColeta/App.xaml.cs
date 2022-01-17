@@ -1,5 +1,6 @@
 ﻿using SOColeta.Models;
 
+using SOTech.Core;
 using SOTech.Core.Services;
 
 namespace SOColeta
@@ -9,6 +10,9 @@ namespace SOColeta
         public static Inventario Inventario { get; set; }
         public App()
         {
+#if DEBUG
+            SOTechHelper.IsDebug = true;
+#endif
             InitializeComponent();
             Module.Init();
 
@@ -21,7 +25,7 @@ namespace SOColeta
         protected async override void OnSleep()
         {
             var licService = Module.GetService<ILicenseService>();
-            if(licService != null && licService.HasLicense)
+            if (licService != null && licService.HasLicense)
                 await licService.ValidateAsync();
         }
 

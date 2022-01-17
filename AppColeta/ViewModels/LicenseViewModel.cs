@@ -24,6 +24,8 @@ namespace SOColeta.ViewModels
             LicenseGenerateCommand = new Command(OnLicenseGenerateClicked, CanGenerate);
             PropertyChanged += (_, __) => LicenseGenerateCommand.ChangeCanExecute();
             this.licenseService = licenseService;
+
+            Serial = licenseService.Serial;
         }
 
         private bool CanGenerate(object arg)
@@ -33,6 +35,7 @@ namespace SOColeta.ViewModels
         public bool New { get; set; } = true;
         public string Password { get => password; set => SetProperty(ref password, value); }
         public string Document { get => doc; set => SetProperty(ref doc, value); }
+        public new string Serial { get; }
 
         private async void OnLicenseGenerateClicked(object obj)
         {
@@ -46,12 +49,12 @@ namespace SOColeta.ViewModels
                 }
                 catch (Exception exc)
                 {
-                    await Application.Current.MainPage.DisplayAlert(".: ERRO FATAL :. \n" + exc.Message, "ERRO", "OK");
+                    await DisplayAlertAsync(".: ERRO FATAL :. \n" + exc.Message, "ERRO", "OK");
                 }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Uma conexão ativa com a internet é necessária para licenciar o sistema.", "Sem Internet", "OK");
+                await DisplayAlertAsync("Uma conexão ativa com a internet é necessária para licenciar o sistema.", "Sem Internet", "OK");
             }
             IsBusy = false;
         }

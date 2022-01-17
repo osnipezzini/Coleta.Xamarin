@@ -77,7 +77,7 @@ namespace SOColeta.ViewModels
             {
                 foreach (Coleta coleta in obj.ProdutosColetados)
                 {
-                    arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{obj.DataCriacao.ToString("dd/MM/yyHH:mm:ss")}\n";
+                    arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
                 }
                 File.WriteAllText(arquivo, arquivoString);
                 await MailSender.SendEmail("Arquivo de inventário", "Você solicitou um arquivo de formulário, o mesmo se encontra em anexo", new List<string>(), arquivo);

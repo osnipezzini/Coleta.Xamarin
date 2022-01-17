@@ -34,7 +34,6 @@
 		<EmbeddedResource Include="Assets\Fonts\Montserrat-Bold.ttf" />
 		<EmbeddedResource Include="Assets\Fonts\Montserrat-Light.ttf" />
 		<EmbeddedResource Include="Assets\Fonts\Montserrat-Regular.ttf" />
-		<EmbeddedResource Include="ellitedevDDNS.cer" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -65,6 +64,9 @@
 		</EmbeddedResource>
 		<EmbeddedResource Update="Views\ImportFilePage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\LicenseExpiredPage.xaml">
+		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Views\LicensePage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>

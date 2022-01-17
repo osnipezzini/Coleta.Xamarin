@@ -21,7 +21,7 @@ namespace SOColeta.Views
 
         private void BuscarCodigo(object sender, FocusEventArgs e)
         {
-            viewModel.GetCodigoCommand.Execute(sender);
+            ///viewModel.GetCodigo();
         }
     }
 }

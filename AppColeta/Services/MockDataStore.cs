@@ -7,11 +7,10 @@ namespace SOColeta.Services
 {
     public class MockDataStore : IDataStore<Coleta>
     {
-        readonly List<Coleta> coletas;
+        static readonly List<Coleta> coletas = new List<Coleta>();
 
         public MockDataStore()
         {
-            coletas = new List<Coleta>();
         }
 
         public async Task<bool> AddItemAsync(Coleta item)
