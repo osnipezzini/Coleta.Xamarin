@@ -1,17 +1,17 @@
-﻿using AppColeta.ViewModels;
+﻿using SOColeta.ViewModels;
 
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CriarInventarioPage : ContentPage
+    public partial class CriarInventarioPage
     {
-        CriarInventarioViewModel viewModel => BindingContext as CriarInventarioViewModel;
+        private readonly CriarInventarioViewModel viewModel;
         public CriarInventarioPage()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            BindingContext = viewModel = Module.GetService<CriarInventarioViewModel>();
         }
         protected async override void OnAppearing()
         {

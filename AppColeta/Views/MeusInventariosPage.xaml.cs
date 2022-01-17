@@ -1,18 +1,20 @@
-﻿using AppColeta.Models;
-using AppColeta.ViewModels;
+﻿using SOColeta.Models;
+using SOColeta.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MeusInventariosPage : ContentPage
+    public partial class MeusInventariosPage
     {
-        MeusInventariosViewModel viewModel => BindingContext as MeusInventariosViewModel;
+        private readonly MeusInventariosViewModel viewModel;
         public MeusInventariosPage()
         {
             InitializeComponent();
+
+            BindingContext = viewModel = Module.GetService<MeusInventariosViewModel>();
         }
         protected async override void OnAppearing()
         {

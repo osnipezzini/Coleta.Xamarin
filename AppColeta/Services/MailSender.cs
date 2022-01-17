@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace AppColeta.Services
+namespace SOColeta.Services
 {
     public abstract class MailSender
     {

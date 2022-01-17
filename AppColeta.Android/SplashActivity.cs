@@ -3,10 +3,10 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 
-namespace AppColeta.Droid
+namespace SOColeta.Droid
 {
 
-    [Activity(Label = "AppColeta", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "SOColeta", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class SplashActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

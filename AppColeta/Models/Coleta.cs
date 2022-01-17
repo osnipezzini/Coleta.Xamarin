@@ -1,4 +1,4 @@
-﻿namespace AppColeta.Models
+﻿namespace SOColeta.Models
 {
     public class Coleta
     {

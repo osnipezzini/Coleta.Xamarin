@@ -1,9 +1,9 @@
-﻿using AppColeta.ViewModels;
+﻿using SOColeta.ViewModels;
 using System.Text.RegularExpressions;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LicensePage : ContentPage

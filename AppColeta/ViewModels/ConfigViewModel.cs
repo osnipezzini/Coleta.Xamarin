@@ -1,6 +1,8 @@
-﻿namespace AppColeta.ViewModels
+﻿using SOTech.Mvvm;
+
+namespace SOColeta.ViewModels
 {
-    class ConfigViewModel : BaseViewModel
+    class ConfigViewModel : ViewModelBase
     {
         public ConfigViewModel()
         {

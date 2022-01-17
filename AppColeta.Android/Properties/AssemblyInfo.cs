@@ -6,14 +6,14 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #if TKT
-[assembly: AssemblyTitle("AppColeta - TKT")]
+[assembly: AssemblyTitle("SOColeta - TKT")]
 #else
-[assembly: AssemblyTitle("AppColeta")]
+[assembly: AssemblyTitle("SOColeta")]
 #endif
 [assembly: AssemblyDescription("Sistema para inventario de produtos")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SOTech Sistemas")]
-[assembly: AssemblyProduct("AppColeta.Android")]
+[assembly: AssemblyProduct("SOColeta.Android")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

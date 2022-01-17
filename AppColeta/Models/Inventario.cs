@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AppColeta.Models
+namespace SOColeta.Models
 {
     public class Inventario
     {

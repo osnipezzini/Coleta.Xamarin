@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AppColeta.Models
+namespace SOColeta.Models
 {
     public class Produto
     {

@@ -1,8 +1,8 @@
-﻿using AppColeta.Models;
+﻿using SOColeta.Models;
 using Microsoft.EntityFrameworkCore;
 using Xamarin.Forms;
 
-namespace AppColeta.Data
+namespace SOColeta.Data
 {
     public class AppDbContext : DbContext
     {

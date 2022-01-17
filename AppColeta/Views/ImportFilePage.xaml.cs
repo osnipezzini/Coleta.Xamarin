@@ -1,14 +1,17 @@
-﻿using Xamarin.Forms;
+﻿using SOColeta.ViewModels;
+
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ImportFilePage : ContentPage
+    public partial class ImportFilePage
     {
+        private readonly ImportFileViewModel viewModel;
         public ImportFilePage()
         {
             InitializeComponent();
+            BindingContext = viewModel = Module.GetService<ImportFileViewModel>();
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using AppColeta.Views;
+﻿using SOColeta.Views;
+
+using SOTech.Mvvm;
+
 using Xamarin.Forms;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    public class LoginViewModel : ViewModelBase
     {
         public Command LoginCommand { get; }
 

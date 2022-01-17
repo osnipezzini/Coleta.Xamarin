@@ -1,13 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<mvvm:SOTechPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:AppColeta.ViewModels"
-             xmlns:model="clr-namespace:AppColeta.Models"
-             x:Class="AppColeta.Views.CriarInventarioPage"
+             xmlns:vm="clr-namespace:SOColeta.ViewModels"
+             xmlns:model="clr-namespace:SOColeta.Models"
+             xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
+             x:Class="SOColeta.Views.CriarInventarioPage"
              Title="{Binding Title}">
-    <ContentPage.BindingContext>
-        <vm:CriarInventarioViewModel/>
-    </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Iniciar coleta" Command="{Binding IniciarColetaCommand}"/>
     </ContentPage.ToolbarItems>
@@ -44,4 +42,4 @@
             <Button Text="Finalizar inventário" Command="{Binding SaveCommand}" FontSize="25" Margin="20, 20" />
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</mvvm:SOTechPage>

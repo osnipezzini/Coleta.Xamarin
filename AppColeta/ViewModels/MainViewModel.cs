@@ -1,30 +1,35 @@
-﻿using System.Threading.Tasks;
+﻿using SOTech.Core.Services;
+using SOTech.Mvvm;
 
-namespace AppColeta.ViewModels
+using System.Threading.Tasks;
+
+namespace SOColeta.ViewModels
 {
-    class MainViewModel : BaseViewModel
+    class MainViewModel : ViewModelBase
     {
         private string license_footer;
+        private readonly ILicenseService licenseService;
+
         public string LicenseFooter { get => license_footer; private set => SetProperty(ref license_footer, value); }
-        public MainViewModel()
+        public MainViewModel(ILicenseService licenseService)
         {
-            string titulo = "AppColeta";
+            string titulo = "SOColeta";
             Title = titulo;
+            this.licenseService = licenseService;
         }
 
-        public async Task OnAppearing()
-        {
-            await Helpers.CheckLicense();
+        public override async Task OnAppearing()
+        {            
             try
             {
-                LicenseFooter = "Sistema licenciado para: " + Helpers.License.ClientName;
-                if (Helpers.License.IsTimeTrial)
-                    Title += " - DEMO";
+                LicenseFooter = "Sistema licenciado para: " + LicenseService.Instance.License.ClientName;
             }
             catch
             {
 
             }
+
+            await Task.CompletedTask;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using AppColeta.Data;
-using AppColeta.Droid.Data;
+﻿using SOColeta.Data;
+using SOColeta.Droid.Data;
 using System.IO;
 
 [assembly: Xamarin.Forms.Dependency(typeof(DatabasePath))]
-namespace AppColeta.Droid.Data
+namespace SOColeta.Droid.Data
 {
     public class DatabasePath : IDBPath
     {
@@ -11,7 +11,7 @@ namespace AppColeta.Droid.Data
         { }
         public string GetDbPath()
         {
-            return Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "AppColeta.db");
+            return Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "SOColeta.db");
         }
     }
 }

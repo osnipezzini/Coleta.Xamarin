@@ -1,16 +1,18 @@
-﻿using AppColeta.ViewModels;
-using Xamarin.Forms;
+﻿using SOColeta.ViewModels;
+
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ColetaDetailPage : ContentPage
+    public partial class ColetaDetailPage
     {
-        ColetaDetailViewModel viewModel => BindingContext as ColetaDetailViewModel;
+        private readonly ColetaDetailViewModel viewModel;
         public ColetaDetailPage()
         {
             InitializeComponent();
+
+            BindingContext = viewModel = Module.GetService<ColetaDetailViewModel>();
         }
     }
 }

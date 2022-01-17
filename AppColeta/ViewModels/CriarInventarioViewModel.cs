@@ -1,23 +1,30 @@
-﻿using AppColeta.Data;
-using AppColeta.Models;
-using AppColeta.Views;
+﻿using SOColeta.Data;
+using SOColeta.Models;
+using SOColeta.Services;
+using SOColeta.Views;
+
+using SOTech.Mvvm;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
-    class CriarInventarioViewModel : BaseViewModel
+    class CriarInventarioViewModel : ViewModelBase
     {
         private DateTime _dataCriacao;
+        private readonly IDataStore<Coleta> dataStore;
+
         public ObservableCollection<Coleta> Coletas { get; set; }
         public Command LoadColetasCommand { get; }
         public Command IniciarColetaCommand { get; }
         public Command SaveCommand { get; }
-        public CriarInventarioViewModel()
+        public CriarInventarioViewModel(IDataStore<Coleta> dataStore)
         {
             Title = "Criar inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
@@ -29,16 +36,17 @@ namespace AppColeta.ViewModels
                 DataCriacao = DataCriacao = DateTime.Today,
                 Id = Guid.NewGuid().ToString()
             };
+            this.dataStore = dataStore;
         }
 
         private async Task ExecuteSaveCommand()
         {
-            if (ColetasStore.Count > 0)
+            if (dataStore.Count > 0)
             {
                 IsBusy = true;
                 if (App.Inventario.ProdutosColetados == null)
                     App.Inventario.ProdutosColetados = new List<Coleta>();
-                App.Inventario.ProdutosColetados.AddRange(await ColetasStore.GetItemsAsync());
+                App.Inventario.ProdutosColetados.AddRange(await dataStore.GetItemsAsync());
                 App.Inventario.DataCriacao = DataCriacao;
                 App.Inventario.NomeArquivo = $"Arquivo-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt";
                 var contexto = new AppDbContext();
@@ -59,7 +67,7 @@ namespace AppColeta.ViewModels
                 {
                     IsBusy = false;
                 }
-                
+
             }
             else
                 await Shell.Current.DisplayAlert("Acesso negado", "Atenção: Proibido salvar inventários vazios!", "Ok");
@@ -77,7 +85,7 @@ namespace AppColeta.ViewModels
             try
             {
                 Coletas.Clear();
-                var items = await ColetasStore.GetItemsAsync(true);
+                var items = await dataStore.GetItemsAsync(true);
                 foreach (var item in items)
                 {
                     Coletas.Add(item);

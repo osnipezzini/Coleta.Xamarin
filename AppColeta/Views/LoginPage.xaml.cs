@@ -1,21 +1,18 @@
-﻿using AppColeta.ViewModels;
-using Xamarin.Forms;
+﻿using SOColeta.ViewModels;
+
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LoginPage : ContentPage
+    public partial class LoginPage
     {
-        LoginViewModel viewModel => BindingContext as LoginViewModel;
+        private readonly LoginViewModel viewModel;
         public LoginPage()
         {
             InitializeComponent();
-        }
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
+            BindingContext = viewModel = Module.GetService<LoginViewModel>();
         }
     }
 }

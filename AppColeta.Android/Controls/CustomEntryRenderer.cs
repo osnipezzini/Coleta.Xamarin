@@ -1,10 +1,10 @@
 ﻿using Android.Content;
-using AppColeta.Droid.Controls;
+using SOColeta.Droid.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
 [assembly: ExportRenderer(typeof(Entry), typeof(CustomEntryRenderer))]
-namespace AppColeta.Droid.Controls
+namespace SOColeta.Droid.Controls
 {
     public class CustomEntryRenderer : EntryRenderer
     {

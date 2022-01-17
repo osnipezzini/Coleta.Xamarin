@@ -1,22 +1,29 @@
-﻿using SOTechLib.Licensing;
+﻿using SOColeta.Views;
+
+using SOTech.Core.Services;
+using SOTech.Mvvm;
+
 using System;
+
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
-    public class LicenseViewModel : BaseViewModel
+    public class LicenseViewModel : ViewModelBase
     {
         private string doc;
         private string password;
+        private readonly ILicenseService licenseService;
 
         public Command LicenseGenerateCommand { get; }
 
-        public LicenseViewModel()
+        public LicenseViewModel(ILicenseService licenseService)
         {
             Title = "Licenciamento do sistema";
             LicenseGenerateCommand = new Command(OnLicenseGenerateClicked, CanGenerate);
             PropertyChanged += (_, __) => LicenseGenerateCommand.ChangeCanExecute();
+            this.licenseService = licenseService;
         }
 
         private bool CanGenerate(object arg)
@@ -24,7 +31,6 @@ namespace AppColeta.ViewModels
             return !string.IsNullOrEmpty(password) && doc.Length > 11;
         }
         public bool New { get; set; } = true;
-        public string Serial { get => LicenseHandler.GenerateUID("AppColetaMobile"); }
         public string Password { get => password; set => SetProperty(ref password, value); }
         public string Document { get => doc; set => SetProperty(ref doc, value); }
 
@@ -35,9 +41,8 @@ namespace AppColeta.ViewModels
             {
                 try
                 {
-                    var isOk = await Helpers.GetLicense(doc, Serial, password);
-                    if (isOk)
-                        Application.Current.MainPage = new AppShell();
+                    await licenseService.GetLicenseAsync(doc, password);
+                    await GoToAsync($"///{nameof(MainPage)}");
                 }
                 catch (Exception exc)
                 {

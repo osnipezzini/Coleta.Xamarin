@@ -1,4 +1,4 @@
-﻿namespace AppColeta.Data
+﻿namespace SOColeta.Data
 {
     public interface IDBPath
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace AppColeta.Services
+namespace SOColeta.Services
 {
     public interface IQrCodeScanningService
     {

@@ -1,6 +1,6 @@
-﻿using AppColeta.Data;
-using AppColeta.Models;
-using AppColeta.Services;
+﻿using SOColeta.Data;
+using SOColeta.Models;
+using SOColeta.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,10 +10,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using SOTech.Mvvm;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
-    class MeusInventariosViewModel : BaseViewModel
+    class MeusInventariosViewModel : ViewModelBase
     {
         private string nomeArquivo;
         private DateTime dataCriacao;
@@ -21,7 +22,7 @@ namespace AppColeta.ViewModels
         public ObservableCollection<Inventario> Inventarios { get; }
         public Command ExportFileCommand { get; }
         public Command<Inventario> SelectedItemCommand { get; }
-        internal async Task OnAppearing()
+        public override async Task OnAppearing()
         {
             Inventarios.Clear();
             IsBusy = true;

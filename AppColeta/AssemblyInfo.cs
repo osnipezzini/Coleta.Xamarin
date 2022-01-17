@@ -1,3 +1,7 @@
+using SOColeta;
+
+using SOTech.Core;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -13,3 +17,5 @@ using Xamarin.Forms.Xaml;
 [assembly: ExportFont("gotham-light.ttf", Alias = "GothamLight")]
 
 [assembly: ExportFont("font-awesome.otf", Alias = "FontAwesome")]
+
+[assembly: SOTechApplication(Module.AppId, Module.AppName)]

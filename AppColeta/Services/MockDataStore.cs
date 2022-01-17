@@ -1,9 +1,9 @@
-﻿using AppColeta.Models;
+﻿using SOColeta.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AppColeta.Services
+namespace SOColeta.Services
 {
     public class MockDataStore : IDataStore<Coleta>
     {

@@ -1,19 +1,22 @@
-﻿using AppColeta.Models;
-using AppColeta.ViewModels;
+﻿using SOColeta.Models;
+using SOColeta.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CriarColetaPage : ContentPage
+    public partial class CriarColetaPage
     {
-        CriarColetaViewModel viewModel => BindingContext as CriarColetaViewModel;
+        private readonly CriarColetaViewModel viewModel;
         public Coleta Coleta { get; set; }
 
         public CriarColetaPage()
         {
             InitializeComponent();
+
+            BindingContext = viewModel = Module.GetService<CriarColetaViewModel>();
         }
 
         private void BuscarCodigo(object sender, FocusEventArgs e)

@@ -1,18 +1,22 @@
-﻿using AppColeta.Data;
-using AppColeta.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+
+using SOColeta.Data;
+using SOColeta.Models;
+
+using SOTech.Mvvm;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
-    class ImportFileViewModel : BaseViewModel
+    class ImportFileViewModel : ViewModelBase
     {
         private string filename;
         private FileResult fullpath;
@@ -28,7 +32,7 @@ namespace AppColeta.ViewModels
 
         async Task<bool> PickAndShow()
         {
-            
+
             var options = new PickOptions
             {
                 FileTypes = new FilePickerFileType(
@@ -53,7 +57,7 @@ namespace AppColeta.ViewModels
             }
             catch (Exception ex)
             {
-                // The user canceled or something went wrong
+                Logger.Error(ex, "Erro ao importar arquivo de inventario!");
             }
             return false;
         }
@@ -99,7 +103,7 @@ namespace AppColeta.ViewModels
                     {
                         Debug.WriteLine("Não foi possível validar a linha selecionada.");
                     }
-                    
+
                 }
             }
             var reg = await contexto.SaveChangesAsync();

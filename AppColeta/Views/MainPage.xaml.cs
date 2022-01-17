@@ -1,16 +1,18 @@
-﻿using AppColeta.ViewModels;
-using Xamarin.Forms;
+﻿using SOColeta.ViewModels;
+
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : ContentPage
+    public partial class MainPage
     {
-        MainViewModel viewModel => BindingContext as MainViewModel;
+        private readonly MainViewModel viewModel;
         public MainPage()
         {
             InitializeComponent();
+
+            BindingContext = viewModel = Module.GetService<MainViewModel>();
         }
         protected async override void OnAppearing()
         {

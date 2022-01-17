@@ -1,20 +1,17 @@
-﻿using AppColeta.ViewModels;
-using Xamarin.Forms;
+﻿using SOColeta.ViewModels;
+
 using Xamarin.Forms.Xaml;
 
-namespace AppColeta.Views
+namespace SOColeta.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ConfigPage : ContentPage
+    public partial class ConfigPage
     {
-        ConfigViewModel viewModel => BindingContext as ConfigViewModel;
+        private readonly ConfigViewModel viewModel;
         public ConfigPage()
         {
             InitializeComponent();
-        }
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
+            BindingContext = viewModel = Module.GetService<ConfigViewModel>();
         }
     }
 }

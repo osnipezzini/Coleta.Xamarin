@@ -1,23 +1,25 @@
-﻿using AppColeta.Data;
-using AppColeta.Models;
-using AppColeta.Services;
+﻿using SOColeta.Data;
+using SOColeta.Models;
+using SOColeta.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using SOTech.Mvvm;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
-    public class CriarColetaViewModel : BaseViewModel
+    public class CriarColetaViewModel : ViewModelBase
     {
         private string codigo;
         private string quantidade;
         private string nome;
         private double precoVenda;
         private double precoCompra;
+        private readonly IDataStore<Coleta> dataStore;
 
-        public CriarColetaViewModel()
+        public CriarColetaViewModel(IDataStore<Coleta> dataStore)
         {
             Title = "Criar coleta";
             SaveCommand = new Command(OnSave, ValidateSave);
@@ -26,6 +28,7 @@ namespace AppColeta.ViewModels
             GetCodigoCommand = new Command(async() => await GetCodigo());
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
+            this.dataStore = dataStore;
         }
         private async void OpenScan(object obj)
         {
@@ -105,7 +108,7 @@ namespace AppColeta.ViewModels
                 Inventario = App.Inventario
             };
 
-            await ColetasStore.AddItemAsync(newItem);
+            await dataStore.AddItemAsync(newItem);
 
             Codigo = string.Empty;
             Quantidade = string.Empty;

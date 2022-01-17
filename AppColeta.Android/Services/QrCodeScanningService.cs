@@ -1,11 +1,11 @@
-﻿using AppColeta.Droid.Services;
-using AppColeta.Services;
+﻿using SOColeta.Droid.Services;
+using SOColeta.Services;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using ZXing.Mobile;
 
 [assembly: Dependency(typeof(QrCodeScanningService))]
-namespace AppColeta.Droid.Services
+namespace SOColeta.Droid.Services
 {
     public class QrCodeScanningService : IQrCodeScanningService
     {

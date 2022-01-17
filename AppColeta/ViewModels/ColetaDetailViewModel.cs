@@ -1,11 +1,13 @@
-﻿using System;
+﻿using SOTech.Mvvm;
+
+using System;
 using System.Diagnostics;
 using Xamarin.Forms;
 
-namespace AppColeta.ViewModels
+namespace SOColeta.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class ColetaDetailViewModel : BaseViewModel
+    public class ColetaDetailViewModel : ViewModelBase
     {
         public ColetaDetailViewModel()
         {
@@ -43,7 +45,7 @@ namespace AppColeta.ViewModels
 
         public async void LoadItemId(string itemId)
         {
-            try
+            /*try
             {
                 var item = await ColetasStore.GetItemAsync(itemId);
                 Id = item.Id;
@@ -52,7 +54,7 @@ namespace AppColeta.ViewModels
             catch (Exception)
             {
                 Debug.WriteLine("Failed to Load Item");
-            }
+            }*/
         }
     }
 }

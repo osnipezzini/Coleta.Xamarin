@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AppColeta.Services
+namespace SOColeta.Services
 {
     public interface IDataStore<T>
     {

@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<mvvm:SOTechPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:AppColeta.ViewModels"
-             x:Class="AppColeta.Views.MainPage"
+             xmlns:vm="clr-namespace:SOColeta.ViewModels"
+             xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
+             x:Class="SOColeta.Views.MainPage"
+             x:DataType="vm:MainViewModel"
              Title="{Binding Title}">
-    <ContentPage.BindingContext>
-        <vm:MainViewModel/>
-    </ContentPage.BindingContext>
+
     <ContentPage.Content>
         <StackLayout BackgroundColor="{StaticResource ElliteBlue}">
             <Image Source="stockCounting.png" 
@@ -14,4 +14,4 @@
             <Label Margin="10" FontSize="16" Text="{Binding LicenseFooter}" TextColor="{StaticResource DarkGrayBlue}"/>
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</mvvm:SOTechPage>

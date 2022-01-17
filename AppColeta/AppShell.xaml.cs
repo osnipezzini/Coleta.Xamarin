@@ -1,9 +1,9 @@
-﻿using AppColeta.Views;
+﻿using SOColeta.Views;
 using Xamarin.Forms;
 
-namespace AppColeta
+namespace SOColeta
 {
-    public partial class AppShell : Shell
+    public partial class AppShell
     {
         public AppShell()
         {
@@ -14,11 +14,6 @@ namespace AppColeta
             Routing.RegisterRoute(nameof(MeusInventariosPage), typeof(MeusInventariosPage));
             Routing.RegisterRoute(nameof(ConfigPage), typeof(ConfigPage));
             Routing.RegisterRoute(nameof(LicensePage), typeof(LicensePage));
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-        }        
+        }       
     }
 }

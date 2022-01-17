@@ -5,7 +5,7 @@ using Android.OS;
 using Android.Runtime;
 using ZXing.Mobile;
 
-namespace AppColeta.Droid
+namespace SOColeta.Droid
 {
     [Activity(Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity

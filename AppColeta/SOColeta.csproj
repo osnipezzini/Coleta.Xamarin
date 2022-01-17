@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<Configurations>Debug;Release</Configurations>
+		<LangVersion>8.0</LangVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+		<DebugSymbols>false</DebugSymbols>
+		<OutputPath>bin\Release\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<Optimize>true</Optimize>
+		<DefineConstants>RELEASE</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Assets\Fonts\font-awesome.otf" />
+		<None Remove="Assets\Fonts\gotham-black.ttf" />
+		<None Remove="Assets\Fonts\gotham-light.ttf" />
+		<None Remove="Assets\Fonts\gotham.ttf" />
+		<None Remove="Assets\Fonts\Montserrat-Bold.ttf" />
+		<None Remove="Assets\Fonts\Montserrat-Light.ttf" />
+		<None Remove="Assets\Fonts\Montserrat-Regular.ttf" />
+		<None Remove="ellitedevDDNS.cer" />
+		<None Remove="Licensing.cer" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Fonts\font-awesome.otf" />
+		<EmbeddedResource Include="Assets\Fonts\gotham-black.ttf" />
+		<EmbeddedResource Include="Assets\Fonts\gotham-light.ttf" />
+		<EmbeddedResource Include="Assets\Fonts\gotham.ttf" />
+		<EmbeddedResource Include="Assets\Fonts\Montserrat-Bold.ttf" />
+		<EmbeddedResource Include="Assets\Fonts\Montserrat-Light.ttf" />
+		<EmbeddedResource Include="Assets\Fonts\Montserrat-Regular.ttf" />
+		<EmbeddedResource Include="ellitedevDDNS.cer" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.22" />
+		<PackageReference Include="SOTech.Core" Version="3.13.1" />
+		<PackageReference Include="SOTech.Mvvm" Version="2.5.15" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="4.7.0" />
+		<PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />
+		<PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+		<PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.0.2291" />
+		<PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />
+		<PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Views\ConfigPage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\CriarInventarioPage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\ColetaDetailPage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\CriarColetaPage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\ImportFilePage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\LicensePage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\MainPage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Views\MeusInventariosPage.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
+	</ItemGroup>
+</Project>
