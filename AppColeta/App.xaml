@@ -17,20 +17,24 @@
             <Color x:Key="Gray">#8FA0AC</Color>
             <Color x:Key="LightGray">#CAD1DC</Color>
             <Color x:Key="DarkGray">#4E5C69</Color>
+            <Color x:Key="SOHigh">#0a5e67</Color>
+            <Color x:Key="SOLow">#2e949e</Color>
+            <Color x:Key="Primary">#0a5e67</Color>
+
             
             <Style TargetType="Frame" ApplyToDerivedTypes="True">
                 <Setter Property="CornerRadius" Value="15" />
                 <Setter Property="Visual" Value="Material"/>
-                <Setter Property="BorderColor" Value="{StaticResource Purple}"/>
+                <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
                 <Setter Property="Padding" Value="0"/>
             </Style>
             
             <Style TargetType="Button" ApplyToDerivedTypes="True">
                 <Setter Property="Visual" Value="Material"/>
-                <Setter Property="TextColor" Value="{StaticResource Purple}"/>
+                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
                 <Setter Property="Margin" Value="15, 5"/>
                 <Setter Property="CornerRadius" Value="20"/>
-                <Setter Property="BackgroundColor" Value="{StaticResource GrayBlue}"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource SOLow}"/>
             </Style>
 
             <Style TargetType="Label">
