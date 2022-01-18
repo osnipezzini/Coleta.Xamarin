@@ -14,8 +14,12 @@
             <Label Text="Data do inventário"
                 Margin="0, 20" FontSize="30" TextColor="{StaticResource Purple}"
                 HorizontalOptions="CenterAndExpand" />
-            <DatePicker HorizontalOptions="Center" Format="dd/MM/yyyy" Date="{Binding DataCriacao, Mode=TwoWay}"/>
-            <RefreshView x:DataType="vm:CriarInventarioViewModel" Command="{Binding LoadColetasCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <DatePicker HorizontalOptions="Center" 
+                        Format="dd/MM/yyyy" 
+                        Date="{Binding DataCriacao, Mode=TwoWay}"/>
+            <RefreshView x:DataType="vm:CriarInventarioViewModel" 
+                         Command="{Binding LoadColetasCommand}" 
+                         IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
                 <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Coletas, Mode=TwoWay}"
                 SelectionMode="Single">

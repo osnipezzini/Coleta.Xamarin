@@ -13,10 +13,10 @@ namespace SOColeta.Views
             InitializeComponent();
             BindingContext = viewModel = Module.GetService<CriarInventarioViewModel>();
         }
-        protected async override void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            await viewModel.ExecuteLoadColetasCommand();
+            viewModel.ExecuteLoadColetasCommand();
         }
     }
 }

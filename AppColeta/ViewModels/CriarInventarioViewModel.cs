@@ -1,5 +1,4 @@
-﻿using SOColeta.Data;
-using SOColeta.Models;
+﻿using SOColeta.Models;
 using SOColeta.Services;
 using SOColeta.Views;
 
@@ -18,13 +17,13 @@ namespace SOColeta.ViewModels
     class CriarInventarioViewModel : ViewModelBase
     {
         private DateTime _dataCriacao;
-        private readonly IDataStore<Coleta> dataStore;
+        private readonly IDatabase database;
 
         public ObservableCollection<Coleta> Coletas { get; set; }
         public Command LoadColetasCommand { get; }
         public Command IniciarColetaCommand { get; }
         public Command SaveCommand { get; }
-        public CriarInventarioViewModel(IDataStore<Coleta> dataStore)
+        public CriarInventarioViewModel(IDatabase database)
         {
             Title = "Criar inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
@@ -33,35 +32,32 @@ namespace SOColeta.ViewModels
             Coletas = new ObservableCollection<Coleta>();
             App.Inventario = new Inventario()
             {
-                DataCriacao = DataCriacao = DateTime.Today,
-                Id = Guid.NewGuid().ToString()
+                DataCriacao = DataCriacao = DateTime.Today
             };
-            this.dataStore = dataStore;
+            this.database = database;
         }
 
         private async Task ExecuteSaveCommand()
         {
-            if (dataStore.Count > 0)
+            if (await database.CountColetasByInventarioAsync(App.Inventario.Id) > 0)
             {
                 IsBusy = true;
-                if (App.Inventario.ProdutosColetados == null)
-                    App.Inventario.ProdutosColetados = new List<Coleta>();
-                App.Inventario.ProdutosColetados.AddRange(await dataStore.GetItemsAsync());
+
                 App.Inventario.DataCriacao = DataCriacao;
                 App.Inventario.NomeArquivo = $"Arquivo-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt";
-                var contexto = new AppDbContext();
-                contexto.Inventarios.Add(App.Inventario);
+
                 try
                 {
-                    if (await contexto.SaveChangesAsync() > 0)
-                        await Shell.Current.DisplayAlert("Salvo", "Seu inventário foi salvo com sucesso", "Ok");
+                    if (await database.AddInventarioAsync(App.Inventario))
+                        await DisplayAlertAsync("Salvo", "Seu inventário foi salvo com sucesso", "Ok");
                     else
-                        await Shell.Current.DisplayAlert("Erro", "Ocorreu um erro ao salvar seu inventário.", "Ok");
+                        await DisplayAlertAsync("Erro", "Ocorreu um erro ao salvar seu inventário.", "Ok");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex);
-                    await Shell.Current.DisplayAlert("ERRO FATAL", ex.Message, "Ok");
+                    Logger.Debug(ex.StackTrace);
+                    Logger.Error(ex, "Erro ao salvar inventario");
+                    await DisplayAlertAsync("ERRO FATAL", ex.Message, "Ok");
                 }
                 finally
                 {
@@ -75,7 +71,7 @@ namespace SOColeta.ViewModels
 
         private async Task ExecuteIniciarColetaCommand()
         {
-            await Shell.Current.GoToAsync($"{nameof(CriarColetaPage)}");
+            await GoToAsync($"{nameof(CriarColetaPage)}");
         }
 
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
@@ -85,15 +81,15 @@ namespace SOColeta.ViewModels
             try
             {
                 Coletas.Clear();
-                var items = await dataStore.GetItemsAsync(true);
-                foreach (var item in items)
+                await foreach (var coleta in database.GetColetasAsync(App.Inventario.Id))
                 {
-                    Coletas.Add(item);
+                    Coletas.Add(coleta);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Logger.Debug(ex.StackTrace);
+                Logger.Error(ex, "Erro ao carregar coletas.");
             }
             finally
             {

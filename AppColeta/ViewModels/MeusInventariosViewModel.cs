@@ -1,16 +1,16 @@
-﻿using SOColeta.Data;
-using SOColeta.Models;
+﻿using SOColeta.Models;
 using SOColeta.Services;
-using Microsoft.EntityFrameworkCore;
+
+using SOTech.Mvvm;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
-using SOTech.Mvvm;
 
 namespace SOColeta.ViewModels
 {
@@ -19,6 +19,8 @@ namespace SOColeta.ViewModels
         private string nomeArquivo;
         private DateTime dataCriacao;
         private Inventario _selectedItem;
+        private readonly IDatabase database;
+
         public ObservableCollection<Inventario> Inventarios { get; }
         public Command ExportFileCommand { get; }
         public Command<Inventario> SelectedItemCommand { get; }
@@ -28,9 +30,7 @@ namespace SOColeta.ViewModels
             IsBusy = true;
             try
             {
-                var contexto = new AppDbContext();
-                var inventarios = await contexto.Inventarios.ToListAsync();
-                foreach (Inventario inventario in inventarios)
+                await foreach (var inventario in database.GetInventariosAsync())
                 {
                     Inventarios.Add(inventario);
                 }
@@ -46,7 +46,7 @@ namespace SOColeta.ViewModels
         }
 
         public Command LoadInventariosCommand { get; set; }
-        public MeusInventariosViewModel()
+        public MeusInventariosViewModel(IDatabase database)
         {
             Title = "Meus inventários";
             ExportFileCommand = new Command(ExecuteExportFileCommand, CanExportFile);
@@ -55,6 +55,7 @@ namespace SOColeta.ViewModels
             SelectedItemCommand = new Command<Inventario>(OnItemSelected);
             this.PropertyChanged +=
                 (_, __) => ExportFileCommand.ChangeCanExecute();
+            this.database = database;
         }
 
         private void OnItemSelected(Inventario obj)
@@ -71,11 +72,11 @@ namespace SOColeta.ViewModels
             var obj = SelectedItem;
             var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), obj.NomeArquivo);
             var arquivoString = string.Empty;
-            var context = new AppDbContext();
-            obj = await context.Inventarios.Include(x => x.ProdutosColetados).Where(x => x.Id == obj.Id).FirstOrDefaultAsync();
+
+            obj = await database.GetInventarioAsync(obj.Id);
             if (obj != null)
             {
-                foreach (Coleta coleta in obj.ProdutosColetados)
+                await foreach (var coleta in database.GetColetasAsync(obj.Id))
                 {
                     arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
                 }
@@ -98,7 +99,7 @@ namespace SOColeta.ViewModels
                 //OnItemSelected(value);
             }
         }
-        
+
         public string NomeArquivo { get => nomeArquivo; set => SetProperty(ref nomeArquivo, value); }
         public DateTime DataCriacao { get => dataCriacao; set => SetProperty(ref dataCriacao, value); }
     }

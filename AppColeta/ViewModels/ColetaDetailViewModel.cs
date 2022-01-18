@@ -1,4 +1,6 @@
-﻿using SOTech.Mvvm;
+﻿using SOColeta.Services;
+
+using SOTech.Mvvm;
 
 using System;
 using System.Diagnostics;
@@ -9,14 +11,17 @@ namespace SOColeta.ViewModels
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class ColetaDetailViewModel : ViewModelBase
     {
-        public ColetaDetailViewModel()
+        public ColetaDetailViewModel(IDatabase database)
         {
             Title = "Coleta " + itemId;
+            this.database = database;
         }
-        private string itemId;
+        private int itemId;
         private string codigo;
         private string quantidade;
-        public string Id { get; set; }
+        private readonly IDatabase database;
+
+        public int Id { get; set; }
 
         public string Codigo
         {
@@ -30,7 +35,7 @@ namespace SOColeta.ViewModels
             set => SetProperty(ref quantidade, value);
         }
 
-        public string ItemId
+        public int ItemId
         {
             get
             {
@@ -43,18 +48,18 @@ namespace SOColeta.ViewModels
             }
         }
 
-        public async void LoadItemId(string itemId)
+        public async void LoadItemId(int itemId)
         {
-            /*try
+            try
             {
-                var item = await ColetasStore.GetItemAsync(itemId);
+                var item = await database.GetColetaAsync(itemId);
                 Id = item.Id;
                 Codigo = item.Codigo;
             }
             catch (Exception)
             {
                 Debug.WriteLine("Failed to Load Item");
-            }*/
+            }
         }
     }
 }

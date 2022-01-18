@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using SOColeta.Models;
 using SOColeta.Services;
 using SOColeta.ViewModels;
 
 using SOTech.Core.Services;
+
+using System;
 
 namespace SOColeta
 {
@@ -17,7 +18,7 @@ namespace SOColeta
                   "ios=cc9cf015-9548-4a26-a5f6-862bdf1b0d45;";
 
         private static IServiceCollection _services = new ServiceCollection();
-
+        private static IServiceProvider serviceProvider;
         public static void Init()
         {
             _services = new ServiceCollection();
@@ -40,13 +41,15 @@ namespace SOColeta
             #endregion
 
             #region Serviços
-            _services.AddScoped<IDataStore<Coleta>, MockDataStore>();
+            _services.AddSingleton<IDatabase, SqliteDB>();
             #endregion
+
+            serviceProvider = _services.BuildServiceProvider();
         }
 
         public static T GetService<T>()
         {
-            return _services.BuildServiceProvider().GetService<T>();
+            return serviceProvider.GetService<T>();
         }
     }
 }

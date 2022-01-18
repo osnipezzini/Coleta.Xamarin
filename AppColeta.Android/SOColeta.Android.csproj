@@ -96,6 +96,9 @@
     <PackageReference Include="SOTech.Mvvm">
       <Version>2.5.15</Version>
     </PackageReference>
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.8.116</Version>
+    </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.4</Version>
     </PackageReference>

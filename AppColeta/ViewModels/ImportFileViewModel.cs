@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using SOColeta.Data;
-using SOColeta.Models;
+﻿using SOColeta.Models;
+using SOColeta.Services;
 
 using SOTech.Mvvm;
 
@@ -20,13 +18,16 @@ namespace SOColeta.ViewModels
     {
         private string filename;
         private FileResult fullpath;
+        private readonly IDatabase database;
+
         public Command ChooseFileCommand { get; }
         public Command StartImportCommand { get; }
-        public ImportFileViewModel()
+        public ImportFileViewModel(IDatabase database)
         {
             Title = "Importar arquivo";
             ChooseFileCommand = new Command(async () => await PickAndShow());
             StartImportCommand = new Command(async () => await ImportFile());
+            this.database = database;
         }
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
 
@@ -64,7 +65,6 @@ namespace SOColeta.ViewModels
 
         async Task ImportFile()
         {
-            var contexto = new AppDbContext();
             var stream = await fullpath.OpenReadAsync();
             var readerStream = new StreamReader(stream);
             var contents = await readerStream.ReadToEndAsync();
@@ -85,7 +85,7 @@ namespace SOColeta.ViewModels
                         if (reader.Length >= 3)
                             double.TryParse(reader[2].Replace('.', ','), out venda);
 
-                        var produto = await contexto.Produtos.FirstOrDefaultAsync(x => x.Codigo == reader[0]);
+                        var produto = await database.GetProdutoAsync(reader[0]);
 
                         if (produto == null)
                             produto = new Produto();
@@ -94,10 +94,7 @@ namespace SOColeta.ViewModels
                         produto.Nome = reader[1];
                         produto.PrecoVenda = venda;
                         produto.PrecoCusto = custo;
-                        if (produto.Id > 0)
-                            contexto.Produtos.Update(produto);
-                        else
-                            contexto.Produtos.Add(produto);
+                        await database.AddOrUpdateProdutoAsync(produto);
                     }
                     catch (Exception)
                     {
@@ -106,9 +103,7 @@ namespace SOColeta.ViewModels
 
                 }
             }
-            var reg = await contexto.SaveChangesAsync();
-
-            await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {reg} produtos.", "Ok");
+            await DisplayAlertAsync("Produtos importados", $"Foram importados {file.Length} produtos.", "Ok");
         }
     }
 }
