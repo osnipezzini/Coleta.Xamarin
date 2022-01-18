@@ -1,6 +1,8 @@
 ﻿using SOColeta.Models;
 using SOColeta.ViewModels;
 
+using System;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,11 +19,14 @@ namespace SOColeta.Views
             InitializeComponent();
 
             BindingContext = viewModel = Module.GetService<CriarColetaViewModel>();
+
+            viewModel.OnFinishedReadCode += OnFinishedReadCode;
         }
 
         private void BuscarCodigo(object sender, FocusEventArgs e)
         {
             ///viewModel.GetCodigo();
         }
+        private void OnFinishedReadCode(object sender, EventArgs e) => txtQuantity.Focus();
     }
 }

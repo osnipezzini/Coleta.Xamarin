@@ -10,6 +10,7 @@ using SOTech.Mvvm;
 
 namespace SOColeta.ViewModels
 {
+    public delegate void FinishedReadCodeDelegate(object sender, EventArgs e);
     public class CriarColetaViewModel : ViewModelBase
     {
         private string codigo;
@@ -39,6 +40,7 @@ namespace SOColeta.ViewModels
             {
                 // Sua logica.
                 Codigo = result;
+                OnFinishedReadCode?.Invoke(this, null);
                 return;
             }
         }
@@ -89,6 +91,8 @@ namespace SOColeta.ViewModels
             get => quantidade;
             set => SetProperty(ref quantidade, value);
         }
+
+        public event FinishedReadCodeDelegate OnFinishedReadCode;
 
         public Command SaveCommand { get; }
         public Command CancelCommand { get; }

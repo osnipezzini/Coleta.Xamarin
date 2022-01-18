@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
              xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
+             xmlns:fonts="clr-namespace:SOTech.Mvvm.Fonts;assembly=SOTech.Mvvm"
              x:Class="SOColeta.Views.CriarColetaPage"
              Shell.PresentationMode="ModalAnimated"
              x:DataType="vm:CriarColetaViewModel"
@@ -12,10 +13,12 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
-            <Button HorizontalOptions="End" ImageSource="barcodeScanner.png" Text="Capturar código" Command="{Binding ReadCodeCommand}" Padding="5" Margin="0, 15, 0, 5"/>
+            <Button HorizontalOptions="End" ImageSource="barcodeScanner.png" Text="Capturar código" 
+                    Command="{Binding ReadCodeCommand}" Padding="5" Margin="0, 15, 0, 5"/>
             <Label Text="Codigo de Barras" FontSize="Medium" />
             <Frame>
-            <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" Unfocused="BuscarCodigo" />
+                <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" Unfocused="BuscarCodigo" 
+                   Keyboard="Numeric" Completed="OnFinishedReadCode"/>
             </Frame>
             <Frame Margin="5" Padding="5">
                 <StackLayout>
@@ -46,9 +49,32 @@
                 </StackLayout>
             </Frame>
             <Label Text="Quantidade" FontSize="Medium" />
-            <Frame>
-                <Entry Text="{Binding Quantidade, Mode=TwoWay}" FontSize="Medium" />
-            </Frame>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <ImageButton
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="50">
+                    <ImageButton.Source>
+                        <FontImageSource 
+                                    Glyph="{x:Static fonts:FASolid.PlusCircle}" 
+                                    Color="{StaticResource Primary}"
+                                    FontFamily="FA-S"/>
+                    </ImageButton.Source>
+                </ImageButton>
+                <Frame>
+                    <Entry Text="{Binding Quantidade, Mode=TwoWay}" FontSize="Medium" 
+                       x:Name="txtQuantity" Keyboard="Numeric" WidthRequest="120" />
+                </Frame>
+                <ImageButton
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="50">
+                    <ImageButton.Source>
+                        <FontImageSource 
+                                    Glyph="{x:Static fonts:FASolid.Minus}" 
+                                    Color="{StaticResource Primary}"
+                                    FontFamily="FA-S"/>
+                    </ImageButton.Source>
+                </ImageButton>
+            </StackLayout>
             <Button Text="Adicionar" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"/>
             <BoxView VerticalOptions="FillAndExpand"/>
             <Button Text="Terminar" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" VerticalOptions="End"/>
