@@ -28,5 +28,35 @@ namespace SOColeta.Views
             ///viewModel.GetCodigo();
         }
         private void OnFinishedReadCode(object sender, EventArgs e) => txtQuantity.Focus();
+
+        private void OnFinishedQuantity(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(viewModel.Codigo) || string.IsNullOrEmpty(viewModel.Quantidade))
+                return;
+
+            viewModel.SaveCommand.Execute(null);
+            txtCode.Focus();
+        }
+
+        private void OnPlusButtonClicked(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(viewModel.Quantidade))
+                viewModel.Quantidade = 1.00.ToString("N2");
+            else if (double.TryParse(viewModel.Quantidade, out double quantidade))
+            {
+                var quantity = quantidade + 1;
+                viewModel.Quantidade = quantity.ToString("N2");
+            }
+        }
+
+        private void OnMinusButtonClicked(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(viewModel.Quantidade)
+                && double.TryParse(viewModel.Quantidade, out double quantidade) && quantidade > 0)
+            {
+                var quantity = quantidade - 1;
+                viewModel.Quantidade = quantity > 0 ? quantity.ToString("N2") : string.Empty;
+            }
+        }
     }
 }

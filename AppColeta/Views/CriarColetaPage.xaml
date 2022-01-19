@@ -18,7 +18,7 @@
             <Label Text="Codigo de Barras" FontSize="Medium" />
             <Frame>
                 <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" Unfocused="BuscarCodigo" 
-                   Keyboard="Numeric" Completed="OnFinishedReadCode"/>
+                   Keyboard="Numeric" Completed="OnFinishedReadCode" x:Name="txtCode"/>
             </Frame>
             <Frame Margin="5" Padding="5">
                 <StackLayout>
@@ -50,26 +50,27 @@
             </Frame>
             <Label Text="Quantidade" FontSize="Medium" />
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                <ImageButton
+                <ImageButton Clicked="OnMinusButtonClicked"
                                      BackgroundColor="Transparent"
                                      HeightRequest="50">
                     <ImageButton.Source>
                         <FontImageSource 
-                                    Glyph="{x:Static fonts:FASolid.PlusCircle}" 
+                                    Glyph="{x:Static fonts:FASolid.MinusCircle}" 
                                     Color="{StaticResource Primary}"
                                     FontFamily="FA-S"/>
                     </ImageButton.Source>
                 </ImageButton>
                 <Frame>
                     <Entry Text="{Binding Quantidade, Mode=TwoWay}" FontSize="Medium" 
-                       x:Name="txtQuantity" Keyboard="Numeric" WidthRequest="120" />
+                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                       x:Name="txtQuantity" Keyboard="Numeric" WidthRequest="120" Completed="OnFinishedQuantity" />
                 </Frame>
-                <ImageButton
+                <ImageButton Clicked="OnPlusButtonClicked"
                                      BackgroundColor="Transparent"
                                      HeightRequest="50">
                     <ImageButton.Source>
                         <FontImageSource 
-                                    Glyph="{x:Static fonts:FASolid.Minus}" 
+                                    Glyph="{x:Static fonts:FASolid.PlusCircle}" 
                                     Color="{StaticResource Primary}"
                                     FontFamily="FA-S"/>
                     </ImageButton.Source>
