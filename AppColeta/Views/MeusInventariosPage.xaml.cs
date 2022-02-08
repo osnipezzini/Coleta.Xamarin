@@ -18,10 +18,9 @@ namespace SOColeta.Views
         }
         protected async override void OnAppearing()
         {
-            await viewModel.OnAppearing();
-            viewModel.SelectedItem = null;
             base.OnAppearing();
-            
+            await viewModel.OnAppearing();
+            viewModel.SelectedItem = null;            
         }
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)

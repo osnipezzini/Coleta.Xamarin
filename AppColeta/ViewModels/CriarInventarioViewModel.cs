@@ -54,28 +54,33 @@ namespace SOColeta.ViewModels
                 try
                 {
                     if (await contexto.SaveChangesAsync() > 0)
-                        await Shell.Current.DisplayAlert("Salvo", "Seu inventário foi salvo com sucesso", "Ok");
+                        await DisplayAlertAsync("Seu inventário foi salvo com sucesso", "Salvo");
                     else
-                        await Shell.Current.DisplayAlert("Erro", "Ocorreu um erro ao salvar seu inventário.", "Ok");
+                        await DisplayAlertAsync("Ocorreu um erro ao salvar seu inventário.", "Erro");
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
-                    await Shell.Current.DisplayAlert("ERRO FATAL", ex.Message, "Ok");
+                    await DisplayAlertAsync(ex.Message, "ERRO FATAL");
                 }
                 finally
                 {
+                    App.Inventario = new Inventario()
+                    {
+                        DataCriacao = DataCriacao = DateTime.Today,
+                        Id = Guid.NewGuid().ToString()
+                    };
                     IsBusy = false;
                 }
 
             }
             else
-                await Shell.Current.DisplayAlert("Acesso negado", "Atenção: Proibido salvar inventários vazios!", "Ok");
+                await DisplayAlertAsync("Atenção: Proibido salvar inventários vazios!", "Acesso negado");
         }
 
         private async Task ExecuteIniciarColetaCommand()
         {
-            await Shell.Current.GoToAsync($"{nameof(CriarColetaPage)}");
+            await GoToAsync($"{nameof(CriarColetaPage)}");
         }
 
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
@@ -94,6 +99,8 @@ namespace SOColeta.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                Logger.Debug(ex.StackTrace);
+                Logger.Error(ex.Message);
             }
             finally
             {
