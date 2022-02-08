@@ -2,19 +2,21 @@
 <mvvm:SOTechPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
+             xmlns:mdl="clr-namespace:SOColeta.Models"
              xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
              x:Class="SOColeta.Views.MeusInventariosPage"
              x:DataType="vm:MeusInventariosViewModel"
              Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout>
-            <ListView ItemsSource="{Binding Inventarios}" HasUnevenRows="True" IsPullToRefreshEnabled="True" RefreshCommand="{Binding LoadInventariosCommand}" 
-                      IsRefreshing="{Binding IsBusy, Mode=TwoWay}" ItemSelected="ListView_ItemSelected" SeparatorColor="{StaticResource ElliteBlue}" Margin="0, 10, 0, 0">
+            <ListView ItemsSource="{Binding Inventarios}" HasUnevenRows="True" IsPullToRefreshEnabled="True" 
+                      RefreshCommand="{Binding LoadInventariosCommand}" SeparatorColor="{StaticResource ElliteBlue}"
+                      IsRefreshing="{Binding IsBusy, Mode=TwoWay}" ItemSelected="ListView_ItemSelected"  Margin="0, 10, 0, 0">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="mdl:Inventario">
                         <ViewCell>
                             <StackLayout Padding="10">
-                                <Label>
+                                <Label TextColor="{StaticResource Primary}">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="Nome do arquivo" FontSize="20"/>
@@ -23,7 +25,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label>
+                                <Label TextColor="{StaticResource Primary}">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="Data de geração" FontSize="16"/>

@@ -14,27 +14,44 @@
             <Label Text="Data do inventário"
                 Margin="0, 20" FontSize="30" TextColor="{StaticResource Purple}"
                 HorizontalOptions="CenterAndExpand" />
-            <DatePicker HorizontalOptions="Center" Format="dd/MM/yyyy" Date="{Binding DataCriacao, Mode=TwoWay}"/>
+            <DatePicker HorizontalOptions="Center" Format="dd/MM/yyyy" Date="{Binding DataCriacao, Mode=TwoWay}" 
+                        TextColor="{StaticResource Primary}"/>
             <RefreshView x:DataType="vm:CriarInventarioViewModel" Command="{Binding LoadColetasCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
                 <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Coletas, Mode=TwoWay}"
                 SelectionMode="Single">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout Padding="10" x:DataType="model:Coleta">
-                                <Label Text="{Binding Codigo}" 
-                            FontSize="16" />
-                                <Label Text="{Binding Quantidade}" 
+                            <Frame>
+                                <StackLayout Padding="10" x:DataType="model:Coleta">
+                                    <Label TextColor="{StaticResource Primary}"
+                            FontSize="16">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Código: "/>
+                                                <Span Text="{Binding Codigo}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label TextColor="{StaticResource Primary}"
                             LineBreakMode="NoWrap"
-                            FontSize="13" />
-                                <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer 
+                            FontSize="13">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Quantidade: "/>
+                                                <Span Text="{Binding Quantidade}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CriarInventarioViewModel}}, Path=ItemTapped}"		
                                 CommandParameter="{Binding .}">
-                                    </TapGestureRecognizer>
-                                </StackLayout.GestureRecognizers>
-                            </StackLayout>
+                                        </TapGestureRecognizer>
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </Frame>                            
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

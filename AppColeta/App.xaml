@@ -27,6 +27,7 @@
                 <Setter Property="Visual" Value="Material"/>
                 <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
                 <Setter Property="Padding" Value="0"/>
+                <Setter Property="BackgroundColor" Value="White"/>
             </Style>
             
             <Style TargetType="Button" ApplyToDerivedTypes="True">
@@ -40,6 +41,10 @@
             <Style TargetType="Label">
                 <Setter Property="FontFamily" Value="Montserrat" />
                 <Setter Property="Visual" Value="Material"/>
+            </Style>
+
+            <Style TargetType="Entry" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor" Value="White"/>
             </Style>
         </ResourceDictionary>        
     </Application.Resources>
