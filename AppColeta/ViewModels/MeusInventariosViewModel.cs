@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using SOTech.Mvvm;
+using Xamarin.Essentials;
 
 namespace SOColeta.ViewModels
 {
@@ -80,7 +81,12 @@ namespace SOColeta.ViewModels
                     arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
                 }
                 File.WriteAllText(arquivo, arquivoString);
-                await MailSender.SendEmail("Arquivo de inventário", "Você solicitou um arquivo de formulário, o mesmo se encontra em anexo", new List<string>(), arquivo);
+                await Share.RequestAsync(new ShareFileRequest
+                {
+                    Title = "Arquivo de inventário",
+                    File = new ShareFile(arquivo)
+                });
+                //await MailSender.SendEmail("Arquivo de inventário", "Você solicitou um arquivo de formulário, o mesmo se encontra em anexo", new List<string>(), arquivo);
             }
         }
 
