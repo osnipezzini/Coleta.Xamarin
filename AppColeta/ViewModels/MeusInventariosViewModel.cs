@@ -72,13 +72,30 @@ namespace SOColeta.ViewModels
             var obj = SelectedItem;
             var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), obj.NomeArquivo);
             var arquivoString = string.Empty;
+            var tipoInventario = await Shell
+                .Current
+                .DisplayActionSheet("Selecione o sistema para exportação", "Cancelar", null, Enum.GetNames(typeof(TipoSistema)));
+
+            if (!Enum.TryParse<TipoSistema>(tipoInventario, out var tipoSistema))
+                return;
+
             var context = new AppDbContext();
             obj = await context.Inventarios.Include(x => x.ProdutosColetados).Where(x => x.Id == obj.Id).FirstOrDefaultAsync();
             if (obj != null)
             {
                 foreach (Coleta coleta in obj.ProdutosColetados)
                 {
-                    arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                    switch (tipoSistema)
+                    {
+                        case TipoSistema.EMSys:
+                            arquivoString += $"{coleta.Codigo};{coleta.Quantidade}\n";
+                            break;
+                        case TipoSistema.AutoSystem:
+                            arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 File.WriteAllText(arquivo, arquivoString);
                 await Share.RequestAsync(new ShareFileRequest
