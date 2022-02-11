@@ -1,6 +1,5 @@
 ﻿using SOColeta.Models;
 
-using SOTech.Core;
 using SOTech.Core.Services;
 
 namespace SOColeta
