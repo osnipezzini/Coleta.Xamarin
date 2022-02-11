@@ -12,7 +12,7 @@
             <ActivityIndicator IsRunning="{Binding IsBusy}" />
             <StackLayout Margin="15, 15, 15, 15">
                 <Frame HorizontalOptions="FillAndExpand">
-                <Label Padding="15">
+                <Label Padding="15" TextColor="{StaticResource SOHigh}">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="Para usar esse aplicativo é obrigatório efetuar o licenciamento."/>
@@ -25,7 +25,8 @@
                 </Frame>
                 <Frame HorizontalOptions="FillAndExpand">
                     <Entry x:Name="TextDocument" 
-                  Focused="TextDocument_Focused" Unfocused="TextDocument_Unfocused" Completed="TextDocument_Completed"
+                  Focused="TextDocument_Focused" Unfocused="TextDocument_Unfocused" 
+                           Completed="TextDocument_Completed" HorizontalTextAlignment="Center"
                   Text="{Binding Document, Mode=TwoWay}" Placeholder="CPF / CNPJ"
                    />
                 </Frame>
