@@ -9,5 +9,6 @@ namespace SOColeta.Models
         public string NomeArquivo { get; set; }
         public DateTime DataCriacao { get; set; }
         public List<Coleta> ProdutosColetados { get; set; }
+        public bool IsFinished { get; set; } = false;
     }
 }
