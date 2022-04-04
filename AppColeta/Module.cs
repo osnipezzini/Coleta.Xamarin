@@ -40,8 +40,9 @@ namespace SOColeta
             #endregion
 
             #region Serviços
-            _services.AddScoped<IStockService, StockService>();
             _services.AddDbContext<AppDbContext>();
+            _services.AddScoped<IStockService, StockService>();
+            _services.AddLogging();
             #endregion
         }
 
