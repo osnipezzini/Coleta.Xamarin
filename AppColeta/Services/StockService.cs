@@ -87,6 +87,22 @@ namespace SOColeta.Services
             var inventario = await query
                 .Include(x => x.ProdutosColetados)
                 .FirstOrDefaultAsync();
+            if (inventario is null && string.IsNullOrEmpty(id))
+            {
+                logger.LogInformation("Nenhum inventário aberto localizado!");
+                yield break;
+            }
+            else if (inventario is null)
+            {
+                logger.LogError("Não foi encontrado inventário com a id solicitada: {0}", id);
+                throw new ArgumentNullException($"Não foi encontrado inventário com a id solicitada: {id}");
+            }
+            if (inventario.ProdutosColetados is null)
+            {
+                logger.LogError("Não foram encontrados produtos coletados");
+                inventario.ProdutosColetados = new List<Coleta>();
+            }
+
             foreach (var coleta in inventario.ProdutosColetados)
                 yield return coleta;
         }

@@ -73,7 +73,8 @@ namespace SOColeta.ViewModels
             {
                 Coletas.Clear();
                 await foreach (var coleta in stockService.GetColetasAsync())
-                    Coletas.Add(coleta);
+                    if (coleta is not null)
+                        Coletas.Add(coleta);
             }
             catch (Exception ex)
             {
