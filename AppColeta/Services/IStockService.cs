@@ -7,8 +7,9 @@ namespace SOColeta.Services
 {
     public interface IStockService
     {
-        Task<string> CreateInventario();
+        Task<Inventario> CreateInventario();
         Task<bool> InventarioHasColeta();
+        Task<Inventario> GetOpenedInventario();
         IAsyncEnumerable<Coleta> GetColetasAsync(string id = default);
         Task AddColeta(Coleta coleta);
         Task RemoveColeta(Coleta coleta);

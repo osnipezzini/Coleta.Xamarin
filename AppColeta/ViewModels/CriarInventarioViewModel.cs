@@ -31,7 +31,16 @@ namespace SOColeta.ViewModels
             Coletas = new ObservableCollection<Coleta>();
             this.stockService = stockService;
         }
+        public override async Task OnAppearing()
+        {
+            var inventario = await stockService.GetOpenedInventario();
+            if (inventario is null)
+                inventario = await stockService.CreateInventario();
 
+            DataCriacao = inventario.DataCriacao;
+            if (await stockService.InventarioHasColeta())
+                await ExecuteLoadColetasCommand();
+        }
         private async Task ExecuteSaveCommand()
         {
             if (!await stockService.InventarioHasColeta())

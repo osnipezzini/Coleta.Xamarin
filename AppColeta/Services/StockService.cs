@@ -31,7 +31,7 @@ namespace SOColeta.Services
                 .FirstOrDefaultAsync();
 
             if (string.IsNullOrEmpty(inventarioId))
-                inventarioId = await CreateInventario();
+                inventarioId = (await CreateInventario()).Id;
 
             if (string.IsNullOrEmpty(coleta.Id))
                 coleta.Id = Guid.NewGuid().ToString();
@@ -58,18 +58,19 @@ namespace SOColeta.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<string> CreateInventario()
+        public async Task<Inventario> CreateInventario()
         {
             var id = Guid.NewGuid().ToString();
-            dbContext.Inventarios.Add(new Inventario
+            var inventario = new Inventario
             {
                 Id = id,
                 DataCriacao = DateTime.Today,
                 NomeArquivo = $"Inventario-{id}-{DateTime.Today.ToString("ddMMyyyyHHmm")}",
                 IsFinished = false
-            });
+            };
+            dbContext.Inventarios.Add(inventario);
             await dbContext.SaveChangesAsync();
-            return id;
+            return inventario;
         }
 
         public Task AddProduto(Produto produto)
@@ -111,7 +112,7 @@ namespace SOColeta.Services
             }
             else if (coletas is null)
             {
-                Debug.WriteLine($"Não foram encontradas coletas para o inventário: {id}");
+                logger.Error($"Não foram encontradas coletas para o inventário: {id}");
                 throw new ArgumentOutOfRangeException($"Não foram encontradas coletas para o inventário: {id}");
             }    
 
@@ -161,6 +162,11 @@ namespace SOColeta.Services
                 dbContext.Coletas.Remove(coletaOld);
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        public Task<Inventario> GetOpenedInventario()
+        {
+            return dbContext.Inventarios.FirstOrDefaultAsync(x => !x.IsFinished);
         }
     }
 }
