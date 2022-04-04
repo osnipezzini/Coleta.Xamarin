@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 using SOColeta.Data;
 using SOColeta.Models;
 
+using SOTech.Core.Services;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,45 +16,60 @@ namespace SOColeta.Services
     public class StockService : IStockService
     {
         private readonly AppDbContext dbContext;
-        private readonly ILogger<StockService> logger;
-        public StockService(AppDbContext dbContext, ILogger<StockService> logger)
+        private readonly ILogger logger;
+        public StockService(AppDbContext dbContext, ILogger logger)
         {
             this.dbContext = dbContext;
             this.logger = logger;
         }
         public async Task AddColeta(Coleta coleta)
         {
-            logger.LogDebug("Buscando inventario aberto...");
-            var inventario = await dbContext.Inventarios
+            logger.Debug("Buscando inventario aberto...");
+            var inventarioId = await dbContext.Inventarios
                 .Where(i => !i.IsFinished)
+                .Select(x => x.Id)
                 .FirstOrDefaultAsync();
 
-            if (inventario == null)
-                dbContext.Inventarios.Add(new Inventario());
+            if (string.IsNullOrEmpty(inventarioId))
+                inventarioId = await CreateInventario();
 
             if (string.IsNullOrEmpty(coleta.Id))
                 coleta.Id = Guid.NewGuid().ToString();
 
-            coleta.Inventario = inventario;
-            logger.LogDebug("Verificando coleta já existente...");
+            coleta.InventarioId = inventarioId;
+            logger.Debug("Verificando coleta já existente...");
             var coletaOld = await dbContext.Coletas
-                .Where(x => x.Inventario == inventario)
+                .Where(x => x.InventarioId == inventarioId)
                 .Where(x => x.Codigo == coleta.Codigo)
                 .FirstOrDefaultAsync();
 
             if (coletaOld != null)
             {
-                logger.LogDebug("Atualizando coleta...");
+                logger.Debug("Atualizando coleta...");
                 coletaOld.Quantidade = coleta.Quantidade;
                 dbContext.Coletas.Update(coletaOld);
             }
             else
             {
-                logger.LogDebug("Adicionando coleta...");
+                logger.Debug("Adicionando coleta...");
                 dbContext.Coletas.Add(new Coleta());
             }
-            logger.LogDebug("Salvando alterações na coleta existente...");
+            logger.Debug("Salvando alterações na coleta existente...");
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<string> CreateInventario()
+        {
+            var id = Guid.NewGuid().ToString();
+            dbContext.Inventarios.Add(new Inventario
+            {
+                Id = id,
+                DataCriacao = DateTime.Today,
+                NomeArquivo = $"Inventario-{id}-{DateTime.Today.ToString("ddMMyyyyHHmm")}",
+                IsFinished = false
+            });
+            await dbContext.SaveChangesAsync();
+            return id;
         }
 
         public Task AddProduto(Produto produto)
@@ -63,58 +80,53 @@ namespace SOColeta.Services
 
         public async Task FinishInventario()
         {
-            logger.LogDebug("Buscando inventario aberto...");
+            logger.Debug("Buscando inventario aberto...");
             var inventario = await dbContext.Inventarios
                 .Where(i => !i.IsFinished)
                 .FirstOrDefaultAsync();
 
             inventario.IsFinished = true;
-            inventario.DataCriacao = DateTime.Now;
-            inventario.NomeArquivo = $"Inventario-{inventario.Id}-{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}";
             dbContext.Inventarios.Update(inventario);
             await dbContext.SaveChangesAsync();
         }
 
         public async IAsyncEnumerable<Coleta> GetColetasAsync(string id = default)
         {
-            logger.LogDebug("Buscando inventario aberto...");
+            Debug.WriteLine("Criando query de busca");
             var query = dbContext.Inventarios.AsQueryable();
             if (string.IsNullOrEmpty(id))
                 query = query.Where(i => !i.IsFinished);
             else
                 query = query.Where(i => i.Id == id);
-
-            var inventario = await query
+            Debug.WriteLine("Buscando coletas");
+            var coletas = await query
                 .Include(x => x.ProdutosColetados)
+                .Select(x => x.ProdutosColetados)
                 .FirstOrDefaultAsync();
-            if (inventario is null && string.IsNullOrEmpty(id))
+
+            if (coletas is null && string.IsNullOrEmpty(id))
             {
-                logger.LogInformation("Nenhum inventário aberto localizado!");
+                Debug.WriteLine("Não foram encontrados coletas");
                 yield break;
             }
-            else if (inventario is null)
+            else if (coletas is null)
             {
-                logger.LogError("Não foi encontrado inventário com a id solicitada: {0}", id);
-                throw new ArgumentNullException($"Não foi encontrado inventário com a id solicitada: {id}");
-            }
-            if (inventario.ProdutosColetados is null)
-            {
-                logger.LogError("Não foram encontrados produtos coletados");
-                inventario.ProdutosColetados = new List<Coleta>();
-            }
+                Debug.WriteLine($"Não foram encontradas coletas para o inventário: {id}");
+                throw new ArgumentOutOfRangeException($"Não foram encontradas coletas para o inventário: {id}");
+            }    
 
-            foreach (var coleta in inventario.ProdutosColetados)
+            foreach (var coleta in coletas)
                 yield return coleta;
         }
 
         public async IAsyncEnumerable<Inventario> GetFinishedInventarios()
         {
-            logger.LogDebug("Buscando inventarios finalizados...");
-            var inventarios = await dbContext.Inventarios
+            logger.Debug("Buscando inventarios finalizados...");
+            var inventarios = dbContext.Inventarios
                 .Where(x => x.IsFinished)
                 .ToArrayAsync();
 
-            foreach (var inventario in inventarios)
+            foreach (var inventario in await inventarios)
                 yield return inventario;
         }
 
@@ -125,13 +137,11 @@ namespace SOColeta.Services
 
         public async Task<bool> InventarioHasColeta()
         {
-            logger.LogDebug("Verificando inventário em aberto e se o mesmo possui coletas...");
-            var inventario = await dbContext.Inventarios
-                .Where(i => !i.IsFinished)
+            logger.Debug("Verificando inventário em aberto e se o mesmo possui coletas...");
+            return await dbContext.Inventarios
                 .Include(x => x.ProdutosColetados)
-                .FirstOrDefaultAsync();
-
-            return inventario.ProdutosColetados.Any();
+                .Where(i => !i.IsFinished && i.ProdutosColetados.Any())
+                .AnyAsync();
         }
 
         public async Task RemoveColeta(Coleta coleta)
@@ -140,7 +150,7 @@ namespace SOColeta.Services
                 throw new ArgumentNullException("Coleta não pode ser nula");
 
             if (coleta.Inventario == null && string.IsNullOrEmpty(coleta.InventarioId))
-                throw new ArgumentNullException("Inventário nao pode ser nulo ao remover uma coleta.");
+                throw new ArgumentNullException("Inventário não pode ser nulo ao remover uma coleta.");
 
             var coletaOld = await dbContext.Coletas
                 .Where(c => c.Id == coleta.Id)
