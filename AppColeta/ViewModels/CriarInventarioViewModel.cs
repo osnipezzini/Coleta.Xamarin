@@ -17,11 +17,13 @@ namespace SOColeta.ViewModels
     {
         private DateTime _dataCriacao;
         private readonly IStockService stockService;
+        private Inventario inventario;
 
         public ObservableCollection<Coleta> Coletas { get; set; }
         public Command LoadColetasCommand { get; }
         public Command IniciarColetaCommand { get; }
         public Command SaveCommand { get; }
+        
         public CriarInventarioViewModel(IStockService stockService)
         {
             Title = "Criar inventario";
@@ -33,7 +35,7 @@ namespace SOColeta.ViewModels
         }
         public override async Task OnAppearing()
         {
-            var inventario = await stockService.GetOpenedInventario();
+            inventario = await stockService.GetOpenedInventario();
             if (inventario is null)
                 inventario = await stockService.CreateInventario();
 
@@ -44,7 +46,7 @@ namespace SOColeta.ViewModels
         private async Task ExecuteSaveCommand()
         {
             if (!await stockService.InventarioHasColeta())
-                await DisplayAlertAsync("Atenção: Proibido finalizar inventários vazios!", "Acesso negado");
+                await DisplayAlertAsync("Acesso negado", "Atenção: Proibido finalizar inventários vazios!");
             else
             {
                 IsBusy = true;
@@ -52,7 +54,7 @@ namespace SOColeta.ViewModels
                 try
                 {
                     await stockService.FinishInventario();
-                    await DisplayAlertAsync("Seu inventário foi salvo com sucesso", "Salvo");
+                    await DisplayAlertAsync("Salvo", "Seu inventário foi salvo com sucesso");
                 }
                 catch (Exception ex)
                 {
@@ -64,6 +66,9 @@ namespace SOColeta.ViewModels
                 }
                 finally
                 {
+                    Coletas.Clear();
+                    inventario = await stockService.CreateInventario();
+                    DataCriacao = inventario.DataCriacao;
                     IsBusy = false;
                 }
             }
@@ -71,7 +76,7 @@ namespace SOColeta.ViewModels
 
         private async Task ExecuteIniciarColetaCommand()
         {
-            await GoToAsync($"{nameof(CriarColetaPage)}");
+            await GoToAsync($"{nameof(CriarColetaPage)}?InventarioId={inventario.Id}");
         }
 
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
@@ -81,7 +86,7 @@ namespace SOColeta.ViewModels
             try
             {
                 Coletas.Clear();
-                await foreach (var coleta in stockService.GetColetasAsync())
+                await foreach (var coleta in stockService.GetColetasAsync(inventario.Id))
                     if (coleta is not null)
                         Coletas.Add(coleta);
             }

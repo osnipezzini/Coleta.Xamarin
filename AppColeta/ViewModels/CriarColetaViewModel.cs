@@ -11,6 +11,7 @@ using Xamarin.Forms;
 namespace SOColeta.ViewModels
 {
     public delegate void FinishedReadCodeDelegate(object sender, EventArgs e);
+    [QueryProperty(nameof(InventarioId), nameof(InventarioId))]
     public class CriarColetaViewModel : ViewModelBase
     {
         private string codigo;
@@ -18,6 +19,7 @@ namespace SOColeta.ViewModels
         private string nome;
         private double precoVenda;
         private double precoCompra;
+
         private readonly IStockService stockService;
 
         public CriarColetaViewModel(IStockService stockService)
@@ -87,7 +89,7 @@ namespace SOColeta.ViewModels
             get => quantidade;
             set => SetProperty(ref quantidade, value);
         }
-
+        public string InventarioId { get; set; }
         public event FinishedReadCodeDelegate OnFinishedReadCode;
 
         public Command SaveCommand { get; }
@@ -103,7 +105,12 @@ namespace SOColeta.ViewModels
 
         private async void OnSave()
         {
-            await stockService.AddColeta(new Coleta { Codigo = codigo, Quantidade = double.Parse(quantidade) });
+            await stockService.AddColeta(new Coleta 
+            { 
+                Codigo = codigo, 
+                Quantidade = double.Parse(quantidade),
+                InventarioId = InventarioId
+            });
 
             Codigo = string.Empty;
             Quantidade = string.Empty;

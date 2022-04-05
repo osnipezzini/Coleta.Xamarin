@@ -24,24 +24,14 @@ namespace SOColeta.Services
         }
         public async Task AddColeta(Coleta coleta)
         {
-            logger.Debug("Buscando inventario aberto...");
-            var inventarioId = await dbContext.Inventarios
-                .Where(i => !i.IsFinished)
-                .Select(x => x.Id)
+            logger.Debug("Verificando coleta já existente...");
+            var coletaOld = await dbContext.Coletas
+                .Where(x => x.InventarioId == coleta.InventarioId)
+                .Where(x => x.Codigo == coleta.Codigo)
                 .FirstOrDefaultAsync();
-
-            if (string.IsNullOrEmpty(inventarioId))
-                inventarioId = (await CreateInventario()).Id;
 
             if (string.IsNullOrEmpty(coleta.Id))
                 coleta.Id = Guid.NewGuid().ToString();
-
-            coleta.InventarioId = inventarioId;
-            logger.Debug("Verificando coleta já existente...");
-            var coletaOld = await dbContext.Coletas
-                .Where(x => x.InventarioId == inventarioId)
-                .Where(x => x.Codigo == coleta.Codigo)
-                .FirstOrDefaultAsync();
 
             if (coletaOld != null)
             {
@@ -52,7 +42,7 @@ namespace SOColeta.Services
             else
             {
                 logger.Debug("Adicionando coleta...");
-                dbContext.Coletas.Add(new Coleta());
+                dbContext.Coletas.Add(coleta);
             }
             logger.Debug("Salvando alterações na coleta existente...");
             await dbContext.SaveChangesAsync();

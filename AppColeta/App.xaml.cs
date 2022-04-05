@@ -1,4 +1,8 @@
-﻿using SOTech.Core.Services;
+﻿using Microsoft.EntityFrameworkCore;
+
+using SOColeta.Data;
+
+using SOTech.Core.Services;
 
 namespace SOColeta
 {
@@ -11,6 +15,9 @@ namespace SOColeta
 #endif
             InitializeComponent();
             Module.Init();
+
+            using (var context = new AppDbContext())
+                context.Database.Migrate();
 
             MainPage = new AppShell();
         }
