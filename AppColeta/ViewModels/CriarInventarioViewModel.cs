@@ -35,6 +35,7 @@ namespace SOColeta.ViewModels
         }
         public override async Task OnAppearing()
         {
+            IsBusy = true;
             inventario = await stockService.GetOpenedInventario();
             if (inventario is null)
                 inventario = await stockService.CreateInventario();
@@ -42,6 +43,8 @@ namespace SOColeta.ViewModels
             DataCriacao = inventario.DataCriacao;
             if (await stockService.InventarioHasColeta())
                 await ExecuteLoadColetasCommand();
+
+            IsBusy = false;
         }
         private async Task ExecuteSaveCommand()
         {
@@ -50,7 +53,6 @@ namespace SOColeta.ViewModels
             else
             {
                 IsBusy = true;
-
                 try
                 {
                     await stockService.FinishInventario();
@@ -66,10 +68,7 @@ namespace SOColeta.ViewModels
                 }
                 finally
                 {
-                    Coletas.Clear();
-                    inventario = await stockService.CreateInventario();
-                    DataCriacao = inventario.DataCriacao;
-                    IsBusy = false;
+                    await OnAppearing();
                 }
             }
         }
@@ -82,7 +81,6 @@ namespace SOColeta.ViewModels
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
         public async Task ExecuteLoadColetasCommand()
         {
-            IsBusy = true;
             try
             {
                 Coletas.Clear();
@@ -96,11 +94,6 @@ namespace SOColeta.ViewModels
                 Logger.Debug(ex.StackTrace);
                 Logger.Error(ex.Message);
             }
-            finally
-            {
-                IsBusy = false;
-            }
         }
     }
-
 }
