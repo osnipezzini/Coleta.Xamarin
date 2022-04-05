@@ -55,7 +55,7 @@ namespace SOColeta.Services
             {
                 Id = id,
                 DataCriacao = DateTime.Today,
-                NomeArquivo = $"Inventario-{id}-{DateTime.Today.ToString("ddMMyyyyHHmm")}",
+                NomeArquivo = $"Inventario-{DateTime.Today.ToString("ddMMyyyyHHmm")}",
                 IsFinished = false
             };
             dbContext.Inventarios.Add(inventario);
