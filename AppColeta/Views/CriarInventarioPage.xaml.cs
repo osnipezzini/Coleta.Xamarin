@@ -16,7 +16,7 @@ namespace SOColeta.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await viewModel.ExecuteLoadColetasCommand();
+            await viewModel.OnAppearing();
         }
     }
 }

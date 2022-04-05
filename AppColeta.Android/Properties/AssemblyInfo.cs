@@ -1,4 +1,7 @@
 ﻿using Android.App;
+
+using SOTech.Core;
+
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -33,3 +36,9 @@ using System.Runtime.InteropServices;
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
 [assembly: UsesPermission(Android.Manifest.Permission.Flashlight)]
+
+[assembly: SOTechApplication(SOColeta.Module.AppId, SOColeta.Module.AppName, 
+    AppCenterKey = SOColeta.Module.AppCenter, 
+    EnableAppCenterAnalytics = true,
+    EnableAppCenterLogging = true,
+    NeedLicense = true)]

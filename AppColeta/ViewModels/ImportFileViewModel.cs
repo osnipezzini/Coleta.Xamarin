@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using SOColeta.Data;
-using SOColeta.Models;
+﻿using SOColeta.Models;
+using SOColeta.Services;
 
 using SOTech.Mvvm;
 
@@ -16,21 +14,24 @@ using Xamarin.Forms;
 
 namespace SOColeta.ViewModels
 {
-    class ImportFileViewModel : ViewModelBase
+    internal class ImportFileViewModel : ViewModelBase
     {
         private string filename;
         private FileResult fullpath;
+        private readonly IStockService stockService;
+
         public Command ChooseFileCommand { get; }
         public Command StartImportCommand { get; }
-        public ImportFileViewModel()
+        public ImportFileViewModel(IStockService stockService)
         {
             Title = "Importar arquivo";
             ChooseFileCommand = new Command(async () => await PickAndShow());
             StartImportCommand = new Command(async () => await ImportFile());
+            this.stockService = stockService;
         }
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
 
-        async Task<bool> PickAndShow()
+        private async Task<bool> PickAndShow()
         {
 
             var options = new PickOptions
@@ -62,9 +63,8 @@ namespace SOColeta.ViewModels
             return false;
         }
 
-        async Task ImportFile()
+        private async Task ImportFile()
         {
-            var contexto = new AppDbContext();
             var stream = await fullpath.OpenReadAsync();
             var readerStream = new StreamReader(stream);
             var contents = await readerStream.ReadToEndAsync();
@@ -85,19 +85,13 @@ namespace SOColeta.ViewModels
                         if (reader.Length >= 3)
                             double.TryParse(reader[2].Replace('.', ','), out venda);
 
-                        var produto = await contexto.Produtos.FirstOrDefaultAsync(x => x.Codigo == reader[0]);
-
-                        if (produto == null)
-                            produto = new Produto();
-
-                        produto.Codigo = reader[0];
-                        produto.Nome = reader[1];
-                        produto.PrecoVenda = venda;
-                        produto.PrecoCusto = custo;
-                        if (produto.Id > 0)
-                            contexto.Produtos.Update(produto);
-                        else
-                            contexto.Produtos.Add(produto);
+                        await stockService.AddProduto(new Produto
+                        {
+                            Codigo = reader[0],
+                            Nome = reader[1],
+                            PrecoVenda = venda,
+                            PrecoCusto = custo,
+                        });
                     }
                     catch (Exception)
                     {
@@ -106,9 +100,8 @@ namespace SOColeta.ViewModels
 
                 }
             }
-            var reg = await contexto.SaveChangesAsync();
 
-            await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {reg} produtos.", "Ok");
+            await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {file.Length} produtos.", "Ok");
         }
     }
 }

@@ -1,16 +1,17 @@
-﻿using SOColeta.Data;
-using SOColeta.Models;
+﻿using SOColeta.Models;
 using SOColeta.Services;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+
 using SOTech.Mvvm;
+
+using System;
+using System.Threading.Tasks;
+
+using Xamarin.Forms;
 
 namespace SOColeta.ViewModels
 {
     public delegate void FinishedReadCodeDelegate(object sender, EventArgs e);
+    [QueryProperty(nameof(InventarioId), nameof(InventarioId))]
     public class CriarColetaViewModel : ViewModelBase
     {
         private string codigo;
@@ -18,22 +19,23 @@ namespace SOColeta.ViewModels
         private string nome;
         private double precoVenda;
         private double precoCompra;
-        private readonly IDataStore<Coleta> dataStore;
 
-        public CriarColetaViewModel(IDataStore<Coleta> dataStore)
+        private readonly IStockService stockService;
+
+        public CriarColetaViewModel(IStockService stockService)
         {
             Title = "Criar coleta";
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
             ReadCodeCommand = new Command(OpenScan);
-            GetCodigoCommand = new Command(async() => await GetCodigo());
+            GetCodigoCommand = new Command(async () => await GetCodigo());
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
-            this.dataStore = dataStore;
+            this.stockService = stockService;
         }
         private async void OpenScan(object obj)
         {
-            
+
             var scanner = DependencyService.Get<IQrCodeScanningService>();
             var result = await scanner.ScanAsync();
             if (!string.IsNullOrEmpty(result))
@@ -46,11 +48,7 @@ namespace SOColeta.ViewModels
         }
         public async Task GetCodigo()
         {
-            var contexto = new AppDbContext();
-            var produto = await contexto.Produtos
-                .Where(x => x.Codigo == codigo)
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
+            var produto = await stockService.GetProduto(Codigo);
 
             if (produto != null)
             {
@@ -91,7 +89,7 @@ namespace SOColeta.ViewModels
             get => quantidade;
             set => SetProperty(ref quantidade, value);
         }
-
+        public string InventarioId { get; set; }
         public event FinishedReadCodeDelegate OnFinishedReadCode;
 
         public Command SaveCommand { get; }
@@ -107,17 +105,12 @@ namespace SOColeta.ViewModels
 
         private async void OnSave()
         {
-            var newItem = new Coleta()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Codigo = codigo,
+            await stockService.AddColeta(new Coleta 
+            { 
+                Codigo = codigo, 
                 Quantidade = double.Parse(quantidade),
-                InventarioId = App.Inventario.Id,
-                Inventario = App.Inventario,
-                Hora = DateTime.Now
-            };
-
-            await dataStore.AddItemAsync(newItem);
+                InventarioId = InventarioId
+            });
 
             Codigo = string.Empty;
             Quantidade = string.Empty;

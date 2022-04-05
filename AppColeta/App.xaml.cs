@@ -1,4 +1,6 @@
-﻿using SOColeta.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+using SOColeta.Data;
 
 using SOTech.Core.Services;
 
@@ -6,14 +8,16 @@ namespace SOColeta
 {
     public partial class App
     {
-        public static Inventario Inventario { get; set; }
         public App()
         {
 #if DEBUG
-            SOTechHelper.IsDebug = true;
+            SOTech.Core.SOTechHelper.IsDebug = true;
 #endif
             InitializeComponent();
             Module.Init();
+
+            using (var context = new AppDbContext())
+                context.Database.Migrate();
 
             MainPage = new AppShell();
         }
@@ -21,7 +25,7 @@ namespace SOColeta
         protected override void OnStart()
         {
         }
-        protected async override void OnSleep()
+        protected override async void OnSleep()
         {
             var licService = Module.GetService<ILicenseService>();
             if (licService != null && licService.HasLicense)

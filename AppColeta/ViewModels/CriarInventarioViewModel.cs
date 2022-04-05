@@ -1,12 +1,10 @@
-﻿using SOColeta.Data;
-using SOColeta.Models;
+﻿using SOColeta.Models;
 using SOColeta.Services;
 using SOColeta.Views;
 
 using SOTech.Mvvm;
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -15,72 +13,70 @@ using Xamarin.Forms;
 
 namespace SOColeta.ViewModels
 {
-    class CriarInventarioViewModel : ViewModelBase
+    internal class CriarInventarioViewModel : ViewModelBase
     {
         private DateTime _dataCriacao;
-        private readonly IDataStore<Coleta> dataStore;
+        private readonly IStockService stockService;
+        private Inventario inventario;
 
         public ObservableCollection<Coleta> Coletas { get; set; }
         public Command LoadColetasCommand { get; }
         public Command IniciarColetaCommand { get; }
         public Command SaveCommand { get; }
-        public CriarInventarioViewModel(IDataStore<Coleta> dataStore)
+        
+        public CriarInventarioViewModel(IStockService stockService)
         {
             Title = "Criar inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
             IniciarColetaCommand = new Command(async () => await ExecuteIniciarColetaCommand());
             SaveCommand = new Command(async () => await ExecuteSaveCommand());
             Coletas = new ObservableCollection<Coleta>();
-            App.Inventario = new Inventario()
-            {
-                DataCriacao = DataCriacao = DateTime.Today,
-                Id = Guid.NewGuid().ToString()
-            };
-            this.dataStore = dataStore;
+            this.stockService = stockService;
         }
+        public override async Task OnAppearing()
+        {
+            inventario = await stockService.GetOpenedInventario();
+            if (inventario is null)
+                inventario = await stockService.CreateInventario();
 
+            DataCriacao = inventario.DataCriacao;
+            if (await stockService.InventarioHasColeta())
+                await ExecuteLoadColetasCommand();
+        }
         private async Task ExecuteSaveCommand()
         {
-            if (dataStore.Count > 0)
+            if (!await stockService.InventarioHasColeta())
+                await DisplayAlertAsync("Acesso negado", "Atenção: Proibido finalizar inventários vazios!");
+            else
             {
                 IsBusy = true;
-                if (App.Inventario.ProdutosColetados == null)
-                    App.Inventario.ProdutosColetados = new List<Coleta>();
-                App.Inventario.ProdutosColetados.AddRange(await dataStore.GetItemsAsync());
-                App.Inventario.DataCriacao = DataCriacao;
-                App.Inventario.NomeArquivo = $"Arquivo-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt";
-                var contexto = new AppDbContext();
-                contexto.Inventarios.Add(App.Inventario);
+
                 try
                 {
-                    if (await contexto.SaveChangesAsync() > 0)
-                        await DisplayAlertAsync("Seu inventário foi salvo com sucesso", "Salvo");
-                    else
-                        await DisplayAlertAsync("Ocorreu um erro ao salvar seu inventário.", "Erro");
+                    await stockService.FinishInventario();
+                    await DisplayAlertAsync("Salvo", "Seu inventário foi salvo com sucesso");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex);
+                    Logger.Debug($"===== {ex.GetType().FullName} =====");
+                    Logger.Debug(ex.StackTrace);
+                    Logger.Debug($"===== {ex.GetType().FullName} =====");
+                    Logger.Error(ex.Message);
                     await DisplayAlertAsync(ex.Message, "ERRO FATAL");
                 }
                 finally
                 {
-                    App.Inventario = new Inventario()
-                    {
-                        DataCriacao = DataCriacao = DateTime.Today,
-                        Id = Guid.NewGuid().ToString()
-                    };
+                    Coletas.Clear();
+                    inventario = await stockService.CreateInventario();
+                    DataCriacao = inventario.DataCriacao;
                     IsBusy = false;
                 }
-
             }
-            else
-                await DisplayAlertAsync("Atenção: Proibido salvar inventários vazios!", "Acesso negado");
         }
 
         private async Task ExecuteIniciarColetaCommand()
         {
-            await GoToAsync($"{nameof(CriarColetaPage)}");
+            await GoToAsync($"{nameof(CriarColetaPage)}?InventarioId={inventario.Id}");
         }
 
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
@@ -90,11 +86,9 @@ namespace SOColeta.ViewModels
             try
             {
                 Coletas.Clear();
-                var items = await dataStore.GetItemsAsync(true);
-                foreach (var item in items)
-                {
-                    Coletas.Add(item);
-                }
+                await foreach (var coleta in stockService.GetColetasAsync(inventario.Id))
+                    if (coleta is not null)
+                        Coletas.Add(coleta);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using SOColeta.Models;
+using SOColeta.Data;
 using SOColeta.Services;
 using SOColeta.ViewModels;
 
@@ -40,7 +40,9 @@ namespace SOColeta
             #endregion
 
             #region Serviços
-            _services.AddScoped<IDataStore<Coleta>, MockDataStore>();
+            _services.AddDbContext<AppDbContext>();
+            _services.AddScoped<IStockService, StockService>();
+            _services.AddLogging();
             #endregion
         }
 
