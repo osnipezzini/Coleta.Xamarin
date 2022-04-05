@@ -33,10 +33,13 @@ namespace SOColeta.Services
             if (string.IsNullOrEmpty(coleta.Id))
                 coleta.Id = Guid.NewGuid().ToString();
 
+            coleta.Hora = DateTime.Now;
+
             if (coletaOld != null)
             {
                 logger.Debug("Atualizando coleta...");
                 coletaOld.Quantidade = coleta.Quantidade;
+                coletaOld.Hora = coleta.Hora;
                 dbContext.Coletas.Update(coletaOld);
             }
             else
