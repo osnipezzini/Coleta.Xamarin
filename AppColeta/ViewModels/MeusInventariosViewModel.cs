@@ -35,6 +35,7 @@ namespace SOColeta.ViewModels
             }
             catch (Exception ex)
             {
+                Logger.Error(ex, "Erro ao buscar os inventários finalizados");
                 Debug.WriteLine(ex.Message);
             }
             finally

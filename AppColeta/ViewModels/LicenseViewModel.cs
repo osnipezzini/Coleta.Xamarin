@@ -49,7 +49,8 @@ namespace SOColeta.ViewModels
                 }
                 catch (Exception exc)
                 {
-                    await DisplayAlertAsync(".: ERRO FATAL :. \n" + exc.Message, "ERRO", "OK");
+                    Logger.Error(exc, exc.Message);
+                    await DisplayErrorAsync(".: ERRO FATAL :. \n" + exc.Message);
                 }
             }
             else
