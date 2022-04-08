@@ -63,7 +63,7 @@ namespace SOColeta.ViewModels
                     Logger.Debug($"===== {ex.GetType().FullName} =====");
                     Logger.Debug(ex.StackTrace);
                     Logger.Debug($"===== {ex.GetType().FullName} =====");
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex, "Erro ao salvar o inventário");
                     await DisplayAlertAsync(ex.Message, "ERRO FATAL");
                 }
                 finally
@@ -83,6 +83,8 @@ namespace SOColeta.ViewModels
         {
             try
             {
+                if (string.IsNullOrEmpty(inventario.Id))
+                    return;
                 Coletas.Clear();
                 await foreach (var coleta in stockService.GetColetasAsync(inventario.Id))
                     if (coleta is not null)
@@ -92,7 +94,7 @@ namespace SOColeta.ViewModels
             {
                 Debug.WriteLine(ex);
                 Logger.Debug(ex.StackTrace);
-                Logger.Error(ex.Message);
+                Logger.Error(ex, "Erro ao carregar as coletas do inventário");
             }
         }
     }
