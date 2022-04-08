@@ -1,5 +1,6 @@
 ﻿using SOColeta.Views;
 
+using SOTech.Core.Exceptions;
 using SOTech.Core.Services;
 using SOTech.Mvvm;
 
@@ -47,9 +48,14 @@ namespace SOColeta.ViewModels
                     await licenseService.GetLicenseAsync(doc, password);
                     await GoToAsync($"///{nameof(MainPage)}");
                 }
+                catch (LicenseRegisterException lre)
+                {
+                    Logger.Error(lre, "Erro ao registrar o dispositivo");
+                    await DisplayErrorAsync(lre.Message);
+                }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc, exc.Message);
+                    Logger.Error(exc, "Erro ao registrar o dispositivo");
                     await DisplayErrorAsync(".: ERRO FATAL :. \n" + exc.Message);
                 }
             }
