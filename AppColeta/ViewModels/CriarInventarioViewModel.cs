@@ -8,7 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
+using SOTech.Core.Services;
 using Xamarin.Forms;
 
 namespace SOColeta.ViewModels
@@ -17,6 +17,7 @@ namespace SOColeta.ViewModels
     {
         private DateTime _dataCriacao;
         private readonly IStockService stockService;
+        private readonly ILogger logger;
         private Inventario inventario;
 
         public ObservableCollection<Coleta> Coletas { get; set; }
@@ -24,7 +25,7 @@ namespace SOColeta.ViewModels
         public Command IniciarColetaCommand { get; }
         public Command SaveCommand { get; }
         
-        public CriarInventarioViewModel(IStockService stockService)
+        public CriarInventarioViewModel(IStockService stockService, ILogger logger)
         {
             Title = "Criar inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
@@ -32,6 +33,7 @@ namespace SOColeta.ViewModels
             SaveCommand = new Command(async () => await ExecuteSaveCommand());
             Coletas = new ObservableCollection<Coleta>();
             this.stockService = stockService;
+            this.logger = logger;
         }
         public override async Task OnAppearing()
         {
@@ -60,10 +62,10 @@ namespace SOColeta.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Logger.Debug($"===== {ex.GetType().FullName} =====");
-                    Logger.Debug(ex.StackTrace);
-                    Logger.Debug($"===== {ex.GetType().FullName} =====");
-                    Logger.Error(ex, "Erro ao salvar o inventário");
+                    logger.Debug($"===== {ex.GetType().FullName} =====");
+                    logger.Debug(ex.StackTrace);
+                    logger.Debug($"===== {ex.GetType().FullName} =====");
+                    logger.Error(ex, "Erro ao salvar o inventário");
                     await DisplayAlertAsync(ex.Message, "ERRO FATAL");
                 }
                 finally
@@ -93,8 +95,8 @@ namespace SOColeta.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                Logger.Debug(ex.StackTrace);
-                Logger.Error(ex, "Erro ao carregar as coletas do inventário");
+                logger.Debug(ex.StackTrace);
+                logger.Error(ex, "Erro ao carregar as coletas do inventário");
             }
         }
     }

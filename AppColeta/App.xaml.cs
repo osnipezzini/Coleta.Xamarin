@@ -10,9 +10,7 @@ namespace SOColeta
     {
         public App()
         {
-#if DEBUG
-            SOTech.Core.SOTechHelper.IsDebug = true;
-#endif
+
             InitializeComponent();
             Module.Init();
 

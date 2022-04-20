@@ -5,7 +5,7 @@ using SOTech.Core.Services;
 using SOTech.Mvvm;
 
 using System;
-
+using Microsoft.AppCenter.Crashes;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -16,15 +16,17 @@ namespace SOColeta.ViewModels
         private string doc;
         private string password;
         private readonly ILicenseService licenseService;
+        private readonly ILogger logger;
 
         public Command LicenseGenerateCommand { get; }
 
-        public LicenseViewModel(ILicenseService licenseService)
+        public LicenseViewModel(ILicenseService licenseService, ILogger logger)
         {
             Title = "Licenciamento do sistema";
             LicenseGenerateCommand = new Command(OnLicenseGenerateClicked, CanGenerate);
             PropertyChanged += (_, __) => LicenseGenerateCommand.ChangeCanExecute();
             this.licenseService = licenseService;
+            this.logger = logger;
 
             Serial = licenseService.Serial;
         }
@@ -45,17 +47,17 @@ namespace SOColeta.ViewModels
             {
                 try
                 {
-                    await licenseService.GetLicenseAsync(doc, password);
+                    await licenseService.GetLicenseAsync(Document, Password);
                     await GoToAsync($"///{nameof(MainPage)}");
                 }
                 catch (LicenseRegisterException lre)
                 {
-                    Logger.Error(lre, "Erro ao registrar o dispositivo");
+                    logger.Error(lre, "Erro ao registrar o dispositivo");
                     await DisplayErrorAsync(lre.Message);
                 }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc, "Erro ao registrar o dispositivo");
+                    logger.Error(exc, "Erro ao registrar o dispositivo");
                     await DisplayErrorAsync(".: ERRO FATAL :. \n" + exc.Message);
                 }
             }

@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-
+using SOTech.Core.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -20,6 +20,7 @@ namespace SOColeta.ViewModels
         private DateTime dataCriacao;
         private Inventario _selectedItem;
         private readonly IStockService stockService;
+        private readonly ILogger logger;
 
         public ObservableCollection<Inventario> Inventarios { get; }
         public Command ExportFileCommand { get; }
@@ -35,7 +36,7 @@ namespace SOColeta.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Erro ao buscar os inventários finalizados");
+                logger.Error(ex, "Erro ao buscar os inventários finalizados");
                 Debug.WriteLine(ex.Message);
             }
             finally
@@ -45,7 +46,7 @@ namespace SOColeta.ViewModels
         }
 
         public Command LoadInventariosCommand { get; set; }
-        public MeusInventariosViewModel(IStockService stockService)
+        public MeusInventariosViewModel(IStockService stockService, ILogger logger)
         {
             Title = "Meus inventários";
             ExportFileCommand = new Command(ExecuteExportFileCommand, CanExportFile);
@@ -55,6 +56,7 @@ namespace SOColeta.ViewModels
             PropertyChanged +=
                 (_, __) => ExportFileCommand.ChangeCanExecute();
             this.stockService = stockService;
+            this.logger = logger;
         }
 
         private void OnItemSelected(Inventario obj)
@@ -87,11 +89,16 @@ namespace SOColeta.ViewModels
                 switch (tipoSistema)
                 {
                     case TipoSistema.EMSys:
-                        arquivoString += $"{coleta.Codigo};{coleta.Quantidade}\n";
+                        if (coleta.Codigo.Length < 20)
+                            arquivoString += $"{coleta.Codigo};{coleta.Quantidade}\n";
                         break;
                     case TipoSistema.AutoSystem:
-                        arquivoString += $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
-                        break;
+                        {
+                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                            if (linhaString.Length == 43)
+                                arquivoString += linhaString;
+                            break;
+                        }
                     default:
                         break;
                 }
