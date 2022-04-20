@@ -2,7 +2,7 @@
 
 using SOColeta.Data;
 
-using SOTech.Core.Services;
+using SOCore.Services;
 
 namespace SOColeta
 {
@@ -27,7 +27,7 @@ namespace SOColeta
         {
             var licService = Module.GetService<ILicenseService>();
             if (licService != null && licService.HasLicense)
-                await licService.ValidateAsync();
+                await licService.ValidateDeviceAsync();
         }
 
         protected override void OnResume()

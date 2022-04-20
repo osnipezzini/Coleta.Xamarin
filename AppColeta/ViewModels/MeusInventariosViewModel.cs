@@ -1,4 +1,6 @@
-﻿using SOColeta.Models;
+﻿using Microsoft.Extensions.Logging;
+
+using SOColeta.Models;
 using SOColeta.Services;
 
 using SOTech.Mvvm;
@@ -8,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using SOTech.Core.Services;
+
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -20,7 +22,7 @@ namespace SOColeta.ViewModels
         private DateTime dataCriacao;
         private Inventario _selectedItem;
         private readonly IStockService stockService;
-        private readonly ILogger logger;
+        private readonly ILogger<MeusInventariosViewModel> logger;
 
         public ObservableCollection<Inventario> Inventarios { get; }
         public Command ExportFileCommand { get; }
@@ -36,7 +38,7 @@ namespace SOColeta.ViewModels
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Erro ao buscar os inventários finalizados");
+                logger.LogError(ex, "Erro ao buscar os inventários finalizados");
                 Debug.WriteLine(ex.Message);
             }
             finally
@@ -46,7 +48,7 @@ namespace SOColeta.ViewModels
         }
 
         public Command LoadInventariosCommand { get; set; }
-        public MeusInventariosViewModel(IStockService stockService, ILogger logger)
+        public MeusInventariosViewModel(IStockService stockService, ILogger<MeusInventariosViewModel> logger)
         {
             Title = "Meus inventários";
             ExportFileCommand = new Command(ExecuteExportFileCommand, CanExportFile);

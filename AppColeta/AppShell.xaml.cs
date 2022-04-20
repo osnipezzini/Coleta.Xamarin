@@ -1,6 +1,6 @@
 ﻿using SOColeta.Views;
 
-using SOTech.Core.Services;
+using SOCore.Services;
 
 using Xamarin.Forms;
 

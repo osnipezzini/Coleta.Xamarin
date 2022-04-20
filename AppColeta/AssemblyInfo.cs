@@ -1,6 +1,6 @@
 using SOColeta;
 
-using SOTech.Core;
+using SOCore;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,4 +18,4 @@ using Xamarin.Forms.Xaml;
 
 [assembly: ExportFont("font-awesome.otf", Alias = "FontAwesome")]
 
-[assembly: SOTechApplication(Module.AppId, Module.AppName)]
+[assembly: SOApplication(Module.AppId, AppName = Module.AppName)]

@@ -1,11 +1,14 @@
-﻿using SOColeta.Views;
+﻿using Microsoft.Extensions.Logging;
 
-using SOTech.Core.Exceptions;
-using SOTech.Core.Services;
+using SOColeta.Views;
+
+using SOCore.Exceptions;
+using SOCore.Services;
+
 using SOTech.Mvvm;
 
 using System;
-using Microsoft.AppCenter.Crashes;
+
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -16,11 +19,12 @@ namespace SOColeta.ViewModels
         private string doc;
         private string password;
         private readonly ILicenseService licenseService;
-        private readonly ILogger logger;
+        private readonly ILogger<LicenseViewModel> logger;
 
         public Command LicenseGenerateCommand { get; }
 
-        public LicenseViewModel(ILicenseService licenseService, ILogger logger)
+        public LicenseViewModel(ILicenseService licenseService, 
+            ILogger<LicenseViewModel> logger, ISOCoreService coreService)
         {
             Title = "Licenciamento do sistema";
             LicenseGenerateCommand = new Command(OnLicenseGenerateClicked, CanGenerate);
@@ -28,7 +32,7 @@ namespace SOColeta.ViewModels
             this.licenseService = licenseService;
             this.logger = logger;
 
-            Serial = licenseService.Serial;
+            Serial = coreService.Serial;
         }
 
         private bool CanGenerate(object arg)
@@ -38,7 +42,7 @@ namespace SOColeta.ViewModels
         public bool New { get; set; } = true;
         public string Password { get => password; set => SetProperty(ref password, value); }
         public string Document { get => doc; set => SetProperty(ref doc, value); }
-        public new string Serial { get; }
+        public string Serial { get; }
 
         private async void OnLicenseGenerateClicked(object obj)
         {
@@ -47,17 +51,17 @@ namespace SOColeta.ViewModels
             {
                 try
                 {
-                    await licenseService.GetLicenseAsync(Document, Password);
+                    await licenseService.RegisterDeviceAsync(Document, Password);
                     await GoToAsync($"///{nameof(MainPage)}");
                 }
-                catch (LicenseRegisterException lre)
+                catch (LicenseNotFoundException lre)
                 {
-                    logger.Error(lre, "Erro ao registrar o dispositivo");
+                    logger.LogError(lre, "Erro ao registrar o dispositivo");
                     await DisplayErrorAsync(lre.Message);
                 }
                 catch (Exception exc)
                 {
-                    logger.Error(exc, "Erro ao registrar o dispositivo");
+                    logger.LogError(exc, "Erro ao registrar o dispositivo");
                     await DisplayErrorAsync(".: ERRO FATAL :. \n" + exc.Message);
                 }
             }

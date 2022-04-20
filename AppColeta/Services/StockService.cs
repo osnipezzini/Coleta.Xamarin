@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 using SOColeta.Data;
 using SOColeta.Models;
-
-using SOTech.Core.Services;
 
 using System;
 using System.Collections.Generic;
@@ -16,15 +15,15 @@ namespace SOColeta.Services
     public class StockService : IStockService
     {
         private readonly AppDbContext dbContext;
-        private readonly ILogger logger;
-        public StockService(AppDbContext dbContext, ILogger logger)
+        private readonly ILogger<StockService> logger;
+        public StockService(AppDbContext dbContext, ILogger<StockService> logger)
         {
             this.dbContext = dbContext;
             this.logger = logger;
         }
         public async Task AddColeta(Coleta coleta)
         {
-            logger.Debug("Verificando coleta já existente...");
+            logger.LogDebug("Verificando coleta já existente...");
             var coletaOld = await dbContext.Coletas
                 .Where(x => x.InventarioId == coleta.InventarioId)
                 .Where(x => x.Codigo == coleta.Codigo)
@@ -37,17 +36,17 @@ namespace SOColeta.Services
 
             if (coletaOld != null)
             {
-                logger.Debug("Atualizando coleta...");
+                logger.LogDebug("Atualizando coleta...");
                 coletaOld.Quantidade = coleta.Quantidade;
                 coletaOld.Hora = coleta.Hora;
                 dbContext.Coletas.Update(coletaOld);
             }
             else
             {
-                logger.Debug("Adicionando coleta...");
+                logger.LogDebug("Adicionando coleta...");
                 dbContext.Coletas.Add(coleta);
             }
-            logger.Debug("Salvando alterações na coleta existente...");
+            logger.LogDebug("Salvando alterações na coleta existente...");
             await dbContext.SaveChangesAsync();
         }
 
@@ -74,7 +73,7 @@ namespace SOColeta.Services
 
         public async Task FinishInventario()
         {
-            logger.Debug("Buscando inventario aberto...");
+            logger.LogDebug("Buscando inventario aberto...");
             var inventario = await dbContext.Inventarios
                 .Where(i => !i.IsFinished)
                 .FirstOrDefaultAsync();
@@ -105,9 +104,9 @@ namespace SOColeta.Services
             }
             else if (coletas is null)
             {
-                logger.Error($"Não foram encontradas coletas para o inventário: {id}");
+                logger.LogError($"Não foram encontradas coletas para o inventário: {id}");
                 throw new ArgumentOutOfRangeException($"Não foram encontradas coletas para o inventário: {id}");
-            }    
+            }
 
             foreach (var coleta in coletas)
                 yield return coleta;
@@ -115,7 +114,7 @@ namespace SOColeta.Services
 
         public async IAsyncEnumerable<Inventario> GetFinishedInventarios()
         {
-            logger.Debug("Buscando inventarios finalizados...");
+            logger.LogDebug("Buscando inventarios finalizados...");
             var inventarios = dbContext.Inventarios
                 .Where(x => x.IsFinished)
                 .ToArrayAsync();
@@ -131,7 +130,7 @@ namespace SOColeta.Services
 
         public async Task<bool> InventarioHasColeta()
         {
-            logger.Debug("Verificando inventário em aberto e se o mesmo possui coletas...");
+            logger.LogDebug("Verificando inventário em aberto e se o mesmo possui coletas...");
             return await dbContext.Inventarios
                 .Include(x => x.ProdutosColetados)
                 .Where(i => !i.IsFinished && i.ProdutosColetados.Any())
