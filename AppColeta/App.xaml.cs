@@ -4,13 +4,17 @@ using SOColeta.Data;
 
 using SOCore.Services;
 
+using System;
+
 namespace SOColeta
 {
     public partial class App
     {
         public App()
         {
-
+#if DEBUG
+            Environment.SetEnvironmentVariable("SOTECHDEV", "1");
+#endif
             InitializeComponent();
             Module.Init();
 
