@@ -24,7 +24,7 @@ namespace SOColeta
             if (args.Current.Location.OriginalString == "///LicensePage")
                 return;
 
-            if (!licenseService.HasLicense)
+            if (!licenseService.HasLicense || !licenseService.IsValid)
                 await GoToAsync("///LicensePage");
         }
     }

@@ -42,7 +42,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.22" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.AppCenter.Crash" Version="1.2.1" />
-		<PackageReference Include="SOCore" Version="0.0.5" />
+		<PackageReference Include="SOCore" Version="0.0.10" />
 		<PackageReference Include="SOTech.Mvvm" Version="2.5.16" />
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.0" />
 		<PackageReference Include="Xamarin.Forms" Version="5.0.0.2401" />

@@ -44,5 +44,11 @@ namespace SOColeta.Views
         {
             TextPassword.Focus();
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            viewModel.OnAppearing();
+        }
     }
 }

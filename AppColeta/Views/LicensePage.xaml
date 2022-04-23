@@ -14,7 +14,7 @@
                 <Label Padding="15" TextColor="{StaticResource SOHigh}">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Para usar esse aplicativo é obrigatório efetuar o licenciamento."/>
+                            <Span Text="{Binding Message}"/>
                             <Span Text="{x:Static system:Environment.NewLine}"/>
                             <Span Text="{x:Static system:Environment.NewLine}"/>
                             <Span Text="Informe os dados fornecidos por seu gestor para registrar o aplicativo no seu dispositivo!"/>
