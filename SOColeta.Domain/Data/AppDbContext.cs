@@ -42,7 +42,9 @@ public class AppDbContext : DbContext
         conn.Open();
         var version = conn.PostgreSqlVersion;
 
-        optionsBuilder.UseNpgsql(database.ConnectionString, opt => opt.SetPostgresVersion(version));
+        var db = database.Clone();
+        db.Name = "socoleta";
+        optionsBuilder.UseNpgsql(db.ConnectionString, opt => opt.SetPostgresVersion(version));
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.LogTo(msg =>
         {
