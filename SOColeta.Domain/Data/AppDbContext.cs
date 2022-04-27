@@ -19,7 +19,7 @@ public class AppDbContext : DbContext
     private readonly ISOHelper helper;
     private readonly Database database;
     #region Construtores
-    public AppDbContext([NotNull] DbContextOptions dbContextOptions, ILogger<AppDbContext> logger, 
+    public AppDbContext([NotNull] DbContextOptions dbContextOptions, ILogger<AppDbContext> logger,
         ISOHelper helper, IOptions<Database> options)
         : base(dbContextOptions)
     {
@@ -44,7 +44,11 @@ public class AppDbContext : DbContext
 
         var db = database.Clone();
         db.Name = "socoleta";
-        optionsBuilder.UseNpgsql(db.ConnectionString, opt => opt.SetPostgresVersion(version));
+        optionsBuilder.UseNpgsql(db.ConnectionString, opt =>
+        {
+            opt.SetPostgresVersion(version);
+            opt.MigrationsAssembly("SOColeta.Server");
+        });
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.LogTo(msg =>
         {

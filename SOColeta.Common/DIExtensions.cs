@@ -6,9 +6,8 @@ namespace SOColeta.Common;
 
 public static class DIExtensions
 {
-    public static IServiceCollection ConfigureCommon(this IServiceCollection serviceCollection)
+    public static void ConfigureCommon(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<IUserConnectionManager, UserConnectionManager>();
-        return serviceCollection;
     }
 }
