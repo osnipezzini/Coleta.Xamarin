@@ -7,8 +7,13 @@ using SOColeta.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
+using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace SOColeta.Services
 {
@@ -56,8 +61,8 @@ namespace SOColeta.Services
             var inventario = new Inventario
             {
                 Id = id,
-                DataCriacao = DateTime.Today,
-                NomeArquivo = $"Inventario-{DateTime.Today.ToString("ddMMyyyyHHmm")}.txt",
+                DataCriacao = DateTime.Now,
+                NomeArquivo = $"Inventario-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt",
                 IsFinished = false
             };
             dbContext.Inventarios.Add(inventario);
@@ -159,6 +164,90 @@ namespace SOColeta.Services
         public Task<Inventario> GetOpenedInventario()
         {
             return dbContext.Inventarios.FirstOrDefaultAsync(x => !x.IsFinished);
+        }
+        private async Task ExportAutoSystem(Inventario inventario)
+        {
+            var arquivo = string.Empty;
+            var arquivoString = string.Empty;
+            var tipoInventario = await Shell
+                .Current
+                .DisplayActionSheet("Selecione o modelo do coletor", "Cancelar", null, Enum.GetNames(typeof(TipoASColeta)));
+
+            if (!Enum.TryParse<TipoASColeta>(tipoInventario, out var tipoSistema))
+                return;
+
+            switch (tipoSistema)
+            {
+                case TipoASColeta.CipherLab:
+                    {
+                        var nomeArquivo = $"Inventario_Opticon_{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}.txt";
+                        arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nomeArquivo);
+                        await foreach (var coleta in GetColetasAsync(inventario.Id))
+                        {
+                            var quantidade = Convert.ToInt32(coleta.Quantidade).ToString().PadLeft(6, '0');
+                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{quantidade}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                            if (linhaString.Length == 44)
+                                arquivoString += linhaString;
+                        }
+                        break;
+                    }
+                case TipoASColeta.Opticon:
+                    {
+                        var nomeArquivo = $"Inventario_CipherLab_{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}.txt";
+                        arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nomeArquivo);
+                        await foreach (var coleta in GetColetasAsync(inventario.Id))
+                        {
+                            var quantidade = Regex.Replace(coleta.Quantidade.ToString("N3"), @"[^0-9]", string.Empty).PadLeft(9, '0');
+                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{quantidade}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                            if (linhaString.Length == 47)
+                                arquivoString += linhaString;
+                        }
+                        break;
+                    }
+                default:
+                    break;
+            }
+            await ExportFile(arquivo, arquivoString);
+        }
+        private Task ExportFile(string filename, string content)
+        {
+            File.WriteAllText(filename, content);
+            return Share.RequestAsync(new ShareFileRequest
+            {
+                Title = "Arquivo de inventário",
+                File = new ShareFile(filename)
+            });
+        }
+        private async Task ExportEmsys(Inventario inventario)
+        {
+            var arquivo = string.Empty;
+            var arquivoString = string.Empty;
+            await foreach (var coleta in GetColetasAsync(inventario.Id))
+                if (coleta.Codigo.Length < 20)
+                    arquivoString += $"{coleta.Codigo};{coleta.Quantidade}\n";
+
+            await ExportFile(arquivo, arquivoString);
+        }
+        public async Task ExportInventario(Inventario inventario)
+        {
+            var tipoInventario = await Shell
+                .Current
+                .DisplayActionSheet("Selecione o sistema para exportação", "Cancelar", null, Enum.GetNames(typeof(TipoSistema)));
+
+            if (!Enum.TryParse<TipoSistema>(tipoInventario, out var tipoSistema))
+                return;
+
+            switch (tipoSistema)
+            {
+                case TipoSistema.EMSys:
+                    await ExportEmsys(inventario);
+                    break;
+                case TipoSistema.AutoSystem:
+                    await ExportAutoSystem(inventario);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

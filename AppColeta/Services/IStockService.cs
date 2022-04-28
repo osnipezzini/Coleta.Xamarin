@@ -17,5 +17,6 @@ namespace SOColeta.Services
         IAsyncEnumerable<Inventario> GetFinishedInventarios();
         Task<Produto> GetProduto(string barcode);
         Task AddProduto(Produto produto);
+        Task ExportInventario(Inventario inventario);
     }
 }

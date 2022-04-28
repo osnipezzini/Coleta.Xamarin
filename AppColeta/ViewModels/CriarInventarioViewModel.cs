@@ -72,6 +72,7 @@ namespace SOColeta.ViewModels
                 }
                 finally
                 {
+                    inventario = null;
                     await OnAppearing();
                 }
             }
