@@ -2,7 +2,9 @@
 
 using SOColeta.Data;
 
-using SOTech.Core.Services;
+using SOCore.Services;
+
+using System;
 
 namespace SOColeta
 {
@@ -10,7 +12,9 @@ namespace SOColeta
     {
         public App()
         {
-
+#if DEBUG
+            Environment.SetEnvironmentVariable("SOTECHDEV", "1");
+#endif
             InitializeComponent();
             Module.Init();
 
@@ -27,7 +31,7 @@ namespace SOColeta
         {
             var licService = Module.GetService<ILicenseService>();
             if (licService != null && licService.HasLicense)
-                await licService.ValidateAsync();
+                await licService.ValidateDeviceAsync();
         }
 
         protected override void OnResume()

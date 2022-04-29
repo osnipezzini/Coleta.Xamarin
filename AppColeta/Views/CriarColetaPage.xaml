@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<mvvm:SOTechPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
-             xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
              xmlns:fonts="clr-namespace:SOTech.Mvvm.Fonts;assembly=SOTech.Mvvm"
              x:Class="SOColeta.Views.CriarColetaPage"
              Shell.PresentationMode="ModalAnimated"
@@ -81,4 +80,4 @@
             <Button Text="Terminar" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" VerticalOptions="End"/>
         </StackLayout>
     </ContentPage.Content>
-</mvvm:SOTechPage>
+</ContentPage>

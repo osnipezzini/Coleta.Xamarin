@@ -1,6 +1,6 @@
 ﻿using Android.App;
 
-using SOTech.Core;
+using SOCore;
 
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -37,8 +37,5 @@ using System.Runtime.InteropServices;
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
 [assembly: UsesPermission(Android.Manifest.Permission.Flashlight)]
 
-[assembly: SOTechApplication(SOColeta.Module.AppId, SOColeta.Module.AppName, 
-    AppCenterKey = SOColeta.Module.AppCenter, 
-    EnableAppCenterAnalytics = true,
-    EnableAppCenterLogging = true,
-    NeedLicense = true)]
+[assembly: SOApplication(SOColeta.Module.AppId, 
+    AppName = SOColeta.Module.AppName)]

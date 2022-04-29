@@ -1,6 +1,6 @@
 ﻿using SOColeta.Views;
 
-using SOTech.Core.Services;
+using SOCore.Services;
 
 using Xamarin.Forms;
 
@@ -24,7 +24,7 @@ namespace SOColeta
             if (args.Current.Location.OriginalString == "///LicensePage")
                 return;
 
-            if (!licenseService.HasLicense)
+            if (!licenseService.HasLicense || !licenseService.IsValid)
                 await GoToAsync("///LicensePage");
         }
     }

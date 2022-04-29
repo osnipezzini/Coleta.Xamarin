@@ -1,4 +1,6 @@
-﻿using SOColeta.Models;
+﻿using Microsoft.Extensions.Logging;
+
+using SOColeta.Models;
 using SOColeta.Services;
 
 using SOTech.Mvvm;
@@ -19,15 +21,17 @@ namespace SOColeta.ViewModels
         private string filename;
         private FileResult fullpath;
         private readonly IStockService stockService;
+        private readonly ILogger<ImportFileViewModel> logger;
 
         public Command ChooseFileCommand { get; }
         public Command StartImportCommand { get; }
-        public ImportFileViewModel(IStockService stockService)
+        public ImportFileViewModel(IStockService stockService, ILogger<ImportFileViewModel> logger)
         {
             Title = "Importar arquivo";
             ChooseFileCommand = new Command(async () => await PickAndShow());
             StartImportCommand = new Command(async () => await ImportFile());
             this.stockService = stockService;
+            this.logger = logger;
         }
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
 
@@ -58,7 +62,7 @@ namespace SOColeta.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Erro ao importar arquivo de inventario!");
+                logger.LogError(ex, "Erro ao importar arquivo de inventario!");
             }
             return false;
         }

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SOColeta.Views.TipoColetorView"
+             Shell.PresentationMode="ModalAnimated">
+  <ContentView.Content>
+      <StackLayout>
+          <Label Text="Selecione o modelo do coletor a ser usado!" />
+            <Button Text="Opticon (Suporta casas decimais)" Clicked="SelectedOpticon"/>
+            <Button Text="CipherLab (Não suporta casas decimais)" Clicked="SelectedCipherLab"/>
+        </StackLayout>
+  </ContentView.Content>
+</ContentView>

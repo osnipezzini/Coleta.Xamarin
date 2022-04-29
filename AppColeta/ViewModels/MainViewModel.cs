@@ -1,4 +1,4 @@
-﻿using SOTech.Core.Services;
+﻿using SOCore.Services;
 using SOTech.Mvvm;
 
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace SOColeta.ViewModels
         {            
             try
             {
-                LicenseFooter = "Sistema licenciado para: " + LicenseService.Instance.License.ClientName;
+                LicenseFooter = "Sistema licenciado para: " + licenseService.License.ClientName;
             }
             catch
             {

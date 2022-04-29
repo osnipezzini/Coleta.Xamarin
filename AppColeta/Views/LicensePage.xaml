@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:SOColeta.ViewModels"
              xmlns:system="clr-namespace:System;assembly=netstandard"
              Shell.FlyoutBehavior="Disabled"
              Shell.NavBarIsVisible="False"
@@ -15,7 +14,7 @@
                 <Label Padding="15" TextColor="{StaticResource SOHigh}">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Para usar esse aplicativo é obrigatório efetuar o licenciamento."/>
+                            <Span Text="{Binding Message}"/>
                             <Span Text="{x:Static system:Environment.NewLine}"/>
                             <Span Text="{x:Static system:Environment.NewLine}"/>
                             <Span Text="Informe os dados fornecidos por seu gestor para registrar o aplicativo no seu dispositivo!"/>
