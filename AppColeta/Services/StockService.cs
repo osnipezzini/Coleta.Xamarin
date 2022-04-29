@@ -41,8 +41,18 @@ namespace SOColeta.Services
 
             if (coletaOld != null)
             {
+                var update = await Shell.Current
+                    .DisplayActionSheet("Já existe uma coleta desse produto nesse inventário, o que deseja fazer ?", "Cancelar", null, "Somar", "Substituir");
+                if (update == "Somar")
+                    coletaOld.Quantidade += coleta.Quantidade;
+                else if (update == "Substituir")
+                    coletaOld.Quantidade = coleta.Quantidade;
+                else
+                {
+                    logger.LogDebug("Coleta cancelada!");
+                    return;
+                }
                 logger.LogDebug("Atualizando coleta...");
-                coletaOld.Quantidade = coleta.Quantidade;
                 coletaOld.Hora = coleta.Hora;
                 dbContext.Coletas.Update(coletaOld);
             }
