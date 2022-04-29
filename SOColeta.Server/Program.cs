@@ -11,7 +11,7 @@ builder.Services.AddSOCore();
 builder.Services.ConfigureCommon();
 builder.Services.ConfigureDomain();
 builder.Services.Configure<Database>(options => builder.Configuration.GetSection("Database").Bind(options));
-
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -24,7 +24,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 }
 app.UseStaticFiles();
-
-app.UseRouting();
+app.UseDomain();
+app.MapControllers();
 
 app.Run();
