@@ -17,7 +17,7 @@ public class Inventario : ObservableObject
     public DateTime DataCriacao { get => dataCriacao; set => SetProperty(ref dataCriacao, value); }
     public bool IsValid { get => isValid; set => SetProperty(ref isValid, value); }
     public bool IsInserted { get => isInserted; set => SetProperty(ref isInserted, value); }
-    public List<Coleta> ProdutosColetados { get; set; }
+    public List<Coleta>? ProdutosColetados { get; set; }
     public string Device { get; set; }
     public long Empresa { get => empresa; set => SetProperty(ref empresa, value); }
 }

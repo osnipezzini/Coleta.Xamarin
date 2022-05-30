@@ -53,6 +53,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\SOColeta.Common\SOColeta.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Views\TipoColetorView.xaml.cs">
 	    <DependentUpon>TipoColetorView.xaml</DependentUpon>
 	  </Compile>

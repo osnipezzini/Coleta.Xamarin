@@ -1,5 +1,7 @@
 ﻿using SOCore.Models;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace SOColeta.Common.Models;
 
 public class Coleta : ObservableObject
@@ -22,7 +24,8 @@ public class Coleta : ObservableObject
     public Product Produto { get => product; set => SetProperty(ref product, value); }
     public DateTime HoraColeta { get => horaColeta; set => SetProperty(ref horaColeta, value); }
     public int InventarioId { get => inventarioId; set => SetProperty(ref inventarioId, value); }
-    public Inventario Inventario { get => inventario; set => SetProperty(ref inventario, value); }
+    [Required]
+    public Inventario? Inventario { get => inventario; set => SetProperty(ref inventario, value); }
     #endregion
     #region Construtores
     public Coleta()

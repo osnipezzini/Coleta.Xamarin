@@ -1,4 +1,4 @@
-﻿var filename = @"C:\Users\osnip\OneDrive\Área de Trabalho\inventario.txt";
+﻿/*var filename = @"C:\Users\osnip\OneDrive\Área de Trabalho\inventario.txt";
 
 var arquivoString = string.Empty;
 
@@ -14,4 +14,11 @@ foreach (var line in File.ReadAllLines(filename))
 }
 
 Console.WriteLine(arquivoString);
-File.WriteAllText(arquivo, arquivoString);
+File.WriteAllText(arquivo, arquivoString);*/
+
+using System.Text.RegularExpressions;
+
+var linha = "@le$ss@ndr@";
+Console.WriteLine(linha);
+var linhaLimpa = Regex.Replace(linha, @"[^0-9A-Za-z]", string.Empty);
+Console.WriteLine(linhaLimpa);
