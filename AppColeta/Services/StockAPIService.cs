@@ -1,7 +1,11 @@
-﻿using Microsoft.AppCenter.Crashes;
+﻿using AutoMapper;
+
+using Microsoft.AppCenter.Crashes;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using SOColeta.Common.Exceptions;
+using SOColeta.Data;
 using SOColeta.Models;
 
 using SOCore.Utils;
@@ -23,11 +27,16 @@ namespace SOColeta.Services
     {
         private readonly HttpClient httpClient;
         private readonly ILogger<StockAPIService> logger;
+        private readonly AppDbContext dbContext;
+        private readonly IMapper mapper;
 
-        public StockAPIService(HttpClient httpClient, ILogger<StockAPIService> logger)
+        public StockAPIService(HttpClient httpClient, ILogger<StockAPIService> logger, 
+            AppDbContext dbContext, IMapper mapper)
         {
             this.httpClient = httpClient;
             this.logger = logger;
+            this.dbContext = dbContext;
+            this.mapper = mapper;
         }
         public async Task AddColeta(Coleta coleta)
         {
@@ -119,15 +128,19 @@ namespace SOColeta.Services
             }
         }
 
-        public async Task<Inventario> CreateInventario()
-        {
-            string message = "";
-            string path = "/api/inventarios";
+        public Task<Inventario> CreateInventario()
+        {            
             Common.Models.Inventario inventario = new()
             {
                 DataCriacao = DateTime.Now,
                 Device = SOHelper.Serial
             };
+            return CreateInventario(inventario);
+        }
+        public async Task<Inventario> CreateInventario(Common.Models.Inventario inventario)
+        {
+            string message = "";
+            string path = "/api/inventarios";
             string json = JsonSerializer.Serialize(inventario);
             try
             {
@@ -522,6 +535,48 @@ namespace SOColeta.Services
                 logger.LogDebug($"Data: {json}");
                 logger.LogDebug("------------------------------------------------------------------");
                 throw new StockAPIException(e.Message, e);
+            }
+        }
+
+        public async Task SyncData()
+        {
+            var inventarios = await dbContext.Inventarios
+                .ToArrayAsync();
+            var coletas = await dbContext.Coletas.ToArrayAsync();
+
+            try
+            {
+                foreach (var inventario in inventarios)
+                {
+                    await CreateInventario(mapper.Map<Common.Models.Inventario>(inventario));
+                    dbContext.Inventarios.Remove(inventario);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            try
+            {
+                foreach (var coleta in coletas)
+                {
+                    await AddColeta(coleta);
+                    dbContext.Coletas.Remove(coleta);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
             }
         }
     }

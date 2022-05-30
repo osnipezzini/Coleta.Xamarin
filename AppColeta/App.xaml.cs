@@ -1,16 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using SOColeta.Data;
+using SOColeta.Services;
 
 using SOCore.Services;
 
 using System;
+using System.Threading.Tasks;
+
+using Xamarin.Forms;
 
 namespace SOColeta
 {
     public partial class App
     {
-        public App()
+        public App(IStockService stockService)
         {
 #if DEBUG
             Environment.SetEnvironmentVariable("SOTECHDEV", "1");
@@ -26,12 +30,24 @@ namespace SOColeta
 
         protected override void OnStart()
         {
+            
         }
         protected override async void OnSleep()
         {
             var licService = Module.GetService<ILicenseService>();
             if (licService != null && licService.HasLicense)
                 await licService.ValidateDeviceAsync();
+
+            Device.StartTimer(new TimeSpan(0, 5, 0), () =>
+            {
+                Task.Factory.StartNew(async () =>
+                {
+                    var stockService = Module.GetService<IStockService>();
+                    await stockService.SyncData();
+                });
+               
+                return true;
+            });
         }
 
         protected override void OnResume()

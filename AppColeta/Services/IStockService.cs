@@ -8,6 +8,7 @@ namespace SOColeta.Services
     public interface IStockService
     {
         Task<Inventario> CreateInventario();
+        Task<Inventario> CreateInventario(Common.Models.Inventario inventario);
         Task<bool> InventarioHasColeta();
         Task<Inventario> GetOpenedInventario();
         IAsyncEnumerable<Coleta> GetColetasAsync(string id = default);
@@ -18,5 +19,6 @@ namespace SOColeta.Services
         Task<Produto> GetProduto(string barcode);
         Task AddProduto(Produto produto);
         Task ExportInventario(Inventario inventario);
+        Task SyncData();
     }
 }
