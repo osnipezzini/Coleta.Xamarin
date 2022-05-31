@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SOColeta.Domain.Data;
@@ -11,9 +12,10 @@ using SOColeta.Domain.Data;
 namespace SOColeta.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220531003959_AddSchemaSoColeta")]
+    partial class AddSchemaSoColeta
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,15 +55,15 @@ namespace SOColeta.Server.Migrations
                         .HasColumnName("quantidade");
 
                     b.HasKey("Id")
-                        .HasName("pk_socoleta_coletas");
+                        .HasName("pk_sotech_socoleta_coleta");
 
                     b.HasIndex("InventarioId")
-                        .HasDatabaseName("ix_socoleta_coletas_inventario_id");
+                        .HasDatabaseName("ix_sotech_socoleta_coleta_inventario_id");
 
                     b.HasIndex("ProdutoId")
-                        .HasDatabaseName("ix_socoleta_coletas_produto_id");
+                        .HasDatabaseName("ix_sotech_socoleta_coleta_produto_id");
 
-                    b.ToTable("socoleta_coletas", "sotech");
+                    b.ToTable("sotech.socoleta_coleta");
                 });
 
             modelBuilder.Entity("SOColeta.Common.Models.Inventario", b =>
@@ -100,9 +102,9 @@ namespace SOColeta.Server.Migrations
                         .HasColumnName("nome_arquivo");
 
                     b.HasKey("Id")
-                        .HasName("pk_socoleta_inventarios");
+                        .HasName("pk_inventarios");
 
-                    b.ToTable("socoleta_inventarios", "sotech");
+                    b.ToTable("inventarios", (string)null);
                 });
 
             modelBuilder.Entity("SOColeta.Common.Models.Product", b =>
@@ -153,9 +155,9 @@ namespace SOColeta.Server.Migrations
                         .HasColumnName("sale_price");
 
                     b.HasKey("Id")
-                        .HasName("pk_socoleta_products");
+                        .HasName("pk_products");
 
-                    b.ToTable("socoleta_products", "sotech");
+                    b.ToTable("products", (string)null);
                 });
 
             modelBuilder.Entity("SOColeta.Common.Models.Coleta", b =>
@@ -165,12 +167,12 @@ namespace SOColeta.Server.Migrations
                         .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_socoleta_coletas_socoleta_inventarios_inventario_id");
+                        .HasConstraintName("fk_sotech_socoleta_coleta_inventarios_inventario_id");
 
                     b.HasOne("SOColeta.Common.Models.Product", "Produto")
                         .WithMany()
                         .HasForeignKey("ProdutoId")
-                        .HasConstraintName("fk_socoleta_coletas_socoleta_products_produto_id");
+                        .HasConstraintName("fk_sotech_socoleta_coleta_products_produto_id");
 
                     b.Navigation("Inventario");
 

@@ -1,9 +1,11 @@
 ﻿using SOColeta.Common.DataModels;
 
 using SOCore.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SOColeta.Common.Models;
 
+[Table("socoleta_products", Schema = "sotech")]
 public class Product : ObservableObject
 {
     #region Variáveis privadas

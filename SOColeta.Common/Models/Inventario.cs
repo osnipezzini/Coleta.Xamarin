@@ -1,7 +1,9 @@
 ﻿using SOCore.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SOColeta.Common.Models;
 
+[Table("socoleta_inventarios", Schema = "sotech")]
 public class Inventario : ObservableObject
 {
     #region Variáveis privadas
