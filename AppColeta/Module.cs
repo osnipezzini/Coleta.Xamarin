@@ -13,8 +13,11 @@ using SOColeta.ViewModels;
 
 using SOCore;
 
+using SOColeta.Common;
+
 using System;
-using System.Collections.ObjectModel;
+using AutoMapper;
+using SOColeta.Profiles;
 
 namespace SOColeta
 {
@@ -30,6 +33,12 @@ namespace SOColeta
         private static IServiceProvider ServiceProvider => serviceProvider;
         public static void Init()
         {
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new StockProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
             AppCenter.Start(AppCenterKey, typeof(Analytics), typeof(Crashes));
             _services = new ServiceCollection();
 
@@ -62,8 +71,10 @@ namespace SOColeta
             #endregion
 
             #region Serviços
+            _services.ConfigureCommon();
+            _services.AddSingleton(mapper);
             _services.AddDbContext<AppDbContext>();
-            _services.AddScoped<IStockService, StockService>();
+            _services.AddScoped<IStockService, StockAPIService>();
 _services.AddLogging();
 
 #endregion
