@@ -259,5 +259,15 @@ namespace SOColeta.Services
                     break;
             }
         }
+
+        public Task<Inventario> CreateInventario(Common.Models.Inventario inventario)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SyncData()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
