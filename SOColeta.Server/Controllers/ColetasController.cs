@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using SOColeta.Common.DataModels;
@@ -19,7 +19,7 @@ public class ColetasController : ControllerBase
         this.coletaService = coletaService;
         this.logger = logger;
     }
-
+    [AllowAnonymous]
     [HttpGet("{codigo}/{inventario}")]
     public async Task<IActionResult> GetColeta(string codigo, int inventario)
     {
@@ -27,6 +27,7 @@ public class ColetasController : ControllerBase
 
         return Ok(coleta);
     }
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> AdicionarColeta(ColetaModel model)
     {

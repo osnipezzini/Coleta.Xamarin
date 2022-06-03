@@ -367,19 +367,21 @@ namespace SOColeta.Services
         public async Task<Inventario> GetOpenedInventario()
         {
             string message = "";
-            string path = $"/api/inventarios/open?device={SOHelper.Serial}";
+            string path = $"/api/inventarios/{SOHelper.Serial}";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
                 logger.LogDebug($"Buscando inventário em aberto.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
-                HttpResponseMessage response = await httpClient.GetAsync(path);
+                var response = await httpClient.GetAsync(path);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
                         string responseText = await response.Content.ReadAsStringAsync();
                         return JsonSerializer.Deserialize<Inventario>(responseText);
+                    case HttpStatusCode.NoContent:
+                        return null;
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";
                         logger.LogError(message);

@@ -43,7 +43,6 @@ public class AppDbContext : DbContext
         var version = conn.PostgreSqlVersion;
 
         var db = database.Clone();
-        db.Name = "socoleta";
         optionsBuilder.UseNpgsql(db.ConnectionString, opt =>
         {
             opt.SetPostgresVersion(version);

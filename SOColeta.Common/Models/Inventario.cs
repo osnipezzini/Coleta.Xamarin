@@ -15,7 +15,7 @@ public class Inventario : ObservableObject
     private bool isInserted = false;
     #endregion
     public int Id { get => id; set => SetProperty(ref id, value); }
-    public string NomeArquivo { get => nomeDoArquivo; set => SetProperty(ref nomeDoArquivo, value); }
+    public string? NomeArquivo { get => nomeDoArquivo; set => SetProperty(ref nomeDoArquivo, value); }
     public DateTime DataCriacao { get => dataCriacao; set => SetProperty(ref dataCriacao, value); }
     public bool IsValid { get => isValid; set => SetProperty(ref isValid, value); }
     public bool IsInserted { get => isInserted; set => SetProperty(ref isInserted, value); }

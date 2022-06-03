@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using SOColeta.Common.DataModels;
 using SOColeta.Common.Models;
@@ -20,7 +21,7 @@ namespace SOColeta.Server.Controllers
             _logger = logger;
             this.stokService = stokService;
         }
-
+        [AllowAnonymous]
         [HttpGet("{serial}")]
         public async Task<IActionResult> GetInventario(string serial)
         {
@@ -28,6 +29,7 @@ namespace SOColeta.Server.Controllers
             try
             {
                 var inventario = await stokService.GetInventario(serial);
+                
                 return Ok(inventario);
             }
             catch (Exception e)
@@ -36,6 +38,7 @@ namespace SOColeta.Server.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, e.StackTrace);
             }
         }
+        [AllowAnonymous]
         [HttpPost("{inventarioId}/")]
         public async Task<IActionResult> LancarInventario(int inventarioId,
             [FromQuery] long? pessoa)
@@ -52,6 +55,7 @@ namespace SOColeta.Server.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, e.StackTrace);
             }
         }
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> BuscarInventarios([FromQuery] string inserted)
         {
@@ -66,6 +70,7 @@ namespace SOColeta.Server.Controllers
                 return Ok(e.Message);
             }
         }
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RegistrarInventario(Inventario inventario)
         {
@@ -80,6 +85,7 @@ namespace SOColeta.Server.Controllers
                 return Ok(e.Message);
             }
         }
+        [AllowAnonymous]
         [HttpPost("salvar")]
         public async Task<IActionResult> FinalizarInventario(InventarioModel model)
         {

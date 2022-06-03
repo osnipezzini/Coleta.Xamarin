@@ -14,7 +14,7 @@ namespace SOColeta
 {
     public partial class App
     {
-        public App(IStockService stockService)
+        public App()
         {
 #if DEBUG
             Environment.SetEnvironmentVariable("SOTECHDEV", "1");
@@ -28,9 +28,10 @@ namespace SOColeta
             MainPage = new AppShell();
         }
 
-        protected override void OnStart()
+        protected override async void OnStart()
         {
-            
+            var stockService = Module.GetService<IStockService>();
+            await stockService.SyncData();
         }
         protected override async void OnSleep()
         {

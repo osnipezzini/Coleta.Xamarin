@@ -18,6 +18,7 @@ using SOColeta.Common;
 using System;
 using AutoMapper;
 using SOColeta.Profiles;
+using System.Net.Http;
 
 namespace SOColeta
 {
@@ -75,6 +76,10 @@ namespace SOColeta
             _services.AddSingleton(mapper);
             _services.AddDbContext<AppDbContext>();
             _services.AddScoped<IStockService, StockAPIService>();
+            _services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri("http://hml.sotech.xyz:8001"),
+            });
 _services.AddLogging();
 
 #endregion

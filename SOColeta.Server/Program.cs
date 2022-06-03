@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SOColeta.Common;
 using SOColeta.Common.Models;
 using SOColeta.Domain;
+using SOColeta.Domain.Data;
 using SOColeta.Domain.Services;
 
 using SOCore;
