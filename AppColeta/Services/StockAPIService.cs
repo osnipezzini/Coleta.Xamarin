@@ -132,7 +132,7 @@ namespace SOColeta.Services
         {            
             Common.Models.Inventario inventario = new()
             {
-                DataCriacao = DateTime.Now,
+                DataCriacao = DateTime.UtcNow,
                 Device = SOHelper.Serial
             };
             return CreateInventario(inventario);
@@ -154,8 +154,12 @@ namespace SOColeta.Services
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        string responseText = await response.Content.ReadAsStringAsync();
+                        var responseText = await response.Content.ReadAsStringAsync();
                         return JsonSerializer.Deserialize<Inventario>(responseText);
+                    case HttpStatusCode.NoContent:
+                        message = $"O servidor não obteve sucesso ao criar o inventário : {path}";
+                        logger.LogError(message);
+                        throw new StockAPIException(message);
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";
                         logger.LogError(message);
@@ -468,6 +472,8 @@ namespace SOColeta.Services
                     case HttpStatusCode.OK:
                         string responseText = await response.Content.ReadAsStringAsync();
                         return JsonSerializer.Deserialize<bool>(responseText);
+                    case HttpStatusCode.NoContent:
+                        return false;
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";
                         logger.LogError(message);

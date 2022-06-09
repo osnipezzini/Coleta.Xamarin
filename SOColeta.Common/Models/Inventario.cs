@@ -9,8 +9,8 @@ public class Inventario : ObservableObject
     #region Variáveis privadas
     private int id;
     private long empresa;
-    private string nomeDoArquivo;
-    private DateTime dataCriacao = DateTime.Today;
+    private string? nomeDoArquivo;
+    private DateTime dataCriacao = DateTime.UtcNow;
     private bool isValid = false;
     private bool isInserted = false;
     #endregion

@@ -115,10 +115,16 @@ public class StokService : IStokService
     public async Task<InventarioModel> RegistrarInventario(Inventario inventario)
     {
         logger.LogDebug(JsonConvert.SerializeObject(inventario));
-        dbContext.Inventarios.Add(inventario);
-        await dbContext.SaveChangesAsync();
-
-        var model = new InventarioModel(inventario.Id, inventario.DataCriacao);
-        return model;
+        try
+        {
+            dbContext.Inventarios.Add(inventario);
+            await dbContext.SaveChangesAsync();
+            var model = new InventarioModel(inventario.Id, inventario.DataCriacao);
+            return model;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 }
