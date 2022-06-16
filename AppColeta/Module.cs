@@ -78,7 +78,7 @@ namespace SOColeta
             _services.AddScoped<IStockService, StockAPIService>();
             _services.AddScoped(sp => new HttpClient
             {
-                BaseAddress = new Uri("http://hml.sotech.xyz:8001"),
+                BaseAddress = new Uri("https://a3ec-2804-30c-90e-f800-702f-b3e4-2f88-19f1.sa.ngrok.io"),
             });
 _services.AddLogging();
 
