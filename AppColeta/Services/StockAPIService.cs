@@ -3,8 +3,8 @@
 using Microsoft.AppCenter.Crashes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-
 using SOColeta.Common.Exceptions;
+using SOColeta.Common.Models;
 using SOColeta.Data;
 using SOColeta.Models;
 
@@ -18,8 +18,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using Coleta = SOColeta.Models.Coleta;
-using Inventario = SOColeta.Models.Inventario;
+using Coleta = SOColeta.Common.Models.Coleta;
+using Inventario = SOColeta.Common.Models.Inventario;
 
 namespace SOColeta.Services
 {
@@ -41,7 +41,7 @@ namespace SOColeta.Services
         public async Task AddColeta(Coleta coleta)
         {
             string message = "";
-            string path = "/api/coletas";
+            string path = "/api/Coletas";
             string json = JsonSerializer.Serialize(coleta);
             try
             {
@@ -83,7 +83,7 @@ namespace SOColeta.Services
             }
         }
 
-        public async Task AddProduto(Produto produto)
+        public async Task AddProduto(Product produto)
         {
             string message = "";
             string path = "/api/produtos";
@@ -130,14 +130,14 @@ namespace SOColeta.Services
 
         public Task<Inventario> CreateInventario()
         {            
-            Common.Models.Inventario inventario = new()
+            Inventario inventario = new()
             {
                 DataCriacao = DateTime.UtcNow,
                 Device = SOHelper.Serial
             };
             return CreateInventario(inventario);
         }
-        public async Task<Inventario> CreateInventario(Common.Models.Inventario inventario)
+        public async Task<Inventario> CreateInventario(Inventario inventario)
         {
             string message = "";
             string path = "/api/inventarios";
@@ -274,11 +274,11 @@ namespace SOColeta.Services
             }
         }
 
-        public async IAsyncEnumerable<Coleta> GetColetasAsync(string id = null)
+        public async IAsyncEnumerable<Coleta> GetColetasAsync(Guid? guid = null)
         {
             List<Coleta> coletas = new();
             string message = "";
-            string path = $"/api/coletas?inventario={id}";
+            string path = $"/api/coletas?inventario={guid}";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
@@ -383,7 +383,7 @@ namespace SOColeta.Services
                 {
                     case HttpStatusCode.OK:
                         string responseText = await response.Content.ReadAsStringAsync();
-                        return JsonSerializer.Deserialize<Inventario>(responseText);
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<Inventario>(responseText);
                     case HttpStatusCode.NoContent:
                         return null;
                     case HttpStatusCode.NotFound:
@@ -413,7 +413,7 @@ namespace SOColeta.Services
             }
         }
 
-        public async Task<Produto> GetProduto(string barcode)
+        public async Task<Product> GetProduto(string barcode)
         {
             string message = "";
             string path = $"/api/produtos?barcode={barcode}";
@@ -428,7 +428,7 @@ namespace SOColeta.Services
                 {
                     case HttpStatusCode.OK:
                         string responseText = await response.Content.ReadAsStringAsync();
-                        return JsonSerializer.Deserialize<Produto>(responseText);
+                        return JsonSerializer.Deserialize<Product>(responseText);
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";
                         logger.LogError(message);
@@ -556,13 +556,16 @@ namespace SOColeta.Services
             {
                 foreach (var inventario in inventarios)
                 {
-                    await CreateInventario(mapper.Map<Common.Models.Inventario>(inventario));
+                    await CreateInventario(mapper.Map<Inventario>(inventario));
                     dbContext.Inventarios.Remove(inventario);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.LogDebug("------------------------------------------------------------------");
+                logger.LogDebug($"Error: {ex.Message}");
+                logger.LogDebug("------------------------------------------------------------------");
+                throw new StockAPIException(ex.Message, ex);
             }
 
             try
@@ -573,18 +576,24 @@ namespace SOColeta.Services
                     dbContext.Coletas.Remove(coleta);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.LogDebug("------------------------------------------------------------------");
+                logger.LogDebug($"Error: {ex.Message}");
+                logger.LogDebug("------------------------------------------------------------------");
+                throw new StockAPIException(ex.Message, ex);
             }
 
             try
             {
                 await dbContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.LogDebug("------------------------------------------------------------------");
+                logger.LogDebug($"Error: {ex.Message}");
+                logger.LogDebug("------------------------------------------------------------------");
+                throw new StockAPIException(ex.Message, ex);
             }
         }
     }

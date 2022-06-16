@@ -21,7 +21,7 @@ public class ColetasController : ControllerBase
     }
     [AllowAnonymous]
     [HttpGet("{codigo}/{inventario}")]
-    public async Task<IActionResult> GetColeta(string codigo, int inventario)
+    public async Task<IActionResult> GetColeta(string codigo, Guid? inventario)
     {
         var coleta = await coletaService.GetColeta(codigo, inventario);
 

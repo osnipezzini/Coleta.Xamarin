@@ -1,4 +1,4 @@
-﻿using SOColeta.Models;
+﻿using SOColeta.Common.Models;
 using SOColeta.Services;
 
 using SOTech.Mvvm;
@@ -17,8 +17,8 @@ namespace SOColeta.ViewModels
         private string codigo;
         private string quantidade;
         private string nome;
-        private double precoVenda;
-        private double precoCompra;
+        private double? precoVenda;
+        private double? precoCompra;
 
         private readonly IStockService stockService;
 
@@ -52,9 +52,9 @@ namespace SOColeta.ViewModels
 
             if (produto != null)
             {
-                PrecoCusto = produto.PrecoCusto;
-                Nome = produto.Nome;
-                PrecoVenda = produto.PrecoVenda;
+                PrecoCusto = produto.CostPrice;
+                Nome = produto.Name;
+                PrecoVenda = produto.SalePrice;
             }
         }
         private bool ValidateSave()
@@ -73,12 +73,12 @@ namespace SOColeta.ViewModels
             get => nome;
             set => SetProperty(ref nome, value);
         }
-        public double PrecoCusto
+        public double? PrecoCusto
         {
             get => precoCompra;
             set => SetProperty(ref precoCompra, value);
         }
-        public double PrecoVenda
+        public double? PrecoVenda
         {
             get => precoVenda;
             set => SetProperty(ref precoVenda, value);
@@ -89,7 +89,8 @@ namespace SOColeta.ViewModels
             get => quantidade;
             set => SetProperty(ref quantidade, value);
         }
-        public string InventarioId { get; set; }
+        public int? InventarioId { get; set; }
+        public Guid? InventarioGuid { get; set; }
         public event FinishedReadCodeDelegate OnFinishedReadCode;
 
         public Command SaveCommand { get; }
@@ -105,11 +106,11 @@ namespace SOColeta.ViewModels
 
         private async void OnSave()
         {
-            await stockService.AddColeta(new Coleta 
-            { 
-                Codigo = codigo, 
+            await stockService.AddColeta(new Coleta
+            {
+                Codigo = codigo,
                 Quantidade = double.Parse(quantidade),
-                InventarioId = InventarioId
+                InventarioGuid = InventarioGuid
             });
 
             Codigo = string.Empty;

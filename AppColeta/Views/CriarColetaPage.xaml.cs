@@ -1,4 +1,4 @@
-﻿using SOColeta.Models;
+﻿using SOColeta.Common.Models;
 using SOColeta.ViewModels;
 
 using System;

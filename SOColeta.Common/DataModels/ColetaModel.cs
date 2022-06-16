@@ -8,7 +8,7 @@ public class ColetaModel : ObservableObject
 {
     #region Váriaveis privadas
     private string barcode;
-    private int inventario;
+    private int? inventario;
     private long produtoId;
     private string produtoNome;
     private double quantity;
@@ -18,7 +18,7 @@ public class ColetaModel : ObservableObject
     private double? produtoSalePrice;
     private double? produtoCostPrice;
     private long produtoDeposito;
-    private int produtoCode;
+    private string produtoCode;
     #endregion
     #region Construtores
     public ColetaModel()
@@ -30,7 +30,7 @@ public class ColetaModel : ObservableObject
         Quantidade = coleta.Quantidade;
         Barcode = coleta.Codigo;
         Inventario = coleta.InventarioId;
-        ProdutoCode = coleta.Produto?.Code ?? 0;
+        ProdutoCode = coleta.Produto?.Code ?? "0";
         ProdutoCostPrice = coleta.Produto?.CostPrice;
         ProdutoSalePrice = coleta.Produto?.SalePrice;
         ProdutoDeposito = coleta.Produto?.Deposito ?? 0;
@@ -43,7 +43,7 @@ public class ColetaModel : ObservableObject
     #endregion
     #region Propriedades
     public string Barcode { get => barcode; set => SetProperty(ref barcode, value); }
-    public int Inventario { get => inventario; set => SetProperty(ref inventario, value); }
+    public int? Inventario { get => inventario; set => SetProperty(ref inventario, value); }
     public long ProdutoId { get => produtoId; set => SetProperty(ref produtoId, value); }
     public string ProdutoNome { get => produtoNome; set => SetProperty(ref produtoNome, value); }
     public double Quantidade { get => quantity; set => SetProperty(ref quantity, value); }
@@ -53,6 +53,6 @@ public class ColetaModel : ObservableObject
     public double? ProdutoSalePrice { get => produtoSalePrice; set => SetProperty(ref produtoSalePrice, value); }
     public double? ProdutoCostPrice { get => produtoCostPrice; set => SetProperty(ref produtoCostPrice, value); }
     public long ProdutoDeposito { get => produtoDeposito; set => SetProperty(ref produtoDeposito, value); }
-    public int ProdutoCode { get => produtoCode; set => SetProperty(ref produtoCode, value); }
+    public string ProdutoCode { get => produtoCode; set => SetProperty(ref produtoCode, value); }
     #endregion
 }

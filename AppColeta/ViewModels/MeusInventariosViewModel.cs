@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
-using SOColeta.Models;
+using SOColeta.Common.Models;
 using SOColeta.Services;
 
 using SOTech.Mvvm;
@@ -8,10 +7,7 @@ using SOTech.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
-
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SOColeta.ViewModels

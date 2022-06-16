@@ -6,5 +6,5 @@ namespace SOColeta.Common.Services;
 public interface IColetaService
 {
     Task<Coleta?> AddColeta(ColetaModel coletaModel);
-    Task<ColetaModel?> GetColeta(string codigo, int inventarioId);
+    Task<ColetaModel?> GetColeta(string codigo, Guid? inventarioGuid);
 }

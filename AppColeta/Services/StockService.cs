@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-
+using SOColeta.Common.Models;
 using SOColeta.Data;
 using SOColeta.Models;
 
@@ -34,10 +34,10 @@ namespace SOColeta.Services
                 .Where(x => x.Codigo == coleta.Codigo)
                 .FirstOrDefaultAsync();
 
-            if (string.IsNullOrEmpty(coleta.Id))
-                coleta.Id = Guid.NewGuid().ToString();
+            if (coleta.Guid == null)
+                coleta.Guid = Guid.NewGuid();
 
-            coleta.Hora = DateTime.Now;
+            coleta.HoraColeta = DateTime.UtcNow;
 
             if (coletaOld != null)
             {
@@ -53,7 +53,7 @@ namespace SOColeta.Services
                     return;
                 }
                 logger.LogDebug("Atualizando coleta...");
-                coletaOld.Hora = coleta.Hora;
+                coletaOld.HoraColeta = coleta.HoraColeta;
                 dbContext.Coletas.Update(coletaOld);
             }
             else
@@ -67,10 +67,10 @@ namespace SOColeta.Services
 
         public async Task<Inventario> CreateInventario()
         {
-            var id = Guid.NewGuid().ToString();
+            var guid = Guid.NewGuid();
             var inventario = new Inventario
             {
-                Id = id,
+                Guid = guid,
                 DataCriacao = DateTime.Now,
                 NomeArquivo = $"Inventario-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt",
                 IsFinished = false
@@ -80,7 +80,7 @@ namespace SOColeta.Services
             return inventario;
         }
 
-        public Task AddProduto(Produto produto)
+        public Task AddProduto(Product produto)
         {
             dbContext.Produtos.Add(produto);
             return dbContext.SaveChangesAsync();
@@ -98,29 +98,29 @@ namespace SOColeta.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public async IAsyncEnumerable<Coleta> GetColetasAsync(string id = default)
+        public async IAsyncEnumerable<Coleta> GetColetasAsync(Guid? guid = default)
         {
             Debug.WriteLine("Criando query de busca");
             var query = dbContext.Inventarios.AsQueryable();
-            if (string.IsNullOrEmpty(id))
+            if (guid == null)
                 query = query.Where(i => !i.IsFinished);
             else
-                query = query.Where(i => i.Id == id);
+                query = query.Where(i => i.Guid == guid);
             Debug.WriteLine("Buscando coletas");
             var coletas = await query
                 .Include(x => x.ProdutosColetados)
                 .Select(x => x.ProdutosColetados)
                 .FirstOrDefaultAsync();
 
-            if (coletas is null && string.IsNullOrEmpty(id))
+            if (coletas is null && guid == null)
             {
                 Debug.WriteLine("Não foram encontrados coletas");
                 yield break;
             }
             else if (coletas is null)
             {
-                logger.LogError($"Não foram encontradas coletas para o inventário: {id}");
-                throw new ArgumentOutOfRangeException($"Não foram encontradas coletas para o inventário: {id}");
+                logger.LogError($"Não foram encontradas coletas para o inventário: {guid}");
+                throw new ArgumentOutOfRangeException($"Não foram encontradas coletas para o inventário: {guid}");
             }
 
             foreach (var coleta in coletas)
@@ -138,9 +138,9 @@ namespace SOColeta.Services
                 yield return inventario;
         }
 
-        public Task<Produto> GetProduto(string barcode)
+        public Task<Product> GetProduto(string barcode)
         {
-            return dbContext.Produtos.FirstOrDefaultAsync(produto => produto.Codigo == barcode);
+            return dbContext.Produtos.FirstOrDefaultAsync(produto => produto.Code == barcode);
         }
 
         public async Task<bool> InventarioHasColeta()
@@ -154,10 +154,10 @@ namespace SOColeta.Services
 
         public async Task RemoveColeta(Coleta coleta)
         {
-            if (coleta == null && string.IsNullOrEmpty(coleta.Id))
+            if (coleta == null && coleta.Id == null)
                 throw new ArgumentNullException("Coleta não pode ser nula");
 
-            if (coleta.Inventario == null && string.IsNullOrEmpty(coleta.InventarioId))
+            if (coleta.Inventario == null && coleta.InventarioId == null)
                 throw new ArgumentNullException("Inventário não pode ser nulo ao remover uma coleta.");
 
             var coletaOld = await dbContext.Coletas
@@ -192,10 +192,10 @@ namespace SOColeta.Services
                     {
                         var nomeArquivo = $"Inventario_Opticon_{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}.txt";
                         arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nomeArquivo);
-                        await foreach (var coleta in GetColetasAsync(inventario.Id))
+                        await foreach (var coleta in GetColetasAsync(inventario.Guid))
                         {
                             var quantidade = Convert.ToInt32(coleta.Quantidade).ToString().PadLeft(6, '0');
-                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{quantidade}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{quantidade}0000000{coleta.HoraColeta.ToString("dd/MM/yyHH:mm:ss")}\n";
                             if (linhaString.Length == 44)
                                 arquivoString += linhaString;
                         }
@@ -205,10 +205,10 @@ namespace SOColeta.Services
                     {
                         var nomeArquivo = $"Inventario_CipherLab_{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}.txt";
                         arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nomeArquivo);
-                        await foreach (var coleta in GetColetasAsync(inventario.Id))
+                        await foreach (var coleta in GetColetasAsync(inventario.Guid))
                         {
                             var quantidade = Regex.Replace(coleta.Quantidade.ToString("N3"), @"[^0-9]", string.Empty).PadLeft(9, '0');
-                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{quantidade}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
+                            var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{quantidade}0000000{coleta.HoraColeta.ToString("dd/MM/yyHH:mm:ss")}\n";
                             if (linhaString.Length == 47)
                                 arquivoString += linhaString;
                         }
@@ -232,7 +232,7 @@ namespace SOColeta.Services
         {
             var arquivo = string.Empty;
             var arquivoString = string.Empty;
-            await foreach (var coleta in GetColetasAsync(inventario.Id))
+            await foreach (var coleta in GetColetasAsync(inventario.Guid))
                 if (coleta.Codigo.Length < 20)
                     arquivoString += $"{coleta.Codigo};{coleta.Quantidade}\n";
 

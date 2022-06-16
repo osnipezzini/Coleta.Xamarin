@@ -1,4 +1,4 @@
-﻿using SOColeta.Models;
+﻿using SOColeta.Common.Models;
 using SOColeta.ViewModels;
 
 using Xamarin.Forms;
@@ -20,7 +20,7 @@ namespace SOColeta.Views
         {
             base.OnAppearing();
             await viewModel.OnAppearing();
-            viewModel.SelectedItem = null;            
+            viewModel.SelectedItem = null;
         }
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)

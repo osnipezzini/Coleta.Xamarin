@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
-using SOColeta.Models;
+using SOColeta.Common.Models;
 using SOColeta.Services;
 
 using SOTech.Mvvm;
@@ -89,12 +88,12 @@ namespace SOColeta.ViewModels
                         if (reader.Length >= 3)
                             double.TryParse(reader[2].Replace('.', ','), out venda);
 
-                        await stockService.AddProduto(new Produto
+                        await stockService.AddProduto(new Product
                         {
-                            Codigo = reader[0],
-                            Nome = reader[1],
-                            PrecoVenda = venda,
-                            PrecoCusto = custo,
+                            Code = reader[0],
+                            Name = reader[1],
+                            SalePrice = venda,
+                            CostPrice = custo,
                         });
                     }
                     catch (Exception)

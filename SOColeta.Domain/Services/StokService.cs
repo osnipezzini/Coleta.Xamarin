@@ -46,7 +46,7 @@ public class StokService : IStokService
     {
         logger.LogDebug(JsonConvert.SerializeObject(model));
         var inventario = await dbContext.Inventarios
-            .Where(i => i.Id == model.Id)
+            .Where(i => i.Guid == model.Guid)
             .FirstOrDefaultAsync();
 
         if (inventario is null)
@@ -64,7 +64,7 @@ public class StokService : IStokService
         var inventario = await dbContext.Inventarios
                         .Where(i => !i.IsValid)
                         .Where(i => i.Device == serial)
-                        .Select(i => new InventarioModel(i.Id, i.DataCriacao))
+                        .Select(i => new InventarioModel(i.Guid, i.DataCriacao))
                         .FirstOrDefaultAsync();
         if (inventario != null)
         {
@@ -79,14 +79,14 @@ public class StokService : IStokService
         return inventario;
     }
 
-    public async Task LancarInventario(int inventarioId, long? pessoa)
+    public async Task LancarInventario(Guid? inventarioId, long? pessoa)
     {
         var query = "INSERT INTO coletor_web(inventario, produto, quantidade, ts, codigo)" +
                     " VALUES (@Inventario, @Produto, @Quantidade, @Ts, @Codigo);";
         var inventario = await dbContext.Inventarios
             .Include(c => c.ProdutosColetados)
             .ThenInclude(p => p.Produto)
-                .Where(i => i.Id == inventarioId)
+                .Where(i => i.Guid == inventarioId)
                 .FirstOrDefaultAsync();
 
         if (inventario is null)
@@ -119,7 +119,7 @@ public class StokService : IStokService
         {
             dbContext.Inventarios.Add(inventario);
             await dbContext.SaveChangesAsync();
-            var model = new InventarioModel(inventario.Id, inventario.DataCriacao);
+            var model = new InventarioModel(inventario.Guid, inventario.DataCriacao);
             return model;
         }
         catch (Exception ex)

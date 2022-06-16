@@ -39,13 +39,13 @@ namespace SOColeta.Server.Controllers
             }
         }
         [AllowAnonymous]
-        [HttpPost("{inventarioId}/")]
-        public async Task<IActionResult> LancarInventario(int inventarioId,
+        [HttpPost("{inventarioGuid}/")]
+        public async Task<IActionResult> LancarInventario(Guid? inventarioGuid,
             [FromQuery] long? pessoa)
         {
             try
             {
-                await stokService.LancarInventario(inventarioId, pessoa);
+                await stokService.LancarInventario(inventarioGuid, pessoa);
                 return Ok();
             }
             catch (Exception e)

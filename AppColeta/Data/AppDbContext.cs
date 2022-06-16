@@ -1,5 +1,5 @@
-﻿using SOColeta.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SOColeta.Common.Models;
 using Xamarin.Forms;
 
 namespace SOColeta.Data
@@ -8,7 +8,7 @@ namespace SOColeta.Data
     {
         public DbSet<Coleta> Coletas { get; set; }
         public DbSet<Inventario> Inventarios { get; set; }
-        public DbSet<Produto> Produtos { get; set; }
+        public DbSet<Product> Produtos { get; set; }
         public AppDbContext()
         {
             Database.EnsureCreated();

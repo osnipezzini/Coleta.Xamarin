@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
-using SOColeta.Models;
+using SOColeta.Common.Models;
 using SOColeta.Services;
 using SOColeta.Views;
 
@@ -88,10 +87,10 @@ namespace SOColeta.ViewModels
         {
             try
             {
-                if (string.IsNullOrEmpty(inventario.Id))
+                if (inventario.Guid == null)
                     return;
                 Coletas.Clear();
-                await foreach (var coleta in stockService.GetColetasAsync(inventario.Id))
+                await foreach (var coleta in stockService.GetColetasAsync(inventario.Guid))
                     if (coleta is not null)
                         Coletas.Add(coleta);
             }

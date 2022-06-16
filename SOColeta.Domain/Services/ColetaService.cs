@@ -93,10 +93,10 @@ namespace SOColeta.Domain.Services
             return coleta;
         }
 
-        public async Task<ColetaModel?> GetColeta(string codigo, int inventarioId)
+        public async Task<ColetaModel?> GetColeta(string codigo, Guid? inventarioGuid)
         {
             var coleta = await _dbContext.Coletas
-            .Where(c => c.Codigo == codigo && c.InventarioId == inventarioId)
+            .Where(c => c.Codigo == codigo && c.InventarioGuid == inventarioGuid)
             .Select(x => mapper.Map<ColetaModel>(x))
             .FirstOrDefaultAsync();
 
