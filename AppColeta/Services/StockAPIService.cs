@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SOColeta.Common.Exceptions;
 using SOColeta.Common.Models;
 using SOColeta.Data;
-using SOColeta.Models;
 
 using SOCore.Utils;
 
@@ -150,12 +149,12 @@ namespace SOColeta.Services
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug($"Data: {json}");
                 logger.LogDebug("------------------------------------------------------------------");
-                HttpResponseMessage response = await httpClient.PostAsync(path, httpContent);
+                var response = await httpClient.PostAsync<Inventario>(path, inventario);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var responseText = await response.Content.ReadAsStringAsync();
-                        return JsonSerializer.Deserialize<Inventario>(responseText);
+                        var responseString = response.Value;
+                        return responseString;
                     case HttpStatusCode.NoContent:
                         message = $"O servidor não obteve sucesso ao criar o inventário : {path}";
                         logger.LogError(message);
