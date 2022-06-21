@@ -11,7 +11,7 @@ using Xamarin.Forms;
 namespace SOColeta.ViewModels
 {
     public delegate void FinishedReadCodeDelegate(object sender, EventArgs e);
-    [QueryProperty(nameof(InventarioId), nameof(InventarioId))]
+    [QueryProperty(nameof(InventarioGuid), nameof(InventarioGuid))]
     public class CriarColetaViewModel : ViewModelBase
     {
         private string codigo;
