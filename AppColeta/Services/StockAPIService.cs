@@ -143,7 +143,6 @@ namespace SOColeta.Services
             string json = JsonSerializer.Serialize(inventario);
             try
             {
-                StringContent httpContent = new(json, Encoding.Default, "application/json");
                 logger.LogDebug("------------------------------------------------------------------");
                 logger.LogDebug($"Enviando requisição para salvar o produto.");
                 logger.LogDebug($"Path: {path}");
@@ -153,8 +152,7 @@ namespace SOColeta.Services
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var responseString = response.Value;
-                        return responseString;
+                        return response.Value;
                     case HttpStatusCode.NoContent:
                         message = $"O servidor não obteve sucesso ao criar o inventário : {path}";
                         logger.LogError(message);
@@ -377,12 +375,11 @@ namespace SOColeta.Services
                 logger.LogDebug($"Buscando inventário em aberto.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
-                var response = await httpClient.GetAsync(path);
+                var response = await httpClient.GetAsync<Inventario>(path);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        return Newtonsoft.Json.JsonConvert.DeserializeObject<Inventario>(responseText);
+                        return response.Value;
                     case HttpStatusCode.NoContent:
                         return null;
                     case HttpStatusCode.NotFound:

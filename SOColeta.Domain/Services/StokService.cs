@@ -123,7 +123,15 @@ public class StokService : IStokService
         {
             dbContext.Inventarios.Add(inventario);
             await dbContext.SaveChangesAsync();
-            var model = new InventarioModel(inventario.Guid, inventario.DataCriacao);
+            var model = new InventarioModel(inventario.Guid, inventario.DataCriacao)
+            {
+                IsValid = inventario.IsValid,
+                IsInserted = inventario.IsInserted,
+                Id = inventario.Id,
+                Device = inventario.Device,
+                Empresa = inventario.Empresa,
+                NomeArquivo = inventario.NomeArquivo
+            };
             return model;
         }
         catch (Exception ex)
