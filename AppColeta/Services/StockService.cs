@@ -73,7 +73,7 @@ namespace SOColeta.Services
                 Guid = guid,
                 DataCriacao = DateTime.Now,
                 NomeArquivo = $"Inventario-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt",
-                IsFinished = false
+                IsInserted = false
             };
             dbContext.Inventarios.Add(inventario);
             await dbContext.SaveChangesAsync();
@@ -90,10 +90,10 @@ namespace SOColeta.Services
         {
             logger.LogDebug("Buscando inventario aberto...");
             var inventario = await dbContext.Inventarios
-                .Where(i => !i.IsFinished)
+                .Where(i => !i.IsInserted)
                 .FirstOrDefaultAsync();
 
-            inventario.IsFinished = true;
+            inventario.IsInserted = true;
             dbContext.Inventarios.Update(inventario);
             await dbContext.SaveChangesAsync();
         }
@@ -103,7 +103,7 @@ namespace SOColeta.Services
             Debug.WriteLine("Criando query de busca");
             var query = dbContext.Inventarios.AsQueryable();
             if (guid == null)
-                query = query.Where(i => !i.IsFinished);
+                query = query.Where(i => !i.IsInserted);
             else
                 query = query.Where(i => i.Guid == guid);
             Debug.WriteLine("Buscando coletas");
@@ -131,7 +131,7 @@ namespace SOColeta.Services
         {
             logger.LogDebug("Buscando inventarios finalizados...");
             var inventarios = dbContext.Inventarios
-                .Where(x => x.IsFinished)
+                .Where(x => x.IsInserted)
                 .ToArrayAsync();
 
             foreach (var inventario in await inventarios)
@@ -148,7 +148,7 @@ namespace SOColeta.Services
             logger.LogDebug("Verificando inventário em aberto e se o mesmo possui coletas...");
             return await dbContext.Inventarios
                 .Include(x => x.ProdutosColetados)
-                .Where(i => !i.IsFinished && i.ProdutosColetados.Any())
+                .Where(i => !i.IsInserted && i.ProdutosColetados.Any())
                 .AnyAsync();
         }
 
@@ -173,7 +173,7 @@ namespace SOColeta.Services
 
         public Task<Inventario> GetOpenedInventario()
         {
-            return dbContext.Inventarios.FirstOrDefaultAsync(x => !x.IsFinished);
+            return dbContext.Inventarios.FirstOrDefaultAsync(x => !x.IsInserted);
         }
         private async Task ExportAutoSystem(Inventario inventario)
         {

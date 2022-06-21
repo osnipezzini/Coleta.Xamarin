@@ -115,6 +115,10 @@ public class StokService : IStokService
     public async Task<InventarioModel> RegistrarInventario(Inventario inventario)
     {
         logger.LogDebug(JsonConvert.SerializeObject(inventario));
+
+        if (inventario.Guid is null)
+            inventario.Guid = Guid.NewGuid();
+
         try
         {
             dbContext.Inventarios.Add(inventario);
