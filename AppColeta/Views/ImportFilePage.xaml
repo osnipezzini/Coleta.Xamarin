@@ -2,24 +2,38 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
-             xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
+             xmlns:converters="clr-namespace:SOColeta.Converters"
              x:Class="SOColeta.Views.ImportFilePage"
              x:DataType="vm:ImportFileViewModel"
     Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DenyBoolConverter x:Key="boolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Label Margin="25" Text="{Binding Filename}" FontSize="25">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Arquivo selecionado: " TextColor="Teal"/>
-                        <Span Text="{Binding Filename}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Button Text="Selecione o arquivo que deseja importar"
+            <StackLayout IsVisible="{Binding IsBusy}" IsEnabled="{Binding IsBusy}"
+                         BackgroundColor="{StaticResource LightPurple}"
+                         HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource SOHigh}"/>
+                <Label Text="{Binding ProgressMessage}"/>
+            </StackLayout>
+            <StackLayout IsVisible="{Binding IsBusy, Converter={StaticResource boolConverter}}" 
+                         IsEnabled="{Binding IsBusy, Converter={StaticResource boolConverter}}">
+                <Label Margin="25" Text="{Binding Filename}" FontSize="25">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Arquivo selecionado: " TextColor="{DynamicResource SOHigh}"/>
+                            <Span Text="{Binding Filename}" TextColor="Black"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Text="Selecione o arquivo que deseja importar"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" Command="{Binding ChooseFileCommand}"/>
-            <Button Text="Iniciar importação" Margin="30" Command="{Binding StartImportCommand}"/>
+                <Button Text="Iniciar importação" Margin="30" Command="{Binding StartImportCommand}"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

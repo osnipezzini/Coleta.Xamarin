@@ -1,4 +1,6 @@
 ﻿
+using Acr.UserDialogs;
+
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -16,10 +18,11 @@ namespace SOColeta.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
+            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            global::Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             MobileBarcodeScanner.Initialize(this.Application);
-            global::Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
-            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            UserDialogs.Init(this);
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

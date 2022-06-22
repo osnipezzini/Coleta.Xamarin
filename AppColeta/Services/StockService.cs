@@ -66,10 +66,19 @@ namespace SOColeta.Services
             return inventario;
         }
 
-        public Task AddProduto(Produto produto)
+        public async Task AddProduto(Produto produto)
         {
-            dbContext.Produtos.Add(produto);
-            return dbContext.SaveChangesAsync();
+            var product = await dbContext.Produtos.FirstOrDefaultAsync(x => x.Codigo == produto.Codigo);
+            if (product is null)
+                dbContext.Produtos.Add(produto);
+            else
+            {
+                product.PrecoCusto = produto.PrecoCusto;
+                product.PrecoVenda = produto.PrecoVenda;
+                product.Nome = produto.Nome;
+                dbContext.Produtos.Update(product);
+            }
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task FinishInventario()

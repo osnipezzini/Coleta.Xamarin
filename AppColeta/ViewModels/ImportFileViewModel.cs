@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acr.UserDialogs;
+
+using Microsoft.Extensions.Logging;
 
 using SOColeta.Models;
 using SOColeta.Services;
@@ -19,6 +21,7 @@ namespace SOColeta.ViewModels
     internal class ImportFileViewModel : ViewModelBase
     {
         private string filename;
+        private string message;
         private FileResult fullpath;
         private readonly IStockService stockService;
         private readonly ILogger<ImportFileViewModel> logger;
@@ -34,6 +37,7 @@ namespace SOColeta.ViewModels
             this.logger = logger;
         }
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
+        public string ProgressMessage { get => message; set => SetProperty(ref message, value); }
 
         private async Task<bool> PickAndShow()
         {
@@ -55,6 +59,7 @@ namespace SOColeta.ViewModels
                 if (result != null)
                 {
                     Filename = result.FileName;
+                    OnPropertyChanged(nameof(Filename));
                     fullpath = result;
 
                     return true;
@@ -69,43 +74,57 @@ namespace SOColeta.ViewModels
 
         private async Task ImportFile()
         {
+            if (fullpath is null)
+                return;
             var stream = await fullpath.OpenReadAsync();
             var readerStream = new StreamReader(stream);
             var contents = await readerStream.ReadToEndAsync();
             string[] file = contents.Split('\n');
-            foreach (string line in file)
-            {
-                if (!string.IsNullOrWhiteSpace(line) && (line.Contains(";") || line.Contains(",")))
+            var ignoredLines = 0;
+            var lineNumber = 0;
+            IsBusy = true;
+            using (var dialog = Loading(ProgressMessage))
+                foreach (string line in file)
                 {
-                    try
+                    lineNumber++;
+                    ProgressMessage = $"Importando linha {lineNumber} / {file.Length} ...";
+                    if (!string.IsNullOrWhiteSpace(line) && (line.Contains(";") || line.Contains(",")))
                     {
-                        char splitter = line.Contains(";") ? ';' : ',';
-                        var reader = line.Replace("\r", "").Split(splitter);
-                        double custo = 0;
-                        double venda = 0;
-
-                        if (reader.Length >= 4)
-                            double.TryParse(reader[3].Replace('.', ','), out custo);
-                        if (reader.Length >= 3)
-                            double.TryParse(reader[2].Replace('.', ','), out venda);
-
-                        await stockService.AddProduto(new Produto
+                        try
                         {
-                            Codigo = reader[0],
-                            Nome = reader[1],
-                            PrecoVenda = venda,
-                            PrecoCusto = custo,
-                        });
-                    }
-                    catch (Exception)
-                    {
-                        Debug.WriteLine("Não foi possível validar a linha selecionada.");
-                    }
+                            char splitter = line.Contains(";") ? ';' : ',';
+                            var reader = line.Replace("\r", "").Split(splitter);
+                            var barCode = reader[0].Trim();
+                            double custo = 0;
+                            double venda = 0;
 
+                            if (string.IsNullOrEmpty(barCode))
+                            {
+                                ignoredLines++;
+                                continue;
+                            }
+
+                            if (reader.Length >= 4)
+                                double.TryParse(reader[3].Replace('.', ','), out custo);
+                            if (reader.Length >= 3)
+                                double.TryParse(reader[2].Replace('.', ','), out venda);
+
+                            await stockService.AddProduto(new Produto
+                            {
+                                Codigo = barCode,
+                                Nome = reader[1],
+                                PrecoVenda = venda,
+                                PrecoCusto = custo,
+                            });
+                        }
+                        catch (Exception)
+                        {
+                            Debug.WriteLine("Não foi possível validar a linha selecionada.");
+                        }
+                    }
                 }
-            }
-
-            await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {file.Length} produtos.", "Ok");
+            IsBusy = false;
+            await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {file.Length - ignoredLines} produtos.", "Ok");
         }
     }
 }

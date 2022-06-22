@@ -94,6 +94,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="SOCore">
+      <Version>[1.0.1]</Version>
+    </PackageReference>
     <PackageReference Include="SOTech.Mvvm">
       <Version>2.5.16</Version>
     </PackageReference>
