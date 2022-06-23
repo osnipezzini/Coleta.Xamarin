@@ -1,10 +1,15 @@
-﻿
-using Acr.UserDialogs;
+﻿using Acr.UserDialogs;
 
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
+
+using Matcha.BackgroundService.Droid;
+
+using Plugin.LocalNotification;
+
 using ZXing.Mobile;
 
 namespace SOColeta.Droid
@@ -23,6 +28,7 @@ namespace SOColeta.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             MobileBarcodeScanner.Initialize(this.Application);
             UserDialogs.Init(this);
+            BackgroundAggregator.Init(this);
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -30,6 +36,11 @@ namespace SOColeta.Droid
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             global::ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        protected override void OnNewIntent(Intent intent)
+        {
+            NotificationCenter.NotifyNotificationTapped(intent);
+            base.OnNewIntent(intent);
         }
     }
 }

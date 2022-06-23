@@ -1,5 +1,8 @@
 ﻿using Acr.UserDialogs;
 
+using Matcha.BackgroundService;
+
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using SOColeta.Models;
@@ -77,54 +80,13 @@ namespace SOColeta.ViewModels
             if (fullpath is null)
                 return;
             var stream = await fullpath.OpenReadAsync();
-            var readerStream = new StreamReader(stream);
-            var contents = await readerStream.ReadToEndAsync();
-            string[] file = contents.Split('\n');
-            var ignoredLines = 0;
-            var lineNumber = 0;
-            IsBusy = true;
-            using (var dialog = Loading(ProgressMessage))
-                foreach (string line in file)
-                {
-                    lineNumber++;
-                    ProgressMessage = $"Importando linha {lineNumber} / {file.Length} ...";
-                    if (!string.IsNullOrWhiteSpace(line) && (line.Contains(";") || line.Contains(",")))
-                    {
-                        try
-                        {
-                            char splitter = line.Contains(";") ? ';' : ',';
-                            var reader = line.Replace("\r", "").Split(splitter);
-                            var barCode = reader[0].Trim();
-                            double custo = 0;
-                            double venda = 0;
 
-                            if (string.IsNullOrEmpty(barCode))
-                            {
-                                ignoredLines++;
-                                continue;
-                            }
+            // Registra
+            BackgroundAggregatorService.Add(() => new BackgroundImportService(stockService, stream));
 
-                            if (reader.Length >= 4)
-                                double.TryParse(reader[3].Replace('.', ','), out custo);
-                            if (reader.Length >= 3)
-                                double.TryParse(reader[2].Replace('.', ','), out venda);
-
-                            await stockService.AddProduto(new Produto
-                            {
-                                Codigo = barCode,
-                                Nome = reader[1],
-                                PrecoVenda = venda,
-                                PrecoCusto = custo,
-                            });
-                        }
-                        catch (Exception)
-                        {
-                            Debug.WriteLine("Não foi possível validar a linha selecionada.");
-                        }
-                    }
-                }
-            IsBusy = false;
-            await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {file.Length - ignoredLines} produtos.", "Ok");
+            // Inicia
+            BackgroundAggregatorService.StartBackgroundService();
+            await Shell.Current.DisplayAlert("Importação iniciada", "Sua importação foi iniciada, iremos lhe avisar assim que concluirmos.", "Ok");
         }
     }
 }
