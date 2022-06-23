@@ -17,8 +17,6 @@ steps:
       - ls
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
-      - export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-      - export OPENSSL_CONF=/etc/ssl/openssl.cnf
       - certmgr -ssl https://api.nuget.org
       - certmgr -ssl https://nuget.sotech.xyz
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
