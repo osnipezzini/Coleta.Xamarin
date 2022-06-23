@@ -412,19 +412,20 @@ namespace SOColeta.Services
         public async Task<Product> GetProduto(string barcode)
         {
             string message = "";
-            string path = $"/api/produtos?barcode={barcode}";
+            string path = $"/api/product/{barcode}";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
                 logger.LogDebug($"Buscando produto.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
-                HttpResponseMessage response = await httpClient.GetAsync(path);
+                var response = await httpClient.GetAsync<Product>(path);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        return JsonSerializer.Deserialize<Product>(responseText);
+                        return response.Value;
+                    case HttpStatusCode.NoContent:
+                        return new Product();
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";
                         logger.LogError(message);
