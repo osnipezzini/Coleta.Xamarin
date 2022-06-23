@@ -18,5 +18,6 @@ steps:
       - ls
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
+      - nuget trusted-signers add -name [CN] -serviceindex https://nuget.sotech.xyz/v3/index.json
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
       - msbuild /t:SignAndroidPackage /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=SOTech.keystore" "/p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
