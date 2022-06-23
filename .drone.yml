@@ -17,6 +17,7 @@ steps:
       - ls
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
+      - export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
       - certmgr -ssl https://nuget.sotech.xyz
       - nuget -DisableParallelProcessing trusted-signers add -name [CN] -serviceindex https://nuget.sotech.xyz/v3/index.json
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
