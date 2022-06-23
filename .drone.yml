@@ -3,18 +3,16 @@ name: android-build
 type: docker
 
 steps:
-  - build
-
-build-android:
-  image: tafilz/xamarin-android:29
-  stage: build
-  only:
-    - master
-  artifacts:
-    paths:
-      - publish_android/*.apk
-    script:
-      - export BUILD_DATE=$(date +%Y%m%d%H%M%S)
-      - msbuild src/AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /restore
-      - msbuild src/AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /t:PackageForAndroid /p:OutputPath="../../publish_android/"
-      - msbuild src/AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /t:SignAndroidPackage /p:OutputPath="../../publish_android/"
+  - name: build-android
+    image: tafilz/xamarin-android:29
+    stage: build
+    only:
+      - master
+    artifacts:
+      paths:
+        - publish_android/*.apk
+      script:
+        - export BUILD_DATE=$(date +%Y%m%d%H%M%S)
+        - msbuild src/AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /restore
+        - msbuild src/AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /t:PackageForAndroid /p:OutputPath="../../publish_android/"
+        - msbuild src/AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /t:SignAndroidPackage /p:OutputPath="../../publish_android/"
