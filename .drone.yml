@@ -15,9 +15,9 @@ steps:
     commands:
       - export BUILD_DATE=$(date +%Y%m%d%H%M%S)
       - ls
+      - cat /etc/*release
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
-      - certmgr -ssl https://api.nuget.org
-      - certmgr -ssl https://nuget.sotech.xyz
+      - update-ca-certificates
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
       - msbuild /t:SignAndroidPackage /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=SOTech.keystore" "/p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
