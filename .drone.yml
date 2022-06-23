@@ -6,8 +6,6 @@ steps:
   - name: build-android
     image: tafilz/xamarin-android:29
     stage: build
-    only:
-      - master
     artifacts:
       paths:
         - publish_android/*.apk
