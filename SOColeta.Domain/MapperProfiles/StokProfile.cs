@@ -34,5 +34,17 @@ public class StokProfile : Profile
             .ForMember(dest => dest.ProdutoDeposito, map => map.MapFrom(src => src.Produto == null ? 0 : src.Produto.Deposito))
             .ForMember(dest => dest.ProdutoGroupId, map => map.MapFrom(src => src.Produto == null ? 0 : src.Produto.GroupId))
             .ReverseMap();
+
+        CreateMap<Product, ProdutoModel>()
+            .ForMember(dest => dest.Grupo, map => map.MapFrom(src => src.GroupId))
+            .ForMember(dest => dest.CodigoBarra, map => map.MapFrom(src => src.Barcode))
+            .ForMember(dest => dest.Codigo, map => map.MapFrom(src => src.Code))
+            .ForMember(dest => dest.PrecoCusto, map => map.MapFrom(src => src.CostPrice))
+            .ForMember(dest => dest.Nome, map => map.MapFrom(src => src.Name))
+            .ForMember(dest => dest.PrecoUnit, map => map.MapFrom(src => src.SalePrice))
+            .ForMember(dest => dest.Grid, map => map.MapFrom(src => src.Grid))
+            .ForMember(dest => dest.Quantidade, map => map.MapFrom(src => src.Quantity))
+            .ReverseMap();
+
     }
 }

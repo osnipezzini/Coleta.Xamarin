@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,18 +14,22 @@ using SOColeta.Common.Models;
 using SOColeta.Common.Services;
 using SOColeta.Domain.Data;
 
+using SOTech.AutoSystem;
 using System.Data;
+using System.Text;
 
 namespace SOColeta.Domain.Services;
 
-public class StokService : IStokService
+public class StokService :  IStokService
 {
     private readonly AppDbContext dbContext;
+    private readonly IMapper mapper;
     private readonly ILogger<StokService> logger;
     private readonly IDbConnection connection;
 
-    public StokService(AppDbContext dbContext, ILogger<StokService> logger, IOptions<Database> options)
+    public StokService(AppDbContext dbContext, ILogger<StokService> logger, IOptions<Database> options, IMapper mapper)
     {
+        this.mapper = mapper;
         this.dbContext = dbContext;
         this.logger = logger;
         connection = new NpgsqlConnection(options.Value.ConnectionString);
@@ -77,6 +82,30 @@ public class StokService : IStokService
         }
 
         return inventario;
+    }
+
+    public async Task<Product> GetProduct(string barcode, long? empresa)
+    {
+        var query = new StringBuilder()
+            .Append("SELECT p.codigo, p.grid, p.nome, p.preco_custo AS PrecoCusto, p.preco_unit AS PrecoUnit, p.grupo, p.codigo_barra AS CodigoBarra, ")
+            .Append("estoque_produto_f(e.grid, p.grid, CURRENT_DATE) AS quantidade ")
+            .Append("FROM produto p ")
+            .Append("LEFT JOIN produto_codigo_barra pcb ON (pcb.produto=p.grid)")
+            .Append("LEFT JOIN produto_empresa pe ON (p.grid = pe.produto) ")
+            .Append("LEFT JOIN empresa e ON (e.grid = pe.empresa) ");
+
+        if (empresa == null)
+            query.Append("LEFT JOIN empresa_local el on (el.empresa = e.grid)");
+
+        query.AppendFormat("WHERE (p.codigo_barra = '{0}' or pcb.codigo_barra = '{0}')", barcode);
+
+        if (empresa != null)
+            query.AppendFormat("AND e.grid={0}", empresa);
+
+        var sqlProduto = query.ToString();
+        var produto = await connection.QueryFirstOrDefaultAsync<ProdutoModel>(sqlProduto);
+
+        return mapper.Map<Product>(produto);
     }
 
     public async Task LancarInventario(Guid? inventarioId, long? pessoa)

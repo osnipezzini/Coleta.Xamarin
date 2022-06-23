@@ -25,7 +25,7 @@ namespace SOColeta.Views
 
         private void BuscarCodigo(object sender, FocusEventArgs e)
         {
-            ///viewModel.GetCodigo();
+            viewModel.GetCodigo();
         }
         private void OnFinishedReadCode(object sender, EventArgs e) => txtQuantity.Focus();
 

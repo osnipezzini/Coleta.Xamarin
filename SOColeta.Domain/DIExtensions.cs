@@ -12,7 +12,7 @@ namespace SOColeta.Domain;
 
 public static class DIExtensions
 {
-    public static void ConfigureDomain(this IServiceCollection serviceCollection)
+    public static IServiceCollection ConfigureDomain(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddDbContext<AppDbContext>();
         serviceCollection.AddScoped<IMigrationService, MigrationService>();
@@ -35,6 +35,8 @@ public static class DIExtensions
                 }
             });
         });
+
+        return serviceCollection;
     }
 
     public static void UseDomain(this WebApplication host)
