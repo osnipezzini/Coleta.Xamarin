@@ -1,4 +1,8 @@
-stages:
+kind: pipeline
+name: android-build
+type: docker
+
+steps:
   - build
 
 build-android:
