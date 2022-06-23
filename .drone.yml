@@ -18,5 +18,5 @@ steps:
       - ls
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
-      - msbuild AppColeta.Android/SOColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /restore
+      - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
       - msbuild /t:SignAndroidPackage /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=SOTech.keystore" "/p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
