@@ -18,6 +18,7 @@ steps:
       - cat /etc/*release
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
+      - apt update && apt upgrade -y
       - update-ca-certificates
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
       - msbuild /t:SignAndroidPackage /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=SOTech.keystore" "/p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
