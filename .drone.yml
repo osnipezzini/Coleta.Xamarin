@@ -3,6 +3,10 @@ name: android-build
 type: docker
 
 steps:
+  - name: say-hello
+    image: busybox
+    commands:
+      - echo hello-world
   - name: build-android
     image: tafilz/xamarin-android:29
     stage: build
