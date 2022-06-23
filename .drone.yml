@@ -6,8 +6,6 @@ steps:
   - name: build-android
     image: tafilz/xamarin-android:29
     failure: ignore
-    volumes:
-      - /data/drone-runner:/tmp/
     environment:
       KEYPASS:
         from_secret: KEYPASS
@@ -17,5 +15,6 @@ steps:
       - export BUILD_DATE=$(date +%Y%m%d%H%M%S)
       - ls
       - echo $KEYFILE > certificate.pem
+      - keytool -import -trustcacerts -alias SOTech -file certificate.pem -keystore sotech.keystore -storepass NERQhNo4rG
       - msbuild AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /restore
       - msbuild /t:SignAndroidPackage /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=/tmp/SOTech.keystore" "/p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/AppColeta.Android.csproj
