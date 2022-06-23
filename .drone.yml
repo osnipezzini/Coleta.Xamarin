@@ -9,7 +9,6 @@ steps:
       - echo hello-world
   - name: build-android
     image: tafilz/xamarin-android:29
-    stage: build
     artifacts:
       paths:
         - publish_android/*.apk
