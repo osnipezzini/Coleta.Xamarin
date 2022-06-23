@@ -17,7 +17,7 @@ steps:
       - export BUILD_DATE=$(date +%Y%m%d%H%M%S)
       - echo $KEYFILE > certificate.pem
       - echo $PRIVFILE > key.pem
-      - dos2unit key.pem
+      - dos2unix key.pem
       - openssl pkcs12 -export -out cert.p12 -in certificate.pem -inkey key.pem -passin pass:$KEYPASS -passout pass:$KEYPASS
       - keytool -importkeystore -srckeystore cert.p12 -srcstoretype PKCS12 -destkeystore sotech.keystore -deststoretype JKS -srcstorepass $KEYPASS -deststorepass $KEYPASS -srcalias SOTech -destalias SOTech -srckeypass $KEYPASS -destkeypass $KEYPASS -noprompt
       - msbuild AppColeta.Android/AppColeta.Android.csproj /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration="Release" /p:Platform="Any CPU" /restore
