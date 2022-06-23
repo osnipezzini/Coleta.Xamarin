@@ -7,7 +7,7 @@ steps:
     image: tafilz/xamarin-android:29
     failure: ignore
     volumes:
-      - /tmp/files:/tmp/
+      - /data/drone-runner:/tmp/
     environment:
       KEYPASS:
         from_secret: KEYPASS
