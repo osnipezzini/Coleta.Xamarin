@@ -10,6 +10,8 @@ steps:
         from_secret: KEYPASS
     commands:
       - export BUILD_DATE=$(date +%Y%m%d%H%M%S)
+      - export ANDROID_HOME=/usr/lib/android-sdk
+      - export ANDROID_SDK_ROOT=/usr/lib/android-sdk
       - ls /usr/lib/android-sdk
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
       - msbuild /t:SignAndroidPackage /p:JavaSdkDirectory=/usr/lib/jvm/java-11-openjdk-amd64 /p:AndroidSdkDirectory=/usr/lib/android-sdk /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=/tmp/sotech.keystore" /p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
