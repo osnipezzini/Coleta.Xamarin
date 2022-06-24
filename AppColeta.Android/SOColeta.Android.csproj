@@ -16,8 +16,7 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v12.1</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
@@ -55,6 +54,7 @@
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidKeyStore>false</AndroidKeyStore>
+    <TargetFrameworkVersion>v11.0</TargetFrameworkVersion>
     <AndroidSigningKeyStore>C:\Users\osnip\AppData\Local\Xamarin\Mono for Android\Keystore\SOTECH-Key\SOTECH-Key.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>Dw@6458995</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SOTech</AndroidSigningKeyAlias>

@@ -4,7 +4,7 @@ type: docker
 
 steps:
   - name: build-android
-    image: docker.sotech.xyz/xamarin/android:31-latest
+    image: docker.sotech.xyz/xamarin/android:30-latest
     environment:
       KEYPASS:
         from_secret: KEYPASS
