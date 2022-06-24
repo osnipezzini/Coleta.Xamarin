@@ -4,7 +4,7 @@ type: docker
 
 steps:
   - name: build-android
-    image: docker.sotech.xyz/xamarin/android:30-latest
+    image: docker.sotech.xyz/xamarin/android:31-latest
     environment:
       KEYPASS:
         from_secret: KEYPASS
@@ -15,4 +15,4 @@ steps:
       - mkdir /root/Library && mkdir /root/Library/Android
       - ln -s /usr/lib/android-sdk /root/Library/Android/sdk
       - msbuild /p:Configuration="Release" -t:restore AppColeta.Android/SOColeta.Android.csproj
-      - msbuild /p:TargetFrameworkVersion=30 /t:SignAndroidPackage /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=/tmp/sotech.keystore" /p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
+      - msbuild /t:SignAndroidPackage /p:Configuration=Release /p:AndroidKeyStore=true /p:AndroidSigningKeyAlias=SOTech /p:AndroidSigningKeyPass=$KEYPASS /p:OutputPath="../../publish_android/" "/p:AndroidSigningKeyStore=/tmp/sotech.keystore" /p:AndroidSigningStorePass=$KEYPASS AppColeta.Android/SOColeta.Android.csproj
