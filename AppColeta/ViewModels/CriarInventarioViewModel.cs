@@ -79,7 +79,8 @@ namespace SOColeta.ViewModels
 
         private async Task ExecuteIniciarColetaCommand()
         {
-            await GoToAsync($"{nameof(CriarColetaPage)}?InvetarioGuid={inventario.Guid}");
+            var inventarioGuid = inventario.Guid.ToString();
+            await Shell.Current.GoToAsync($"{nameof(CriarColetaPage)}?inventarioGuid={inventarioGuid}");
         }
 
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
