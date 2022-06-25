@@ -3,6 +3,7 @@
 using Microsoft.AppCenter.Crashes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SOColeta.Common.DataModels;
 using SOColeta.Common.Exceptions;
 using SOColeta.Common.Models;
 using SOColeta.Data;
@@ -41,7 +42,7 @@ namespace SOColeta.Services
         {
             string message = "";
             string path = "/api/Coletas";
-            string json = JsonSerializer.Serialize(coleta);
+            string json = JsonSerializer.Serialize(mapper.Map<ColetaModel>(coleta));
             try
             {
                 StringContent httpContent = new(json, Encoding.Default, "application/json");

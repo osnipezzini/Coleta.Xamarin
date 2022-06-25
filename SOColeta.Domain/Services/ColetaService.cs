@@ -41,7 +41,7 @@ namespace SOColeta.Domain.Services
             if (product == null)
                 _logger.LogDebug("Produto não encontrado");
 
-            var coleta = new Coleta(model.Barcode, model.Quantidade, model.HoraColeta);
+            var coleta = new Coleta(model.Barcode, model.Quantidade, model.HoraColeta, model.Inventario);
 
             if (product is not null)
             {
@@ -62,7 +62,7 @@ namespace SOColeta.Domain.Services
             coleta.ProdutoId = product.Id;
 
             var inventario = await _dbContext.Inventarios
-                .FirstOrDefaultAsync(i => i.Id == model.Inventario);
+                .FirstOrDefaultAsync(i => i.Guid == model.Inventario);
 
             if (inventario is null)
                 return null;
@@ -75,7 +75,7 @@ namespace SOColeta.Domain.Services
                 .Include(p => p.Produto)
                 .Include(i => i.Inventario)
                 .Where(c => c.Codigo == model.Barcode)
-                .Where(c => c.InventarioId == model.Inventario)
+                .Where(c => c.InventarioGuid == model.Inventario)
                 .FirstOrDefaultAsync();
 
             if (coleta_old is not null)

@@ -14,7 +14,7 @@ public class Product : ObservableObject
     private double quantity;
     private long deposito;
     private long grid;
-    private string code;
+    private string? code;
     private string name;
     private double? salePrice;
     private double? costPrice;
@@ -45,7 +45,7 @@ public class Product : ObservableObject
     public double Quantity { get => quantity; set => SetProperty(ref quantity, value); }
     public long Deposito { get => deposito; set => SetProperty(ref deposito, value); }
     public long Grid { get => grid; set => SetProperty(ref grid, value); }
-    public string Code { get => code; set => SetProperty(ref code, value); }
+    public string? Code { get => code; set => SetProperty(ref code, value); }
     public string Name { get => name; set => SetProperty(ref name, value); }
     public double? CostPrice { get => costPrice; set => SetProperty(ref costPrice, value); }
     public double? SalePrice { get => salePrice; set => SetProperty(ref salePrice, value); }

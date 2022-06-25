@@ -26,6 +26,7 @@ public class StokProfile : Profile
             .ForMember(dest => dest.Quantidade, map => map.MapFrom(src => src.Quantidade))
             .ForMember(dest => dest.Barcode, map => map.MapFrom(src => src.Codigo))
             .ForMember(dest => dest.HoraColeta, map => map.MapFrom(src => src.HoraColeta))
+            .ForMember(dest => dest.Inventario, map => map.MapFrom(src => src.InventarioGuid))
             .ForMember(dest => dest.ProdutoCode, map => map.MapFrom(src => src.Produto == null ? "" : src.Produto.Code))
             .ForMember(dest => dest.ProdutoNome, map => map.MapFrom(src => src.Produto == null ? "" : src.Produto.Name))
             .ForMember(dest => dest.ProdutoQuantity, map => map.MapFrom(src => src.Produto == null ? 0 : src.Produto.Quantity))

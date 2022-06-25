@@ -8,7 +8,7 @@ public class ColetaModel : ObservableObject
 {
     #region Váriaveis privadas
     private string barcode;
-    private int? inventario;
+    private Guid? inventario;
     private long produtoId;
     private string produtoNome;
     private double quantity;
@@ -29,7 +29,7 @@ public class ColetaModel : ObservableObject
     {
         Quantidade = coleta.Quantidade;
         Barcode = coleta.Codigo;
-        Inventario = coleta.InventarioId;
+        Inventario = coleta.InventarioGuid;
         ProdutoCode = coleta.Produto?.Code ?? "0";
         ProdutoCostPrice = coleta.Produto?.CostPrice;
         ProdutoSalePrice = coleta.Produto?.SalePrice;
@@ -43,7 +43,7 @@ public class ColetaModel : ObservableObject
     #endregion
     #region Propriedades
     public string Barcode { get => barcode; set => SetProperty(ref barcode, value); }
-    public int? Inventario { get => inventario; set => SetProperty(ref inventario, value); }
+    public Guid? Inventario { get => inventario; set => SetProperty(ref inventario, value); }
     public long ProdutoId { get => produtoId; set => SetProperty(ref produtoId, value); }
     public string ProdutoNome { get => produtoNome; set => SetProperty(ref produtoNome, value); }
     public double Quantidade { get => quantity; set => SetProperty(ref quantity, value); }
