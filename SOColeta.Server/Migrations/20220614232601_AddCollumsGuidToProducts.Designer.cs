@@ -101,10 +101,6 @@ namespace SOColeta.Server.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_finished");
-
                     b.Property<bool>("IsInserted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_inserted");
