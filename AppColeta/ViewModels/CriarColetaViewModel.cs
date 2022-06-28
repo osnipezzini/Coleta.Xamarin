@@ -20,6 +20,7 @@ namespace SOColeta.ViewModels
         private double? precoVenda;
         private double? precoCompra;
         public string inventarioGuid;
+        private Product product;
 
         private readonly IStockService stockService;
 
@@ -49,19 +50,25 @@ namespace SOColeta.ViewModels
         }
         public async Task GetCodigo()
         {
-            var produto = await stockService.GetProduto(Codigo);
+            product = await stockService.GetProduto(Codigo);
 
-            if (produto != null)
+            if (product != null)
             {
-                PrecoCusto = produto.CostPrice;
-                Nome = produto.Name;
-                PrecoVenda = produto.SalePrice;
+                PrecoCusto = product.CostPrice;
+                Nome = product.Name;
+                PrecoVenda = product.SalePrice;
             }
         }
         private bool ValidateSave()
         {
             return !string.IsNullOrWhiteSpace(codigo)
                 && !string.IsNullOrWhiteSpace(quantidade) && double.TryParse(quantidade, out double valor);
+        }
+
+        public Product Product
+        {
+            get => product;
+            set => SetProperty(ref product, value);
         }
 
         public string Codigo
@@ -116,9 +123,9 @@ namespace SOColeta.ViewModels
             {
                 Codigo = codigo,
                 Quantidade = double.Parse(quantidade),
-                InventarioGuid = Guid.Parse(InventarioGuid)
-
-            });
+                InventarioGuid = Guid.Parse(InventarioGuid),
+                Produto = Product
+            }); ;
 
             Codigo = string.Empty;
             Quantidade = string.Empty;

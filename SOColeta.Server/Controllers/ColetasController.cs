@@ -20,10 +20,10 @@ public class ColetasController : ControllerBase
         this.logger = logger;
     }
     [AllowAnonymous]
-    [HttpGet("{codigo}/{inventario}")]
-    public async Task<IActionResult> GetColeta(string codigo, Guid? inventario)
+    [HttpGet("{inventario}")]
+    public async Task<IActionResult> GetColeta(Guid? inventario)
     {
-        var coleta = await coletaService.GetColeta(codigo, inventario);
+        var coleta = await coletaService.GetColeta(inventario);
 
         return Ok(coleta);
     }
@@ -33,8 +33,8 @@ public class ColetasController : ControllerBase
     {
         try
         {
-            var coleta = await coletaService.AddColeta(model);
-            return Ok(coleta);
+            await coletaService.AddColeta(model);
+            return Ok();
         }
         catch (AutoMapperMappingException amme)
         {

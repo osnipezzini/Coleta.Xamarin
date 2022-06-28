@@ -276,19 +276,18 @@ namespace SOColeta.Services
         {
             List<Coleta> coletas = new();
             string message = "";
-            string path = $"/api/coletas?inventario={guid}";
+            string path = $"/api/coletas/{guid}";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
                 logger.LogDebug($"Buscando contagem de inventarios em aberto.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
-                HttpResponseMessage response = await httpClient.GetAsync(path);
+                var response = await httpClient.GetAsync<Coleta>(path);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        coletas = JsonSerializer.Deserialize<List<Coleta>>(responseText);
+                        coletas.Add(response.Value);
                         break;
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";
@@ -457,7 +456,7 @@ namespace SOColeta.Services
         public async Task<bool> InventarioHasColeta()
         {
             string message = "";
-            string path = $"/api/inventarios/valid?device={SOHelper.Serial}";
+            string path = $"/api/inventarios/{SOHelper.Serial}";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
@@ -468,8 +467,7 @@ namespace SOColeta.Services
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        return JsonSerializer.Deserialize<bool>(responseText);
+                        return true;
                     case HttpStatusCode.NoContent:
                         return false;
                     case HttpStatusCode.NotFound:

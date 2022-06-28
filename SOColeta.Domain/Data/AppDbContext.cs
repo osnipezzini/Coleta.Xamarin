@@ -7,7 +7,6 @@ using Npgsql;
 using SOColeta.Common.Models;
 
 using SOCore.Services;
-
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
