@@ -4,6 +4,7 @@ using SOColeta.Domain;
 using SOColeta.Domain.Services;
 
 using SOCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.ConfigureCommon();
 builder.Services.ConfigureDomain();
 builder.Services.Configure<Database>(options => builder.Configuration.GetSection("Database").Bind(options));
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x => 
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 var app = builder.Build();
 

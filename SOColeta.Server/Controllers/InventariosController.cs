@@ -87,11 +87,11 @@ namespace SOColeta.Server.Controllers
         }
         [AllowAnonymous]
         [HttpPost("salvar")]
-        public async Task<IActionResult> FinalizarInventario(InventarioModel model)
+        public async Task<IActionResult> FinalizarInventario()
         {
             try
             {
-                var inventario = await stokService.FinalizarInventario(model);
+                var inventario = await stokService.FinalizarInventario();
                 if (inventario is null)
                     return NotFound("Inventário não existe!");
                 return Ok(inventario);

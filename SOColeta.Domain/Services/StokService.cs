@@ -40,23 +40,24 @@ public class StokService :  IStokService
                         .Include(i => i.ProdutosColetados)
                         .Where(i => i.IsValid);
         if (!string.IsNullOrEmpty(inserted))
-            query = query.Where(c => c.IsInserted == bool.Parse(inserted));
+            query = query.Where(i => i.IsInserted == bool.Parse(inserted));
+        
         var inventarios = await query
                 .ToArrayAsync();
 
         return inventarios;
     }
 
-    public async Task<Inventario?> FinalizarInventario(InventarioModel model)
+    public async Task<Inventario?> FinalizarInventario()
     {
-        logger.LogDebug(JsonConvert.SerializeObject(model));
         var inventario = await dbContext.Inventarios
-            .Where(i => i.Guid == model.Guid)
-            .FirstOrDefaultAsync();
+                .Where(i => !i.IsInserted)
+                .FirstOrDefaultAsync();
 
         if (inventario is null)
             return null;
 
+        inventario.IsInserted = true;
         inventario.IsValid = true;
 
         dbContext.Inventarios.Update(inventario);

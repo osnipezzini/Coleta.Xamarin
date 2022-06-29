@@ -188,11 +188,16 @@ namespace SOColeta.Services
 
         public async Task ExportInventario(Inventario inventario)
         {
+            var jsonSerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            };
             string message = "";
-            string path = $"/api/inventarios/{inventario.Id}";
-            string json = JsonSerializer.Serialize(inventario);
+            string path = $"/api/inventarios/{inventario.Guid}";
+            string json = "";
             try
             {
+                json = Newtonsoft.Json.JsonConvert.SerializeObject(inventario, jsonSerializerSettings);
                 StringContent httpContent = new(json, Encoding.Default, "application/json");
                 logger.LogDebug("------------------------------------------------------------------");
                 logger.LogDebug($"Enviando requisição para salvar o produto.");
@@ -234,11 +239,11 @@ namespace SOColeta.Services
         public async Task FinishInventario()
         {
             string message = "";
-            string path = "/api/inventarios/finish";
+            string path = "/api/inventarios/salvar";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
-                logger.LogDebug($"Enviando requisição para salvar o produto.");
+                logger.LogDebug($"Enviando requisição para finalizar o inventário.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
                 HttpResponseMessage response = await httpClient.PostAsync(path, new StringContent(""));
@@ -322,19 +327,18 @@ namespace SOColeta.Services
         {
             List<Inventario> inventarios = new();
             string message = "";
-            string path = $"/api/inventarios?finished={true}";
+            string path = $"/api/inventarios?inserted={true}";
             try
             {
                 logger.LogDebug("------------------------------------------------------------------");
                 logger.LogDebug($"Buscando inventários finalizados.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
-                HttpResponseMessage response = await httpClient.GetAsync(path);
+                var response = await httpClient.GetAsync<List<Inventario>>(path);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        string responseText = await response.Content.ReadAsStringAsync();
-                        inventarios = JsonSerializer.Deserialize<List<Inventario>>(responseText);
+                        inventarios = response.Value;
                         break;
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";

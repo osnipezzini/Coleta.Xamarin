@@ -9,6 +9,6 @@ public interface IStokService
     Task LancarInventario(Guid? inventarioId, long? pessoa);
     Task<IList<Inventario>> BuscarInventarios(string inserted);
     Task<InventarioModel> RegistrarInventario(Inventario inventario);
-    Task<Inventario?> FinalizarInventario(InventarioModel model);
+    Task<Inventario?> FinalizarInventario();
     Task<Product> GetProduct(string barcode, long? empresa);
 }
