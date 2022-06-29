@@ -72,6 +72,7 @@ namespace SOColeta.Domain.Services
             coleta.InventarioId = inventario.Id;
             coleta.InventarioGuid = inventario.Guid;
             coleta.HoraColeta = DateTime.UtcNow;
+            coleta.Guid = Guid.NewGuid();
             inventario.ProdutosColetados = null;
 
             var coleta_old = await _dbContext.Coletas
