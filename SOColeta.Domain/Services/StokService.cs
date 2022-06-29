@@ -149,6 +149,9 @@ public class StokService :  IStokService
         if (inventario.Guid is null)
             inventario.Guid = Guid.NewGuid();
 
+        inventario.NomeArquivo = $"Inventario-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt";
+        inventario.DataCriacao = DateTime.UtcNow;
+
         try
         {
             dbContext.Inventarios.Add(inventario);
@@ -160,7 +163,9 @@ public class StokService :  IStokService
                 Id = inventario.Id,
                 Device = inventario.Device,
                 Empresa = inventario.Empresa,
-                NomeArquivo = inventario.NomeArquivo
+                NomeArquivo = inventario?.NomeArquivo,
+                DataCriacao = inventario.DataCriacao,
+                Guid = inventario.Guid,
             };
             return model;
         }
