@@ -2,7 +2,7 @@
 
 public class ProdutoModel
 {
-    public int Codigo { get; set; }
+    public string Codigo { get; set; }
     public long? Grid { get; set; }
     public string Nome { get; set; }
     public double? Quantidade { get; set; }

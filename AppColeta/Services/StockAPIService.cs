@@ -188,6 +188,9 @@ namespace SOColeta.Services
 
         public async Task ExportInventario(Inventario inventario)
         {
+            if (inventario == null)
+                return;
+
             var jsonSerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
             {
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -288,11 +291,14 @@ namespace SOColeta.Services
                 logger.LogDebug($"Buscando contagem de inventarios em aberto.");
                 logger.LogDebug($"Path: {path}");
                 logger.LogDebug("------------------------------------------------------------------");
-                var response = await httpClient.GetAsync<Coleta>(path);
+                var response = await httpClient.GetAsync<List<Coleta>>(path);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        coletas.Add(response.Value);
+                        foreach (var item in response.Value)
+                            coletas.Add(item);
+                        break;
+                    case HttpStatusCode.NoContent:
                         break;
                     case HttpStatusCode.NotFound:
                         message = $"Rota não encontrada: {path}";

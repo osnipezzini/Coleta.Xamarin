@@ -10,12 +10,6 @@ using SOColeta.Common.Models;
 using SOColeta.Common.Services;
 using SOColeta.Domain.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace SOColeta.Domain.Services
 {
     public class ColetaService : IColetaService
@@ -23,43 +17,26 @@ namespace SOColeta.Domain.Services
         private readonly ILogger<ColetaService> _logger;
         private readonly AppDbContext _dbContext;
         private readonly IMapper mapper;
+        private readonly IStokService stokService;
 
-        public ColetaService(ILogger<ColetaService> logger, AppDbContext dbContext, IMapper mapper)
+        public ColetaService(ILogger<ColetaService> logger, AppDbContext dbContext, IMapper mapper, IStokService stokService)
         {
             _logger = logger;
             _dbContext = dbContext;
             this.mapper = mapper;
+            this.stokService = stokService;
         }
         public async Task AddColeta(ColetaModel model)
         {
             _logger.LogDebug(JsonConvert.SerializeObject(model));
 
-            var product = await _dbContext.Products
-                .Where(p => p.Barcode == model.Barcode)
-                .FirstOrDefaultAsync();
+            var product = await stokService.GetProduct(model.Barcode, null);
 
             if (product == null)
                 _logger.LogDebug("Produto não encontrado");
 
             var coleta = new Coleta(model.Barcode, model.Quantidade, model.HoraColeta, model.Inventario);
 
-            if (product is not null)
-            {
-                mapper.Map(model, product);
-                product.Barcode = model.Barcode;
-
-                _dbContext.Products.Update(product);
-            }
-            else
-            {
-                product = new Product();
-                mapper.Map(model, product);
-                product.Barcode = model.Barcode;
-                product.Guid = Guid.NewGuid();
-                _dbContext.Products.Add(product);
-            }
-
-            coleta.Produto = product;
             coleta.ProdutoId = product.Id;
 
             var inventario = await _dbContext.Inventarios
@@ -71,12 +48,12 @@ namespace SOColeta.Domain.Services
             coleta.Inventario = inventario;
             coleta.InventarioId = inventario.Id;
             coleta.InventarioGuid = inventario.Guid;
+            coleta.ProdutoId = product.Grid;
             coleta.HoraColeta = DateTime.UtcNow;
             coleta.Guid = Guid.NewGuid();
             inventario.ProdutosColetados = null;
 
             var coleta_old = await _dbContext.Coletas
-                .Include(p => p.Produto)
                 .Include(i => i.Inventario)
                 .Where(c => c.Codigo == model.Barcode)
                 .Where(c => c.InventarioGuid == model.Inventario)
@@ -85,7 +62,7 @@ namespace SOColeta.Domain.Services
             if (coleta_old is not null)
             {
                 coleta_old.Quantidade += model.Quantidade;
-                coleta_old.HoraColeta = model.HoraColeta;
+                coleta_old.HoraColeta = DateTime.UtcNow;
                 _dbContext.Coletas.Update(coleta_old);
                 coleta = coleta_old;
             }
@@ -95,12 +72,12 @@ namespace SOColeta.Domain.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<Coleta?> GetColeta(Guid? inventarioGuid)
+        public async Task<List<Coleta?>> GetColeta(Guid? inventarioGuid)
         {
             var coleta = await _dbContext.Coletas
             .Where(c => c.InventarioGuid == inventarioGuid)
             .Select(x => mapper.Map<Coleta>(x))
-            .FirstOrDefaultAsync();
+            .ToListAsync();
 
             return coleta;
         }

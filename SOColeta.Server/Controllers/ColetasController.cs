@@ -23,9 +23,18 @@ public class ColetasController : ControllerBase
     [HttpGet("{inventario}")]
     public async Task<IActionResult> GetColeta(Guid? inventario)
     {
-        var coleta = await coletaService.GetColeta(inventario);
+        try
+        {
+            var coletas = await coletaService.GetColeta(inventario);
 
-        return Ok(coleta);
+            return Ok(coletas);
+        }
+        catch (Exception e)
+        {
+            logger.LogDebug(e.StackTrace);
+            logger.LogError(e.Message);
+            return Ok(e.Message);
+        }
     }
     [AllowAnonymous]
     [HttpPost]

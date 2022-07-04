@@ -13,14 +13,12 @@ using SOColeta.Common.DataModels;
 using SOColeta.Common.Models;
 using SOColeta.Common.Services;
 using SOColeta.Domain.Data;
-
-using SOTech.AutoSystem;
 using System.Data;
 using System.Text;
 
 namespace SOColeta.Domain.Services;
 
-public class StokService :  IStokService
+public class StokService : IStokService
 {
     private readonly AppDbContext dbContext;
     private readonly IMapper mapper;
@@ -41,7 +39,7 @@ public class StokService :  IStokService
                         .Where(i => i.IsValid);
         if (!string.IsNullOrEmpty(inserted))
             query = query.Where(i => i.IsInserted == bool.Parse(inserted));
-        
+
         var inventarios = await query
                 .ToArrayAsync();
 
@@ -75,9 +73,8 @@ public class StokService :  IStokService
         if (inventario != null)
         {
             var coletas = await dbContext.Coletas
-                    .Include(c => c.Produto)
-                .Where(c => c.InventarioId == inventario.Id)
-                .Select(c => new ColetaModel(c))
+                .Where(c => c.InventarioGuid == inventario.Guid)
+                .Select(c => new ColetaModel())
                 .ToListAsync();
             coletas.ForEach(c => inventario.Coletas.Add(c));
         }
@@ -104,9 +101,13 @@ public class StokService :  IStokService
             query.AppendFormat("AND e.grid={0}", empresa);
 
         var sqlProduto = query.ToString();
-        var produto = await connection.QueryFirstOrDefaultAsync<ProdutoModel>(sqlProduto);
+
+        var produto = await connection.QueryFirstOrDefaultAsync<ProdutoModel?>(sqlProduto);
+        if (produto is null)
+            return new Product();
 
         return mapper.Map<Product>(produto);
+
     }
 
     public async Task LancarInventario(Guid? inventarioId, long? pessoa)
@@ -115,7 +116,6 @@ public class StokService :  IStokService
                     " VALUES (@Inventario, @Produto, @Quantidade, @Ts, @Codigo);";
         var inventario = await dbContext.Inventarios
             .Include(c => c.ProdutosColetados)
-            .ThenInclude(p => p.Produto)
                 .Where(i => i.Guid == inventarioId)
                 .FirstOrDefaultAsync();
 
@@ -124,15 +124,12 @@ public class StokService :  IStokService
 
         foreach (var coleta in inventario.ProdutosColetados)
         {
-            if (coleta is null || coleta.Produto is null || coleta.Produto.Grid <= 0)
-                continue;
-
             _ = await connection.ExecuteAsync(query, new
             {
                 Inventario = coleta.InventarioId,
-                Produto = coleta.Produto.Grid,
                 coleta.Quantidade,
                 Ts = coleta.HoraColeta,
+                Produto = coleta.ProdutoId,
                 coleta.Codigo
             });
         }

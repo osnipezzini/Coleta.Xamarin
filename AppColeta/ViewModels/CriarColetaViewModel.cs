@@ -124,7 +124,6 @@ namespace SOColeta.ViewModels
                 Codigo = codigo,
                 Quantidade = double.Parse(quantidade),
                 InventarioGuid = Guid.Parse(InventarioGuid),
-                Produto = Product
             }); ;
 
             Codigo = string.Empty;

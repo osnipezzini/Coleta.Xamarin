@@ -30,7 +30,6 @@ public class AppDbContext : DbContext
     #region Propriedades
     public DbSet<Coleta> Coletas => Set<Coleta>();
     public DbSet<Inventario> Inventarios => Set<Inventario>();
-    public DbSet<Product> Products => Set<Product>();
     #endregion
     #region Métodos
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

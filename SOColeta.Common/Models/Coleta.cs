@@ -12,8 +12,7 @@ public class Coleta : ObservableObject
     private int? id;
     private string? codigo;
     private double quantidade;
-    private int? produtoId;
-    private Product? product;
+    private long? produtoId;
     private DateTime horaColeta;
     private int? inventarioId;
     private Guid? inventarioGuid;
@@ -26,8 +25,7 @@ public class Coleta : ObservableObject
     public Guid? InventarioGuid { get => inventarioGuid; set => SetProperty(ref inventarioGuid, value); }
     public string? Codigo { get => codigo; set => SetProperty(ref codigo, value); }
     public double Quantidade { get => quantidade; set => SetProperty(ref quantidade, value); }
-    public int? ProdutoId { get => produtoId; set => SetProperty(ref produtoId, value); }
-    public Product? Produto { get => product; set => SetProperty(ref product, value); }
+    public long? ProdutoId { get => produtoId; set => SetProperty(ref produtoId, value); }
     public DateTime HoraColeta { get => horaColeta; set => SetProperty(ref horaColeta, value); }
     public int? InventarioId { get => inventarioId; set => SetProperty(ref inventarioId, value); }
     [Required]

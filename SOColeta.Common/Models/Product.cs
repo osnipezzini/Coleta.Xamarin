@@ -26,17 +26,17 @@ public class Product : ObservableObject
     {
 
     }
-    public Product(ColetaModel model)
+    public Product(Product product)
     {
-        Quantity = model.ProdutoQuantity;
-        Deposito = model.ProdutoDeposito;
-        Grid = model.ProdutoId;
-        Barcode = model.Barcode;
-        CostPrice = model.ProdutoCostPrice;
-        SalePrice = model.ProdutoSalePrice;
-        GroupId = model.ProdutoGroupId;
-        Name = model.ProdutoNome;
-        Code = model.ProdutoCode;
+        Quantity = product.Quantity;
+        Deposito = product.Deposito;
+        Grid = product.Grid;
+        Barcode = product.Barcode;
+        CostPrice = product.CostPrice;
+        SalePrice = product.SalePrice;
+        GroupId = product.GroupId;
+        Name = product.Name;
+        Code = product.Code;
     }
     #endregion
     #region Propriedades
