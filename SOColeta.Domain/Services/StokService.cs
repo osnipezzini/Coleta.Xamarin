@@ -112,8 +112,8 @@ public class StokService : IStokService
 
     public async Task LancarInventario(Guid? inventarioId, long? pessoa)
     {
-        var query = "INSERT INTO coletor_web(inventario, produto, quantidade, ts, codigo)" +
-                    " VALUES (@Inventario, @Produto, @Quantidade, @Ts, @Codigo);";
+        var query = "INSERT INTO coletor_web(inventario, produto, quantidade, ts, codigo, empresa, deposito)" +
+                    " VALUES (@Inventario, @Produto, @Quantidade, @Ts, @Codigo, @Empresa, @Deposito);";
         var inventario = await dbContext.Inventarios
             .Include(c => c.ProdutosColetados)
                 .Where(i => i.Guid == inventarioId)
@@ -122,15 +122,38 @@ public class StokService : IStokService
         if (inventario is null)
             return;
 
+        var queryEmpresa = "SELECT grid from empresa_local";
+        var empresa = await connection.QueryFirstOrDefaultAsync<long?>(queryEmpresa);
+
+        if (empresa is null)
+            return;
+
+        var queryDeposito = new StringBuilder()
+            .Append("SELECT d.grid FROM deposito_grupo_produto dgp ")
+            .Append("JOIN deposito d ON (d.grid = dgp.deposito) ")
+            .Append("JOIN produto p ON (p.grid = @Produto) ")
+            .Append("WHERE dgp.grupo = p.grupo AND d.flag = 'A'; ");
+
         foreach (var coleta in inventario.ProdutosColetados)
         {
+
+            var deposito = await connection.QueryFirstOrDefaultAsync<long?>(queryDeposito.ToString(), new
+            {
+                Produto = coleta.ProdutoId
+            });
+
+            if (deposito is null)
+                continue;
+
             _ = await connection.ExecuteAsync(query, new
             {
                 Inventario = coleta.InventarioId,
                 coleta.Quantidade,
                 Ts = coleta.HoraColeta,
                 Produto = coleta.ProdutoId,
-                coleta.Codigo
+                Codigo = coleta.Codigo,
+                Empresa = empresa,
+                Deposito = deposito,
             });
         }
 
