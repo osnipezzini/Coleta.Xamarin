@@ -1,51 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:framework="clr-namespace:SOFramework.Resources;assembly=SOFramework.Xamarin"
              x:Class="SOColeta.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
     -->
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="White">#FFFFFF</Color>
-            <Color x:Key="Black">#000000</Color>
-            <Color x:Key="ElliteBlue">#003664</Color>
-            <Color x:Key="Purple">#623CEA</Color>
-            <Color x:Key="LightPurple">#D7CCFF</Color>
-            <Color x:Key="GrayBlue">#F1F3F6</Color>
-            <Color x:Key="DarkGrayBlue">#B3BDC8</Color>
-            <Color x:Key="Gray">#8FA0AC</Color>
-            <Color x:Key="LightGray">#CAD1DC</Color>
-            <Color x:Key="DarkGray">#4E5C69</Color>
-            <Color x:Key="SOHigh">#0a5e67</Color>
-            <Color x:Key="SOLow">#2e949e</Color>
-            <Color x:Key="Primary">#0a5e67</Color>
-
-            
-            <Style TargetType="Frame" ApplyToDerivedTypes="True">
-                <Setter Property="CornerRadius" Value="15" />
-                <Setter Property="Visual" Value="Material"/>
-                <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="BackgroundColor" Value="White"/>
-            </Style>
-            
-            <Style TargetType="Button" ApplyToDerivedTypes="True">
-                <Setter Property="Visual" Value="Material"/>
-                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
-                <Setter Property="Margin" Value="15, 5"/>
-                <Setter Property="CornerRadius" Value="20"/>
-                <Setter Property="BackgroundColor" Value="{StaticResource SOLow}"/>
-            </Style>
-
-            <Style TargetType="Label">
-                <Setter Property="FontFamily" Value="Montserrat" />
-                <Setter Property="Visual" Value="Material"/>
-            </Style>
-
-            <Style TargetType="Entry" ApplyToDerivedTypes="True">
-                <Setter Property="BackgroundColor" Value="White"/>
-            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <framework:SOAppStyle />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>        
     </Application.Resources>
 </Application>

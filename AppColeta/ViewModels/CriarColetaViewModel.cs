@@ -19,8 +19,9 @@ namespace SOColeta.ViewModels
         private double precoCompra;
 
         private readonly IStockService stockService;
+        private readonly IQrCodeScanningService scanningService;
 
-        public CriarColetaViewModel(IStockService stockService)
+        public CriarColetaViewModel(IStockService stockService, IQrCodeScanningService scanningService)
         {
             Title = "Criar coleta";
             SaveCommand = new Command(OnSave, ValidateSave);
@@ -30,12 +31,11 @@ namespace SOColeta.ViewModels
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
             this.stockService = stockService;
+            this.scanningService = scanningService;
         }
         private async void OpenScan(object obj)
         {
-
-            var scanner = DependencyService.Get<IQrCodeScanningService>();
-            var result = await scanner.ScanAsync();
+            var result = await scanningService.ScanAsync();
             if (!string.IsNullOrEmpty(result))
             {
                 // Sua logica.

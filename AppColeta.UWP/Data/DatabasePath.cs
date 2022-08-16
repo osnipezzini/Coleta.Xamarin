@@ -1,9 +1,13 @@
-﻿using AppColeta.Data;
-using AppColeta.UWP.Data;
+﻿using SOColeta.UWP.Data;
+
+using SOColeta.Data;
+
+using SOCore.Utils;
+
 using System.IO;
 
 [assembly: Xamarin.Forms.Dependency(typeof(DatabasePath))]
-namespace AppColeta.UWP.Data
+namespace SOColeta.UWP.Data
 {
     public class DatabasePath : IDBPath
     {
@@ -11,8 +15,7 @@ namespace AppColeta.UWP.Data
         { }
         public string GetDbPath()
         {
-            string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "SOTech");
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            string path = SOHelper.AppDataFolder;
             return Path.Combine(path, "AppColeta.db");
         }
     }

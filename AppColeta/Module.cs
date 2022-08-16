@@ -29,6 +29,7 @@ namespace SOColeta
             #region Serviços
             _services.AddDbContext<AppDbContext>();
             _services.AddScoped<IStockService, StockService>();
+            _services.AddScoped<IQrCodeScanningService, BarcodeScanningService>();
             _services.AddLogging();
             #endregion
         }

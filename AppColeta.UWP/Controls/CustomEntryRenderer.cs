@@ -1,9 +1,9 @@
-﻿using AppColeta.UWP.Controls;
+﻿using SOColeta.UWP.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.UWP;
 
 [assembly: ExportRenderer(typeof(Entry), typeof(CustomEntryRenderer))]
-namespace AppColeta.UWP.Controls
+namespace SOColeta.UWP.Controls
 {
     public class CustomEntryRenderer : EntryRenderer
     {

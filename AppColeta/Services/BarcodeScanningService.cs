@@ -1,13 +1,10 @@
-﻿using SOColeta.Droid.Services;
-using SOColeta.Services;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using System.Threading.Tasks;
+
 using ZXing.Mobile;
 
-[assembly: Dependency(typeof(QrCodeScanningService))]
-namespace SOColeta.Droid.Services
+namespace SOColeta.Services
 {
-    public class QrCodeScanningService : IQrCodeScanningService
+    internal class BarcodeScanningService : IQrCodeScanningService
     {
         public async Task<string> ScanAsync()
         {
