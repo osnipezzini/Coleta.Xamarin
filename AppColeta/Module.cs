@@ -2,9 +2,8 @@
 
 using SOColeta.Data;
 using SOColeta.Services;
-using SOColeta.ViewModels;
 
-using SOTech.Core.Services;
+using SOFramework;
 
 namespace SOColeta
 {
@@ -23,20 +22,8 @@ namespace SOColeta
             _services = new ServiceCollection();
 
             #region SOTech Internals
-            _services.AddSingleton<ILicenseService, LicenseService>();
-            _services.AddScoped<ILogger, SOTechLogger>();
-            #endregion
-
-            #region ViewModels
-            _services.AddScoped<ColetaDetailViewModel>();
-            _services.AddScoped<ConfigViewModel>();
-            _services.AddScoped<CriarColetaViewModel>();
-            _services.AddScoped<CriarInventarioViewModel>();
-            _services.AddScoped<ImportFileViewModel>();
-            _services.AddScoped<LicenseViewModel>();
-            _services.AddScoped<LoginViewModel>();
-            _services.AddScoped<MainViewModel>();
-            _services.AddScoped<MeusInventariosViewModel>();
+            _services.UseSOLicense();
+            _services.RegisterViews(typeof(Module));
             #endregion
 
             #region Serviços

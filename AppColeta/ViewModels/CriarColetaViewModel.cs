@@ -1,8 +1,6 @@
 ﻿using SOColeta.Models;
 using SOColeta.Services;
 
-using SOTech.Mvvm;
-
 using System;
 using System.Threading.Tasks;
 
@@ -105,9 +103,9 @@ namespace SOColeta.ViewModels
 
         private async void OnSave()
         {
-            await stockService.AddColeta(new Coleta 
-            { 
-                Codigo = codigo, 
+            await stockService.AddColeta(new Coleta
+            {
+                Codigo = codigo,
                 Quantidade = double.Parse(quantidade),
                 InventarioId = InventarioId
             });

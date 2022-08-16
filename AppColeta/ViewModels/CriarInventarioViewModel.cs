@@ -1,14 +1,14 @@
-﻿using SOColeta.Models;
+﻿using Microsoft.Extensions.Logging;
+
+using SOColeta.Models;
 using SOColeta.Services;
 using SOColeta.Views;
-
-using SOTech.Mvvm;
 
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using SOTech.Core.Services;
+
 using Xamarin.Forms;
 
 namespace SOColeta.ViewModels
@@ -17,15 +17,15 @@ namespace SOColeta.ViewModels
     {
         private DateTime _dataCriacao;
         private readonly IStockService stockService;
-        private readonly ILogger logger;
+        private readonly ILogger<CriarInventarioViewModel> logger;
         private Inventario inventario;
 
         public ObservableCollection<Coleta> Coletas { get; set; }
         public Command LoadColetasCommand { get; }
         public Command IniciarColetaCommand { get; }
         public Command SaveCommand { get; }
-        
-        public CriarInventarioViewModel(IStockService stockService, ILogger logger)
+
+        public CriarInventarioViewModel(IStockService stockService, ILogger<CriarInventarioViewModel> logger)
         {
             Title = "Criar inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
@@ -51,22 +51,22 @@ namespace SOColeta.ViewModels
         private async Task ExecuteSaveCommand()
         {
             if (!await stockService.InventarioHasColeta())
-                await DisplayAlertAsync("Acesso negado", "Atenção: Proibido finalizar inventários vazios!");
+                await DisplayAlertAsync("Atenção: Proibido finalizar inventários vazios!");
             else
             {
                 IsBusy = true;
                 try
                 {
                     await stockService.FinishInventario();
-                    await DisplayAlertAsync("Salvo", "Seu inventário foi salvo com sucesso");
+                    await DisplayAlertAsync("Seu inventário foi salvo com sucesso");
                 }
                 catch (Exception ex)
                 {
-                    logger.Debug($"===== {ex.GetType().FullName} =====");
-                    logger.Debug(ex.StackTrace);
-                    logger.Debug($"===== {ex.GetType().FullName} =====");
-                    logger.Error(ex, "Erro ao salvar o inventário");
-                    await DisplayAlertAsync(ex.Message, "ERRO FATAL");
+                    logger.LogDebug($"===== {ex.GetType().FullName} =====");
+                    logger.LogDebug(ex.StackTrace);
+                    logger.LogDebug($"===== {ex.GetType().FullName} =====");
+                    logger.LogError(ex, "Erro ao salvar o inventário");
+                    await DisplayAlertAsync(ex.Message);
                 }
                 finally
                 {
@@ -95,8 +95,8 @@ namespace SOColeta.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                logger.Debug(ex.StackTrace);
-                logger.Error(ex, "Erro ao carregar as coletas do inventário");
+                logger.LogDebug(ex.StackTrace);
+                logger.LogError(ex, "Erro ao carregar as coletas do inventário");
             }
         }
     }

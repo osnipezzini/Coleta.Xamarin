@@ -2,12 +2,13 @@
 
 using SOColeta.Data;
 
-using SOTech.Core.Services;
+using SOFramework.Services;
 
 namespace SOColeta
 {
     public partial class App
     {
+        private IUILicenseService licenseService;
         public App()
         {
 
@@ -17,17 +18,18 @@ namespace SOColeta
             using (var context = new AppDbContext())
                 context.Database.Migrate();
 
+            licenseService = Module.GetService<IUILicenseService>();
+
             MainPage = new AppShell();
         }
 
         protected override void OnStart()
         {
+            licenseService.ValidateOnStart();
         }
-        protected override async void OnSleep()
+        protected override void OnSleep()
         {
-            var licService = Module.GetService<ILicenseService>();
-            if (licService != null && licService.HasLicense)
-                await licService.ValidateAsync();
+            licenseService.ValidateOnSleep();
         }
 
         protected override void OnResume()

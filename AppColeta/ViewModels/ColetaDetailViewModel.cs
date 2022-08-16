@@ -1,8 +1,4 @@
-﻿using SOTech.Mvvm;
-
-using System;
-using System.Diagnostics;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace SOColeta.ViewModels
 {

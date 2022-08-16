@@ -87,9 +87,6 @@
         <ShellContent Title="Meus inventários" Icon="reminder" Route="MeusInventarios" ContentTemplate="{DataTemplate local:MeusInventariosPage}" />
     </FlyoutItem>
     <ShellContent Title="Importar arquivo" Icon="upload_file" ContentTemplate="{DataTemplate local:ImportFilePage}"/>
-    <TabBar>
-        <ShellContent Title="Licenciamento" ContentTemplate="{DataTemplate local:LicensePage}" Route="LicensePage"/>
-    </TabBar>
     <!--<ShellContent Title="Configurações" Icon="job.png" Route="Config" ContentTemplate="{DataTemplate local:ConfigPage}" />-->
 
     <!--

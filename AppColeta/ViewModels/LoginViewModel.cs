@@ -1,7 +1,5 @@
 ﻿using SOColeta.Views;
 
-using SOTech.Mvvm;
-
 using Xamarin.Forms;
 
 namespace SOColeta.ViewModels

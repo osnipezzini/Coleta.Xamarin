@@ -1,6 +1,4 @@
-﻿using SOTech.Mvvm;
-
-namespace SOColeta.ViewModels
+﻿namespace SOColeta.ViewModels
 {
     class ConfigViewModel : ViewModelBase
     {
