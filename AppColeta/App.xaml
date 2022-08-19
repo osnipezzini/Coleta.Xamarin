@@ -9,6 +9,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <framework:SOColors />
                 <framework:SOAppStyle />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>        
