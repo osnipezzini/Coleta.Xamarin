@@ -1,4 +1,6 @@
 ﻿
+using Acr.UserDialogs;
+
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -20,6 +22,7 @@ namespace SOColeta.Droid
             MobileBarcodeScanner.Initialize(this.Application);
             global::Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            UserDialogs.Init(this);
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

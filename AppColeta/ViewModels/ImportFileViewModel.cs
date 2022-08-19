@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 
+using Acr.UserDialogs;
+
 using SOColeta.Models;
 using SOColeta.Services;
 
@@ -20,22 +22,26 @@ namespace SOColeta.ViewModels
         private FileResult fullpath;
         private readonly IStockService stockService;
         private readonly ILogger<ImportFileViewModel> logger;
+        private string busyMessage;
+        private bool cancelImport = false; 
 
         public Command ChooseFileCommand { get; }
         public Command StartImportCommand { get; }
+        public Command StopImportCommand { get; }
         public ImportFileViewModel(IStockService stockService, ILogger<ImportFileViewModel> logger)
         {
             Title = "Importar arquivo";
             ChooseFileCommand = new Command(async () => await PickAndShow());
             StartImportCommand = new Command(async () => await ImportFile());
+            StopImportCommand = new Command(() => cancelImport = true);
             this.stockService = stockService;
             this.logger = logger;
         }
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
+        public string BusyMessage { get => busyMessage; set => SetProperty(ref busyMessage, value); }
 
         private async Task<bool> PickAndShow()
         {
-
             var options = new PickOptions
             {
                 FileTypes = new FilePickerFileType(
@@ -62,47 +68,58 @@ namespace SOColeta.ViewModels
             {
                 logger.LogError(ex, "Erro ao importar arquivo de inventario!");
             }
+            
             return false;
         }
 
         private async Task ImportFile()
         {
+            IsBusy = true;
             var stream = await fullpath.OpenReadAsync();
             var readerStream = new StreamReader(stream);
             var contents = await readerStream.ReadToEndAsync();
             string[] file = contents.Split('\n');
-            foreach (string line in file)
-            {
-                if (!string.IsNullOrWhiteSpace(line) && (line.Contains(";") || line.Contains(",")))
+            int processedLine = 1;
+            BusyMessage = "Iniciando importação de produtos...";
+            using (var loading = UserDialogs.Instance.Loading("Iniciando importação de produtos...", 
+                maskType: MaskType.Gradient, show:true))
+                foreach (string line in file)
                 {
-                    try
+                    if (cancelImport)
+                        return;
+                    loading.Title = BusyMessage = $"Processando linha {processedLine} / {file.Length} ...";
+                    loading.PercentComplete = (processedLine / file.Length) * 100;
+
+                    if (!string.IsNullOrWhiteSpace(line) && (line.Contains(";") || line.Contains(",")))
                     {
-                        char splitter = line.Contains(";") ? ';' : ',';
-                        var reader = line.Replace("\r", "").Split(splitter);
-                        double custo = 0;
-                        double venda = 0;
-
-                        if (reader.Length >= 4)
-                            double.TryParse(reader[3].Replace('.', ','), out custo);
-                        if (reader.Length >= 3)
-                            double.TryParse(reader[2].Replace('.', ','), out venda);
-
-                        await stockService.AddProduto(new Produto
+                        try
                         {
-                            Codigo = reader[0],
-                            Nome = reader[1],
-                            PrecoVenda = venda,
-                            PrecoCusto = custo,
-                        });
-                    }
-                    catch (Exception)
-                    {
-                        Debug.WriteLine("Não foi possível validar a linha selecionada.");
-                    }
+                            char splitter = line.Contains(";") ? ';' : ',';
+                            var reader = line.Replace("\r", "").Split(splitter);
+                            double custo = 0;
+                            double venda = 0;
 
+                            if (reader.Length >= 4)
+                                double.TryParse(reader[3].Replace('.', ','), out custo);
+                            if (reader.Length >= 3)
+                                double.TryParse(reader[2].Replace('.', ','), out venda);
+
+                            await stockService.AddProduto(new Produto
+                            {
+                                Codigo = reader[0],
+                                Nome = reader[1],
+                                PrecoVenda = venda,
+                                PrecoCusto = custo,
+                            });
+                        }
+                        catch (Exception)
+                        {
+                            Debug.WriteLine("Não foi possível validar a linha selecionada.");
+                        }
+
+                    }
                 }
-            }
-
+            IsBusy = false;
             await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {file.Length} produtos.", "Ok");
         }
     }

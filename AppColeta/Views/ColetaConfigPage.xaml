@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SOColeta.ViewModels"
+             x:DataType="vm:ColetaConfigViewModel"
+             x:Class="SOColeta.Views.ColetaConfigPage"
+             xmlns:converters="clr-namespace:SOColeta.Converters"
+             Title="Configurações de coleta">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Salvar" Command="{Binding SaveCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Frame">
+                <Setter Property="Padding" Value="10, 0"/>
+            </Style>
+            <Style TargetType="Grid">
+                <Setter Property="ColumnDefinitions" Value="*, 50"/>
+            </Style>
+            <converters:InvertedBoolConverter x:Key="InvertedBool" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout Padding="5">
+            <Frame>
+                <Grid>
+                    <Label Text="Desativar foco automático"/>
+                    <Switch IsToggled="{Binding DisableAutoFocus}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Atraso entre foco automático"/>
+                    <Entry Text="{Binding DelayBetweenFocus}" 
+                           IsReadOnly="{Binding DisableAutoFocus}"
+                           Grid.Column="1" Keyboard="Numeric"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Rotação automática de tela"/>
+                    <Switch IsToggled="{Binding AutoRotate}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Usar camera frontal se disponível"/>
+                    <Switch IsToggled="{Binding UseFrontCameraIfAvailable}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Usar código de barras puro"/>
+                    <Switch IsToggled="{Binding PureBarcode}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Assumir GS1"/>
+                    <Switch IsToggled="{Binding AssumeGS1}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Usar escaneamento nativo"/>
+                    <Switch IsToggled="{Binding UseNativeScanning}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Tentar mais firme"/>
+                    <Switch IsToggled="{Binding TryHarder}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Tentar invertido"/>
+                    <Switch IsToggled="{Binding TryInverted}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Usar modo extendido do Code39"/>
+                    <Switch IsToggled="{Binding UseCode39ExtendedMode}" Grid.Column="1"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Atraso entre a analise de frames"/>
+                    <Entry Text="{Binding DelayBetweenAnalyzingFrames}" Grid.Column="1" Keyboard="Numeric"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Atraso entre escaneamentos contínuos"/>
+                    <Entry Text="{Binding DelayBetweenContinuousScans}" Grid.Column="1" Keyboard="Numeric"/>
+                </Grid>
+            </Frame>
+            <Frame>
+                <Grid>
+                    <Label Text="Atraso inicial antes de analisar os frames"/>
+                    <Entry Text="{Binding InitialDelayBeforeAnalyzingFrames}" Grid.Column="1" Keyboard="Numeric"/>
+                </Grid>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

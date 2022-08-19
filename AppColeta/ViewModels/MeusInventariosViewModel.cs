@@ -49,7 +49,15 @@ namespace SOColeta.ViewModels
         public MeusInventariosViewModel(IStockService stockService, ILogger<MeusInventariosViewModel> logger)
         {
             Title = "Meus inventários";
-            ExportFileCommand = new Command(ExecuteExportFileCommand, CanExportFile);
+            ExportFileCommand = new Command<Inventario>(async (x) =>
+            {
+                var tipoInventario = await Shell
+                .Current
+                .DisplayActionSheet("Selecione o sistema para exportação", "Cancelar", null, Enum.GetNames(typeof(TipoSistema)));
+                if (!Enum.TryParse<TipoSistema>(tipoInventario, out var tipoSistema))
+                    return;
+                ExecuteExportFileCommand(x, tipoSistema);
+            }, CanExportFile);
             LoadInventariosCommand = new Command(ExecuteLoadInventariosCommand);
             Inventarios = new ObservableCollection<Inventario>();
             SelectedItemCommand = new Command<Inventario>(OnItemSelected);
@@ -72,19 +80,13 @@ namespace SOColeta.ViewModels
             await OnAppearing();
         }
 
-        private async void ExecuteExportFileCommand(object objeto)
+        private async void ExecuteExportFileCommand(Inventario inventario, TipoSistema tipoSistema)
         {
-            var obj = SelectedItem;
-            var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), obj.NomeArquivo);
+            var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), inventario.NomeArquivo);
             var arquivoString = string.Empty;
-            var tipoInventario = await Shell
-                .Current
-                .DisplayActionSheet("Selecione o sistema para exportação", "Cancelar", null, Enum.GetNames(typeof(TipoSistema)));
+            
 
-            if (!Enum.TryParse<TipoSistema>(tipoInventario, out var tipoSistema))
-                return;
-
-            await foreach (var coleta in stockService.GetColetasAsync(obj.Id))
+            await foreach (var coleta in stockService.GetColetasAsync(inventario.Id))
             {
                 switch (tipoSistema)
                 {
@@ -95,7 +97,7 @@ namespace SOColeta.ViewModels
                     case TipoSistema.AutoSystem:
                         {
                             var linhaString = $"{coleta.Codigo.PadLeft(14, '0')}{coleta.Quantidade.ToString().PadLeft(6, '0')}0000000{coleta.Hora.ToString("dd/MM/yyHH:mm:ss")}\n";
-                            if (linhaString.Length == 43)
+                            if (linhaString.Length == 44)
                                 arquivoString += linhaString;
                             break;
                         }
@@ -116,6 +118,12 @@ namespace SOColeta.ViewModels
         {
             return _selectedItem != null;
         }
+
+        internal void ExportInventarioFile(Inventario inventario, TipoSistema tipoSistema = TipoSistema.AutoSystem)
+        {
+            ExecuteExportFileCommand(inventario, tipoSistema);
+        }
+
         public Inventario SelectedItem
         {
             get => _selectedItem;

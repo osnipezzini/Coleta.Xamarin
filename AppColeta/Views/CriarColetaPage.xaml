@@ -4,7 +4,8 @@
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
              xmlns:fonts="clr-namespace:SOFramework.Fonts;assembly=SOFramework.Xamarin"
              x:Class="SOColeta.Views.CriarColetaPage"
-             Shell.PresentationMode="ModalAnimated"
+             Shell.PresentationMode="Animated"
+             Shell.NavBarIsVisible="True"
              x:DataType="vm:CriarColetaViewModel"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
@@ -50,12 +51,10 @@
             <Label Text="Quantidade" FontSize="Medium" />
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
                 <ImageButton Clicked="OnMinusButtonClicked"
-                                     BackgroundColor="Transparent"
                                      HeightRequest="50">
                     <ImageButton.Source>
                         <FontImageSource 
                                     Glyph="{x:Static fonts:FASolid.MinusCircle}" 
-                                    Color="{StaticResource Primary}"
                                     FontFamily="FA-S"/>
                     </ImageButton.Source>
                 </ImageButton>
@@ -65,12 +64,10 @@
                        x:Name="txtQuantity" Keyboard="Numeric" WidthRequest="120" Completed="OnFinishedQuantity" />
                 </Frame>
                 <ImageButton Clicked="OnPlusButtonClicked"
-                                     BackgroundColor="Transparent"
                                      HeightRequest="50">
                     <ImageButton.Source>
                         <FontImageSource 
-                                    Glyph="{x:Static fonts:FASolid.PlusCircle}" 
-                                    Color="{StaticResource Primary}"
+                                    Glyph="{x:Static fonts:FASolid.PlusCircle}"
                                     FontFamily="FA-S"/>
                     </ImageButton.Source>
                 </ImageButton>
