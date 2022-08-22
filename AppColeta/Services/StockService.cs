@@ -63,8 +63,8 @@ namespace SOColeta.Services
             var inventario = new Inventario
             {
                 Id = id,
-                DataCriacao = DateTime.Today,
-                NomeArquivo = $"Inventario-{DateTime.Today.ToString("ddMMyyyyHHmm")}.txt",
+                DataCriacao = DateTime.Now,
+                NomeArquivo = $"Inventario-{DateTime.Now.ToString("ddMMyyyyHHmm")}.txt",
                 IsFinished = false
             };
             dbContext.Inventarios.Add(inventario);
@@ -166,6 +166,14 @@ namespace SOColeta.Services
         public Task<Inventario> GetOpenedInventario()
         {
             return dbContext.Inventarios.FirstOrDefaultAsync(x => !x.IsFinished);
+        }
+
+        public Task SetInventarioName(Inventario inventario, string name)
+        {
+            inventario.NomeArquivo = name;
+            dbContext.Entry(inventario).State = EntityState.Modified;
+            dbContext.Inventarios.Update(inventario);
+            return dbContext.SaveChangesAsync();
         }
     }
 }
