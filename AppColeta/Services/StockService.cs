@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 using SOColeta.Data;
+using SOColeta.Exceptions;
 using SOColeta.Models;
 
 using System;
@@ -21,7 +22,7 @@ namespace SOColeta.Services
             this.dbContext = dbContext;
             this.logger = logger;
         }
-        public async Task AddColeta(Coleta coleta)
+        public async Task AddColeta(Coleta coleta, bool? replaceOld = null)
         {
             logger.LogDebug("Verificando coleta já existente...");
             var coletaOld = await dbContext.Coletas
@@ -36,8 +37,14 @@ namespace SOColeta.Services
 
             if (coletaOld != null)
             {
+                if (!replaceOld.HasValue)
+                    throw new ColetaConflictException("Coleta já existe!");
+
                 logger.LogDebug("Atualizando coleta...");
-                coletaOld.Quantidade = coleta.Quantidade;
+                if (replaceOld.Value)
+                    coletaOld.Quantidade = coleta.Quantidade;
+                else
+                    coletaOld.Quantidade += coleta.Quantidade;
                 coletaOld.Hora = coleta.Hora;
                 dbContext.Coletas.Update(coletaOld);
             }

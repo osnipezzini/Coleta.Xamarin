@@ -1,4 +1,5 @@
-﻿using SOColeta.Models;
+﻿using SOColeta.Exceptions;
+using SOColeta.Models;
 using SOColeta.Services;
 
 using System;
@@ -103,12 +104,28 @@ namespace SOColeta.ViewModels
 
         private async void OnSave()
         {
-            await stockService.AddColeta(new Coleta
+            var coleta = new Coleta
             {
                 Codigo = codigo,
                 Quantidade = double.Parse(quantidade),
                 InventarioId = InventarioId
-            });
+            };
+            try
+            {
+                await stockService.AddColeta(coleta);
+
+                Codigo = string.Empty;
+                Quantidade = string.Empty;
+            }
+            catch (ColetaConflictException cce)
+            {
+                var resposta = await Shell.Current.DisplayActionSheet("Coleta já existe, o que deseja fazer?", "", "", "Somar", "Substituir");
+                if (resposta != "Cancelar" && resposta != "Sair")
+                    await stockService.AddColeta(coleta, resposta == "Substituir");
+
+                Codigo = string.Empty;
+                Quantidade = string.Empty;
+            }
 
             Codigo = string.Empty;
             Quantidade = string.Empty;

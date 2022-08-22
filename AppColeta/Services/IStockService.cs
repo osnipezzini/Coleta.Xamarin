@@ -11,7 +11,7 @@ namespace SOColeta.Services
         Task<bool> InventarioHasColeta();
         Task<Inventario> GetOpenedInventario();
         IAsyncEnumerable<Coleta> GetColetasAsync(string id = default);
-        Task AddColeta(Coleta coleta);
+        Task AddColeta(Coleta coleta, bool? replaceOld = null);
         Task RemoveColeta(Coleta coleta);
         Task FinishInventario();
         IAsyncEnumerable<Inventario> GetFinishedInventarios();
