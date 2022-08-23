@@ -1,6 +1,10 @@
-﻿using SOColeta.Exceptions;
+﻿using Acr.UserDialogs;
+
+using SOColeta.Exceptions;
 using SOColeta.Models;
 using SOColeta.Services;
+
+using SOFramework.Fonts;
 
 using System;
 using System.Threading.Tasks;
@@ -11,13 +15,17 @@ namespace SOColeta.ViewModels
 {
     public delegate void FinishedReadCodeDelegate(object sender, EventArgs e);
     [QueryProperty(nameof(InventarioId), nameof(InventarioId))]
+    [QueryProperty(nameof(ColetaId), nameof(ColetaId))]
     public class CriarColetaViewModel : ViewModelBase
     {
         private string codigo;
-        private string quantidade;
+        private string quantidade = "1";
         private string nome;
         private double precoVenda;
         private double precoCompra;
+        private bool isEditing = false;
+        private string saveButtonName = "Digitar código";
+        private string saveButtonIcon = FASolid.Keyboard;
 
         private readonly IStockService stockService;
         private readonly IQrCodeScanningService scanningService;
@@ -33,6 +41,19 @@ namespace SOColeta.ViewModels
                 (_, __) => SaveCommand.ChangeCanExecute();
             this.stockService = stockService;
             this.scanningService = scanningService;
+        }
+        public override async Task OnAppearing()
+        {
+            if (!string.IsNullOrEmpty(ColetaId))
+            {
+                IsEditing = true;
+                using var loading = UserDialogs.Instance.Loading("Carregando coleta...");
+                var coleta = await stockService.GetColetaAsync(ColetaId);
+                Codigo = coleta.Codigo;
+                Quantidade = coleta.Quantidade.ToString();
+                InventarioId = coleta.InventarioId;
+                await GetCodigo();
+            }
         }
         private async void OpenScan(object obj)
         {
@@ -65,12 +86,35 @@ namespace SOColeta.ViewModels
         public string Codigo
         {
             get => codigo;
-            set => SetProperty(ref codigo, value);
+            set
+            {
+                SetProperty(ref codigo, value);
+                if (!string.IsNullOrEmpty(value))
+                {
+                    SaveButtonName = IsEditing ? "Salvar" : "Adicionar";
+                    SaveButtonIcon = FASolid.CheckCircle;
+                }
+                else
+                {
+                    SaveButtonName = "Digitar código";
+                    SaveButtonIcon = FASolid.Keyboard;
+                }
+            }
         }
         public string Nome
         {
             get => nome;
             set => SetProperty(ref nome, value);
+        }
+        public string SaveButtonIcon
+        {
+            get => saveButtonIcon;
+            set => SetProperty(ref saveButtonIcon, value);
+        }
+        public string SaveButtonName
+        {
+            get => saveButtonName;
+            set => SetProperty(ref saveButtonName, value);
         }
         public double PrecoCusto
         {
@@ -82,6 +126,11 @@ namespace SOColeta.ViewModels
             get => precoVenda;
             set => SetProperty(ref precoVenda, value);
         }
+        public bool IsEditing
+        {
+            get => isEditing;
+            set => SetProperty(ref isEditing, value);
+        }
 
         public string Quantidade
         {
@@ -89,6 +138,7 @@ namespace SOColeta.ViewModels
             set => SetProperty(ref quantidade, value);
         }
         public string InventarioId { get; set; }
+        public string ColetaId { get; set; }
         public event FinishedReadCodeDelegate OnFinishedReadCode;
 
         public Command SaveCommand { get; }
@@ -112,12 +162,12 @@ namespace SOColeta.ViewModels
             };
             try
             {
-                await stockService.AddColeta(coleta);
+                await stockService.AddColeta(coleta, isEditing);
 
                 Codigo = string.Empty;
                 Quantidade = string.Empty;
             }
-            catch (ColetaConflictException cce)
+            catch (ColetaConflictException)
             {
                 var resposta = await Shell.Current.DisplayActionSheet("Coleta já existe, o que deseja fazer?", "", "", "Somar", "Substituir");
                 if (resposta != "Cancelar" && resposta != "Sair")

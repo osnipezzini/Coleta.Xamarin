@@ -21,10 +21,11 @@ namespace SOColeta.ViewModels
         private Inventario _selectedItem;
         private readonly IStockService stockService;
         private readonly ILogger<MeusInventariosViewModel> logger;
-
         public ObservableCollection<Inventario> Inventarios { get; }
         public Command ExportFileCommand { get; }
         public Command<Inventario> SelectedItemCommand { get; }
+        public Command<Inventario> EditInventarioCommand { get; }
+
         public override async Task OnAppearing()
         {
             Inventarios.Clear();
@@ -61,6 +62,7 @@ namespace SOColeta.ViewModels
             LoadInventariosCommand = new Command(ExecuteLoadInventariosCommand);
             Inventarios = new ObservableCollection<Inventario>();
             SelectedItemCommand = new Command<Inventario>(OnItemSelected);
+            EditInventarioCommand = new Command<Inventario>(async(x) => await Shell.Current.GoToAsync($"///CriarInventario?InventarioId={x.Id}"));
             PropertyChanged +=
                 (_, __) => ExportFileCommand.ChangeCanExecute();
             this.stockService = stockService;
@@ -83,8 +85,10 @@ namespace SOColeta.ViewModels
         private async void ExecuteExportFileCommand(Inventario inventario, TipoSistema tipoSistema)
         {
             var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), inventario.NomeArquivo);
-            var arquivoString = string.Empty;
-            
+            if (!Path.HasExtension(arquivo))
+                arquivo = $"{arquivo}.txt";
+
+            var arquivoString = string.Empty;            
 
             await foreach (var coleta in stockService.GetColetasAsync(inventario.Id))
             {

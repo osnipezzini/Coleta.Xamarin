@@ -3,18 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
              xmlns:fonts="clr-namespace:SOFramework.Fonts;assembly=SOFramework.Xamarin"
+             xmlns:converters="clr-namespace:SOColeta.Converters"
              x:Class="SOColeta.Views.CriarColetaPage"
              Shell.PresentationMode="Animated"
              Shell.NavBarIsVisible="True"
              x:DataType="vm:CriarColetaViewModel"
              Title="{Binding Title}">
+    <ContentPage.Resources>
+        <converters:InvertedBoolConverter x:Key="InvertedBool"/>
+    </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Capturar código" IconImageSource="barcodeScanner.png" Command="{Binding ReadCodeCommand}"/>
+        <ToolbarItem Text="Finalizar" Command="{Binding CancelCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
-            <Button HorizontalOptions="End" ImageSource="barcodeScanner.png" Text="Capturar código" 
-                    Command="{Binding ReadCodeCommand}" Padding="5" Margin="0, 15, 0, 5"/>
             <ScrollView>
                 <StackLayout>
                     <Label Text="Codigo de Barras" FontSize="Medium" />
@@ -37,14 +39,6 @@
                                     <FormattedString>
                                         <Span Text="Preço de venda: "/>
                                         <Span Text="{Binding PrecoVenda}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label>
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="Preço de custo: "/>
-                                        <Span Text="{Binding PrecoCusto}"/>
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
@@ -79,7 +73,19 @@
                     </StackLayout>
                 </StackLayout>
             </ScrollView>
-            <Button Text="Adicionar" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"/>
+            <Button ImageSource="barcodeScanner.png" Text="Capturar código" 
+                    IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBool}}"
+                    Command="{Binding ReadCodeCommand}"/>
+            <Button Text="{Binding SaveButtonName}" Clicked="OnAddClicked"
+                    HorizontalOptions="FillAndExpand" BackgroundColor="White">
+                <Button.ImageSource>
+                    <FontImageSource 
+                                    Glyph="{Binding SaveButtonIcon}" 
+                                    Color="{StaticResource Primary}"
+                                    FontFamily="FA-S"/>
+                </Button.ImageSource>
+            </Button>
+
             <BoxView VerticalOptions="FillAndExpand"/>
             <Button Text="Terminar" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" VerticalOptions="End"/>
         </StackLayout>

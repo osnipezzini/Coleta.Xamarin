@@ -22,7 +22,7 @@ namespace SOColeta.Services
             this.dbContext = dbContext;
             this.logger = logger;
         }
-        public async Task AddColeta(Coleta coleta, bool? replaceOld = null)
+        public async Task AddColeta(Coleta coleta, bool? replaceOld = false)
         {
             logger.LogDebug("Verificando coleta já existente...");
             var coletaOld = await dbContext.Coletas
@@ -174,6 +174,16 @@ namespace SOColeta.Services
             dbContext.Entry(inventario).State = EntityState.Modified;
             dbContext.Inventarios.Update(inventario);
             return dbContext.SaveChangesAsync();
+        }
+
+        public Task<Coleta> GetColetaAsync(string coletaId)
+        {
+            return dbContext.Coletas.FirstAsync(x => x.Id == coletaId);
+        }
+
+        public Task<Inventario> GetInventario(string inventarioId)
+        {
+            return dbContext.Inventarios.FirstAsync(i => i.Id == inventarioId);
         }
     }
 }

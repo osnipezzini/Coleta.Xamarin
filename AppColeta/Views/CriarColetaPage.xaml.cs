@@ -22,7 +22,11 @@ namespace SOColeta.Views
 
             viewModel.OnFinishedReadCode += OnFinishedReadCode;
         }
-
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            viewModel.OnAppearing();
+        }
         private void BuscarCodigo(object sender, FocusEventArgs e)
         {
             ///viewModel.GetCodigo();
@@ -57,6 +61,14 @@ namespace SOColeta.Views
                 var quantity = quantidade - 1;
                 viewModel.Quantidade = quantity > 0 ? quantity.ToString("N2") : string.Empty;
             }
+        }
+
+        private void OnAddClicked(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(viewModel.Codigo))
+                txtCode.Focus();
+            else
+                viewModel.SaveCommand.Execute(null);
         }
     }
 }

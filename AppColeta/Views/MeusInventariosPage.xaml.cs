@@ -21,36 +21,20 @@ namespace SOColeta.Views
             base.OnAppearing();
             await viewModel.OnAppearing();
             viewModel.SelectedItem = null;
-        }
-
-        private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            if (e.SelectedItem is Inventario inventario)
-                viewModel.SelectedItem = inventario;
-        }
-
-        private void OnItemTapped(object sender, ItemTappedEventArgs e)
-        {
-            if (e.Item is Inventario inventario)
-                viewModel.SelectedItem = inventario;
-        }
-
-        private void OnExportEmsys(object sender, System.EventArgs e)
-        {
-            if (sender is MenuItem menuItem && menuItem.CommandParameter is Inventario inventario)
-                viewModel.ExportInventarioFile(inventario, TipoSistema.EMSys);
-        }
-
-        private void OnExportAutoSystem(object sender, System.EventArgs e)
-        {
-            if (sender is MenuItem menuItem && menuItem.CommandParameter is Inventario inventario)
-                viewModel.ExportInventarioFile(inventario);
-        }
+        }    
 
         private void OnExport(object sender, System.EventArgs e)
         {
             if (sender is MenuItem menuItem)
                 viewModel.ExportFileCommand.Execute(menuItem.CommandParameter);
+        }
+
+        private void OnEdit(object sender, System.EventArgs e)
+        {
+            if (sender is MenuItem menuItem && menuItem.CommandParameter is Inventario inventario)
+            {
+                Shell.Current.GoToAsync($"//CriarInventario?InventarioId={inventario.Id}");
+            }
         }
     }
 }

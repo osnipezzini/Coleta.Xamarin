@@ -18,5 +18,7 @@ namespace SOColeta.Services
         Task<Produto> GetProduto(string barcode);
         Task AddProduto(Produto produto);
         Task SetInventarioName(Inventario inventario, string name);
+        Task<Coleta> GetColetaAsync(string coletaId);
+        Task<Inventario> GetInventario(string inventarioId);
     }
 }
