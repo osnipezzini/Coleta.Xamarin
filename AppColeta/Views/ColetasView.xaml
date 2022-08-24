@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SOColeta.Models"
+             x:Class="SOColeta.Views.ColetasView"
+             x:DataType="models:Coleta">
+  <ContentView.Content>        
+        <StackLayout Padding="20, 0">
+            <Label TextColor="{StaticResource Primary}">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Código: "/>
+                        <Span Text="{Binding Codigo}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label TextColor="{StaticResource Primary}"
+                                            FontSize="13">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Quantidade: "/>
+                        <Span Text="{Binding Quantidade}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

@@ -2,6 +2,7 @@
 using SOColeta.ViewModels;
 
 using System;
+using System.Linq;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -68,7 +69,16 @@ namespace SOColeta.Views
             if (string.IsNullOrEmpty(viewModel.Codigo))
                 txtCode.Focus();
             else
+            {
                 viewModel.SaveCommand.Execute(null);
+                if (viewModel.IsEditing)
+                {
+                    // Remove page before Edit Page
+                    //Navigation.RemovePage(Navigation.NavigationStack.LastOrDefault());
+                    // This PopAsync will now go to List Page
+                    Navigation.PopAsync();
+                }                
+            }
         }
     }
 }

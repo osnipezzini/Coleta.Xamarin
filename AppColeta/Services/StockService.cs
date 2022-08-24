@@ -185,5 +185,13 @@ namespace SOColeta.Services
         {
             return dbContext.Inventarios.FirstAsync(i => i.Id == inventarioId);
         }
+
+        public async Task<Coleta> GetAndDeleteColetaAsync(string coletaId)
+        {
+            var coleta = await GetColetaAsync(coletaId);
+            dbContext.Coletas.Remove(coleta);
+            await dbContext.SaveChangesAsync();
+            return coleta;
+        }
     }
 }

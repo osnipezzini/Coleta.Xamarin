@@ -47,7 +47,7 @@ namespace SOColeta.ViewModels
         private void EditColeta(object obj)
         {
             if (obj is Coleta coleta)
-                GoToAsync($"/{nameof(CriarColetaPage)}?ColetaId={coleta.Id}");
+                GoToAsync($"{nameof(CriarColetaPage)}?ColetaId={coleta.Id}");
         }
 
         public override async Task OnAppearing()
@@ -67,25 +67,20 @@ namespace SOColeta.ViewModels
             DataCriacao = inventario.DataCriacao;
             InventarioName = Path.HasExtension(inventario.NomeArquivo) ? Path.GetFileNameWithoutExtension(inventario.NomeArquivo) : inventario.NomeArquivo;
 
-            if (inventario.ProdutosColetados is not null && inventario.ProdutosColetados.Any())
-            {
-                inventario.ProdutosColetados.ForEach(x => Coletas.Add(x));
-            }
-            else if (await stockService.InventarioHasColeta())
-                await ExecuteLoadColetasCommand();
-
             IsBusy = false;
+
+            LoadColetasCommand.Execute(null);
         }
         private async Task ExecuteSaveCommand()
         {
-            if (!await stockService.InventarioHasColeta())
+            if (string.IsNullOrEmpty(InventarioId) && !await stockService.InventarioHasColeta())
                 await DisplayAlertAsync("Atenção: Proibido finalizar inventários vazios!");
             else
             {
                 IsBusy = true;
                 try
                 {
-                    if (!string.IsNullOrEmpty(InventarioId))
+                    if (string.IsNullOrEmpty(InventarioId))
                         await stockService.FinishInventario();
                     await DisplayAlertAsync("Seu inventário foi salvo com sucesso");
                 }
@@ -102,6 +97,7 @@ namespace SOColeta.ViewModels
                     InventarioId = string.Empty;
                     await OnAppearing();
                 }
+                IsBusy = false;
             }
         }
 
@@ -117,17 +113,16 @@ namespace SOColeta.ViewModels
             IsBusy = true;
             try
             {
-                if (string.IsNullOrEmpty(inventario.Id))
+                Coletas.Clear();
+
+                if (inventario is null || string.IsNullOrEmpty(inventario.Id))
                     return;
 
                 var coletas = stockService.GetColetasAsync(inventario.Id);
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await foreach (var coleta in coletas)
-                        if (coleta is not null)
-                            Coletas.Add(coleta);
-                });
-                
+                await foreach (var coleta in coletas)
+                    if (coleta is not null)
+                        Coletas.Add(coleta);
+
             }
             catch (Exception ex)
             {

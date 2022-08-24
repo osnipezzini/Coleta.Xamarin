@@ -2,8 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
-             xmlns:model="clr-namespace:SOColeta.Models"
+             xmlns:views="clr-namespace:SOColeta.Views"
              xmlns:fonts="clr-namespace:SOFramework.Fonts;assembly=SOFramework.Xamarin"
+             xmlns:models="clr-namespace:SOColeta.Models"
              x:DataType="vm:CriarInventarioViewModel"
              x:Class="SOColeta.Views.CriarInventarioPage"
              x:Name="CurrentPage"
@@ -30,32 +31,23 @@
                 </Button>
             </StackLayout>
             <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadColetasCommand}">
-                <CollectionView SelectionChanged="CollectionView_SelectionChanged" ItemsSource="{Binding Coletas}"
+                <CollectionView 
+                                ItemsSource="{Binding Coletas}"
+                                x:Name="ListColeta"
                                 SelectionMode="Single">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:Coleta">
-                            <StackLayout Padding="20, 0">
-                                <Label TextColor="{StaticResource Primary}">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="Código: "/>
-                                            <Span Text="{Binding Codigo}"/>
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
-                                <Label TextColor="{StaticResource Primary}"
-                                            FontSize="13">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="Quantidade: "/>
-                                            <Span Text="{Binding Quantidade}"/>
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
-                            </StackLayout>
+                        <DataTemplate x:DataType="models:Coleta">
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItem IsDestructive="True" Text="Editar"
+                                               Command="{Binding Path=BindingContext.EditColetaCommand, Source={x:Reference CurrentPage}}" 
+                                               CommandParameter="{Binding .}"/>
+                                </SwipeView.RightItems>
+                                        <views:ColetasView />
+                            </SwipeView>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-                </CollectionView>                
+                </CollectionView>
             </RefreshView>
             <Button Text="Finalizar inventário" Command="{Binding SaveCommand}" FontSize="25" Margin="20, 20" />
         </StackLayout>

@@ -1,6 +1,4 @@
-﻿using Acr.UserDialogs;
-
-using SOColeta.Exceptions;
+﻿using SOColeta.Exceptions;
 using SOColeta.Models;
 using SOColeta.Services;
 
@@ -47,8 +45,10 @@ namespace SOColeta.ViewModels
             if (!string.IsNullOrEmpty(ColetaId))
             {
                 IsEditing = true;
+#if ANDROID
                 using var loading = UserDialogs.Instance.Loading("Carregando coleta...");
-                var coleta = await stockService.GetColetaAsync(ColetaId);
+#endif
+                var coleta = await stockService.GetAndDeleteColetaAsync(ColetaId);
                 Codigo = coleta.Codigo;
                 Quantidade = coleta.Quantidade.ToString();
                 InventarioId = coleta.InventarioId;
@@ -163,18 +163,12 @@ namespace SOColeta.ViewModels
             try
             {
                 await stockService.AddColeta(coleta, isEditing);
-
-                Codigo = string.Empty;
-                Quantidade = string.Empty;
             }
             catch (ColetaConflictException)
             {
                 var resposta = await Shell.Current.DisplayActionSheet("Coleta já existe, o que deseja fazer?", "", "", "Somar", "Substituir");
                 if (resposta != "Cancelar" && resposta != "Sair")
                     await stockService.AddColeta(coleta, resposta == "Substituir");
-
-                Codigo = string.Empty;
-                Quantidade = string.Empty;
             }
 
             Codigo = string.Empty;

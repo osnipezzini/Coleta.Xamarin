@@ -20,5 +20,6 @@ namespace SOColeta.Services
         Task SetInventarioName(Inventario inventario, string name);
         Task<Coleta> GetColetaAsync(string coletaId);
         Task<Inventario> GetInventario(string inventarioId);
+        Task<Coleta> GetAndDeleteColetaAsync(string coletaId);
     }
 }

@@ -3,8 +3,9 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:SOColeta.Views"
        Title="SOColeta"
+       BackgroundColor="{AppThemeBinding Dark={StaticResource SOHigh}, Light={StaticResource SOLow}}"
        x:Class="SOColeta.AppShell">
-    
+
     <!-- 
         When the Flyout is visible this defines the content to display in the flyout.
         FlyoutDisplayOptions="AsMultipleItems" will create a separate flyout item for each child element    
