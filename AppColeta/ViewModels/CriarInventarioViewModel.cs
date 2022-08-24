@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acr.UserDialogs;
+
+using Microsoft.Extensions.Logging;
 
 using SOColeta.Models;
 using SOColeta.Services;
@@ -23,6 +25,7 @@ namespace SOColeta.ViewModels
         private readonly ILogger<CriarInventarioViewModel> logger;
         private Inventario inventario;
         private string inventarioName;
+        private string oldName;
 
         public ObservableCollection<Coleta> Coletas { get; set; }
         public Command LoadColetasCommand { get; }
@@ -30,24 +33,46 @@ namespace SOColeta.ViewModels
         public Command SaveCommand { get; }
         public Command SaveInventarioNameCommand { get; }
         public Command EditColetaCommand { get; }
+        public Command RemoveColetaCommand { get; }
 
         public CriarInventarioViewModel(IStockService stockService, ILogger<CriarInventarioViewModel> logger)
         {
-            Title = "Criar inventario";
+            Title = "Inventario";
             LoadColetasCommand = new Command(async () => await ExecuteLoadColetasCommand());
             IniciarColetaCommand = new Command(async () => await ExecuteIniciarColetaCommand());
             SaveCommand = new Command(async () => await ExecuteSaveCommand());
-            SaveInventarioNameCommand = new Command<string>(SetInventarioName);
-            EditColetaCommand = new Command(EditColeta);
+            SaveInventarioNameCommand = new Command<string>(SetInventarioName, x => inventarioName != oldName);
+            EditColetaCommand = new Command<Coleta>(async(x) => await EditColeta(x));
+            RemoveColetaCommand = new Command<Coleta>(async(x) => await RemoveColeta(x));
             Coletas = new ObservableCollection<Coleta>();
             this.stockService = stockService;
             this.logger = logger;
+            PropertyChanged += CriarInventarioViewModel_PropertyChanged;
         }
 
-        private void EditColeta(object obj)
+        private async Task RemoveColeta(Coleta obj)
         {
-            if (obj is Coleta coleta)
-                GoToAsync($"{nameof(CriarColetaPage)}?ColetaId={coleta.Id}");
+            var confirm = await Shell.Current
+                .DisplayActionSheet("Tem certeza que deseja excluir a coleta selecionada ?", "Sim", "Não");
+            if (confirm == "Sim")
+                using (var loading = UserDialogs.Instance.Loading("Excluindo coleta..."))
+                {
+                    await stockService.RemoveColeta(obj);
+                    await ExecuteLoadColetasCommand();
+                }
+        }
+
+        private void CriarInventarioViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SaveInventarioNameCommand.ChangeCanExecute();
+        }
+
+        private async Task EditColeta(Coleta coleta)
+        {
+            using (var loading = UserDialogs.Instance.Loading("Editando coleta..."))
+            {
+                await GoToAsync($"{nameof(CriarColetaPage)}?ColetaId={coleta.Id}");
+            }
         }
 
         public override async Task OnAppearing()
@@ -57,11 +82,6 @@ namespace SOColeta.ViewModels
             if (!string.IsNullOrEmpty(InventarioId))
             {
                 inventario = await stockService.GetInventario(InventarioId);
-            }
-            else
-            {
-                inventario = await stockService.GetOpenedInventario();
-                inventario ??= await stockService.CreateInventario();
             }
             Coletas.Clear();
             DataCriacao = inventario.DataCriacao;
@@ -74,14 +94,14 @@ namespace SOColeta.ViewModels
         private async Task ExecuteSaveCommand()
         {
             if (string.IsNullOrEmpty(InventarioId) && !await stockService.InventarioHasColeta())
-                await DisplayAlertAsync("Atenção: Proibido finalizar inventários vazios!");
+                await DisplayAlertAsync("Impossível finalizar inventários sem produtos coletados!");
             else
             {
                 IsBusy = true;
                 try
                 {
-                    if (string.IsNullOrEmpty(InventarioId))
-                        await stockService.FinishInventario();
+                    await stockService.FinishInventario(InventarioId);
+                    await GoToAsync("..");
                     await DisplayAlertAsync("Seu inventário foi salvo com sucesso");
                 }
                 catch (Exception ex)
@@ -108,6 +128,8 @@ namespace SOColeta.ViewModels
         public string InventarioId { get; set; }
         public string InventarioName { get => inventarioName; set => SetProperty(ref inventarioName, value); }
         public DateTime DataCriacao { get => _dataCriacao; set => SetProperty(ref _dataCriacao, value); }
+        public Config Config { get; private set; }
+
         public async Task ExecuteLoadColetasCommand()
         {
             IsBusy = true;
@@ -118,11 +140,13 @@ namespace SOColeta.ViewModels
                 if (inventario is null || string.IsNullOrEmpty(inventario.Id))
                     return;
 
-                var coletas = stockService.GetColetasAsync(inventario.Id);
-                await foreach (var coleta in coletas)
-                    if (coleta is not null)
-                        Coletas.Add(coleta);
-
+                using (var loading = UserDialogs.Instance.Loading("Carregando coletas ..."))
+                {
+                    var coletas = stockService.GetColetasAsync(inventario.Id);
+                    await foreach (var coleta in coletas)
+                        if (coleta is not null)
+                            Coletas.Add(coleta);
+                }
             }
             catch (Exception ex)
             {

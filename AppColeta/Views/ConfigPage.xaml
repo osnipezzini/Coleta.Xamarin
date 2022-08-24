@@ -2,24 +2,16 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
-             xmlns:mvvm="clr-namespace:SOTech.Mvvm;assembly=SOTech.Mvvm"
              x:Class="SOColeta.Views.ConfigPage"
              x:DataType="vm:ConfigViewModel"
              Title="{Binding Title}">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Servidor SMTP"/>
-            <Frame>
-                <Entry />
-            </Frame>
-            <Label Text="Endereço de email"/>
-            <Frame>
-                <Entry />
-            </Frame>
-            <Label Text="Senha"/>
-            <Frame>
-                <Entry IsPassword="True"/>
-            </Frame>
+        <StackLayout Padding="15">
+            <Label Text="Comportamento ao deslizar"/>
+            <StackLayout Orientation="Horizontal">
+                <RadioButton Content="Executar" CheckedChanged="OnExecuteClicked" x:Name="rdExecute"/>
+                <RadioButton Content="Revelar" CheckedChanged="OnRevealClicked" x:Name="rdReveal"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

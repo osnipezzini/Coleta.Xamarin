@@ -76,5 +76,8 @@
 		<EmbeddedResource Update="Views\MeusInventariosPage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</EmbeddedResource>
+		<EmbeddedResource Update="Views\OpenedInventarioPage.xaml">
+		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
 	</ItemGroup>
 </Project>

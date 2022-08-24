@@ -11,6 +11,7 @@ namespace SOColeta
             InitializeComponent();
             Routing.RegisterRoute(nameof(CriarColetaPage), typeof(CriarColetaPage));
             Routing.RegisterRoute(nameof(ConfigPage), typeof(ConfigPage));
+            Routing.RegisterRoute("CriarInventario", typeof(CriarInventarioPage));
         }
     }
 }

@@ -78,44 +78,32 @@ namespace SOColeta.Services
             return dbContext.SaveChangesAsync();
         }
 
-        public async Task FinishInventario()
+        public async Task FinishInventario(string inventarioId)
         {
-            logger.LogDebug("Buscando inventario aberto...");
+            logger.LogDebug("Buscando inventario ...");
             var inventario = await dbContext.Inventarios
-                .Where(i => !i.IsFinished)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.Id == inventarioId);
 
             inventario.IsFinished = true;
             dbContext.Inventarios.Update(inventario);
             await dbContext.SaveChangesAsync();
         }
 
-        public async IAsyncEnumerable<Coleta> GetColetasAsync(string id = default)
+        public async IAsyncEnumerable<Coleta> GetColetasAsync(string id, int? max = null)
         {
             Debug.WriteLine("Criando query de busca");
-            var query = dbContext.Inventarios.AsQueryable();
-            if (string.IsNullOrEmpty(id))
-                query = query.Where(i => !i.IsFinished);
-            else
-                query = query.Where(i => i.Id == id);
+            var query = dbContext.Coletas
+                .Where(x => x.InventarioId == id)
+                .AsQueryable();
+            
+
             Debug.WriteLine("Buscando coletas");
-            var coletas = await query
-                .Include(x => x.ProdutosColetados)
-                .Select(x => x.ProdutosColetados)
-                .FirstOrDefaultAsync();
-
-            if (coletas is null && string.IsNullOrEmpty(id))
+            if (max.HasValue)
             {
-                Debug.WriteLine("Não foram encontrados coletas");
-                yield break;
-            }
-            else if (coletas is null)
-            {
-                logger.LogError($"Não foram encontradas coletas para o inventário: {id}");
-                throw new ArgumentOutOfRangeException($"Não foram encontradas coletas para o inventário: {id}");
+                query = query.Take(max.Value);
             }
 
-            foreach (var coleta in coletas)
+            foreach (var coleta in query.OrderByDescending(x => x.Hora))
                 yield return coleta;
         }
 
@@ -192,6 +180,40 @@ namespace SOColeta.Services
             dbContext.Coletas.Remove(coleta);
             await dbContext.SaveChangesAsync();
             return coleta;
+        }
+
+        public async IAsyncEnumerable<Inventario> GetOpenedInventarios()
+        {
+            logger.LogDebug("Buscando inventarios abertos...");
+            var inventarios = dbContext.Inventarios
+                .Where(x => !x.IsFinished)
+                .ToArrayAsync();
+
+            foreach (var inventario in await inventarios)
+                yield return inventario;
+        }
+
+        public async Task DeleteInventario(Inventario inventario)
+        {
+            logger.LogDebug("Excluindo coletas relacionadas...");
+            await foreach (var coleta in GetColetasAsync(inventario.Id))
+                dbContext.Coletas.Remove(coleta);
+
+            var inv = await dbContext.Inventarios
+                .FirstOrDefaultAsync(x => x.Id == inventario.Id);
+
+            logger.LogDebug("Excluindo inventário...");
+            if (inventario is not null)
+                dbContext.Inventarios.Remove(inventario);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public Task ReopenInventario(Inventario inventario)
+        {
+            inventario.IsFinished = false;
+            dbContext.Entry(inventario).State = EntityState.Modified;
+            dbContext.Inventarios.Update(inventario);
+            return dbContext.SaveChangesAsync();
         }
     }
 }

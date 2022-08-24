@@ -4,75 +4,75 @@
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
              xmlns:fonts="clr-namespace:SOFramework.Fonts;assembly=SOFramework.Xamarin"
              xmlns:converters="clr-namespace:SOColeta.Converters"
+             xmlns:models="clr-namespace:SOColeta.Models"
              x:Class="SOColeta.Views.CriarColetaPage"
              Shell.PresentationMode="Animated"
              Shell.NavBarIsVisible="True"
              x:DataType="vm:CriarColetaViewModel"
-             Title="{Binding Title}">
+             Title="{Binding Title}">    
     <ContentPage.Resources>
         <converters:InvertedBoolConverter x:Key="InvertedBool"/>
+        <converters:ColetaToProdutoConverter x:Key="ColetaToProduto"/>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Finalizar" Command="{Binding CancelCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
-            <ScrollView>
-                <StackLayout>
-                    <Label Text="Codigo de Barras" FontSize="Medium" />
-                    <Frame>
-                        <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" Unfocused="BuscarCodigo" 
+            <StackLayout>
+                <Label Text="Codigo de Barras" FontSize="Medium" />
+                <Frame>
+                    <Entry Text="{Binding Codigo, Mode=TwoWay}" FontSize="Medium" Unfocused="BuscarCodigo" 
                    Keyboard="Numeric" Completed="OnFinishedReadCode" x:Name="txtCode"/>
-                    </Frame>
-                    <Frame Margin="5" Padding="5">
-                        <StackLayout>
-                            <Label>
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="Nome: "/>
-                                        <Span Text="{Binding Nome}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label>
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="Preço de venda: "/>
-                                        <Span Text="{Binding PrecoVenda}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                        </StackLayout>
-                    </Frame>
-                    <Label Text="Quantidade" FontSize="Medium" />
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                        <ImageButton Clicked="OnMinusButtonClicked"
+                </Frame>
+                <Frame Margin="5" Padding="5">
+                    <StackLayout>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Nome: "/>
+                                    <Span Text="{Binding Nome}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Preço de venda: "/>
+                                    <Span Text="{Binding PrecoVenda}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                </Frame>
+                <Label Text="Quantidade" FontSize="Medium" />
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <ImageButton Clicked="OnMinusButtonClicked"
                                      BackgroundColor="Transparent"
                                      HeightRequest="50">
-                            <ImageButton.Source>
-                                <FontImageSource 
+                        <ImageButton.Source>
+                            <FontImageSource 
                                     Glyph="{x:Static fonts:FASolid.MinusCircle}" 
                                     FontFamily="FA-S"/>
-                            </ImageButton.Source>
-                        </ImageButton>
-                        <Frame>
-                            <Entry Text="{Binding Quantidade, Mode=TwoWay}" FontSize="Medium" 
+                        </ImageButton.Source>
+                    </ImageButton>
+                    <Frame>
+                        <Entry Text="{Binding Quantidade, Mode=TwoWay}" FontSize="Medium" 
                            HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
                        x:Name="txtQuantity" Keyboard="Numeric" WidthRequest="120" Completed="OnFinishedQuantity" />
-                        </Frame>
-                        <ImageButton Clicked="OnPlusButtonClicked"
+                    </Frame>
+                    <ImageButton Clicked="OnPlusButtonClicked"
                                      BackgroundColor="Transparent"
                                      HeightRequest="50">
-                            <ImageButton.Source>
-                                <FontImageSource 
+                        <ImageButton.Source>
+                            <FontImageSource 
                                     Glyph="{x:Static fonts:FASolid.PlusCircle}" 
                                     Color="{StaticResource Primary}"
                                     FontFamily="FA-S"/>
-                            </ImageButton.Source>
-                        </ImageButton>
-                    </StackLayout>
+                        </ImageButton.Source>
+                    </ImageButton>
                 </StackLayout>
-            </ScrollView>
+            </StackLayout>
             <Button ImageSource="barcodeScanner.png" Text="Capturar código" 
                     IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBool}}"
                     Command="{Binding ReadCodeCommand}"/>
@@ -85,9 +85,44 @@
                                     FontFamily="FA-S"/>
                 </Button.ImageSource>
             </Button>
-
-            <BoxView VerticalOptions="FillAndExpand"/>
-            <Button Text="Terminar" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" VerticalOptions="End"/>
+            <Frame BorderColor="{AppThemeBinding Dark={StaticResource SOLow}, Light={StaticResource SOHigh}}"
+                   CornerRadius="15" Margin="5">
+                <StackLayout>
+                    <Label Text="Ultimas produtos coletados" HorizontalTextAlignment="Center" />
+                    <CollectionView ItemsSource="{Binding LastColetas}" VerticalOptions="EndAndExpand">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Coleta">
+                                <StackLayout Padding="5">
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Código: " FontAttributes="Bold"/>
+                                                <Span Text="{Binding Codigo}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Nome: " FontAttributes="Bold"/>
+                                                <Span Text="{Binding . , Converter={StaticResource ColetaToProduto}}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Quantidade: " FontAttributes="Bold"/>
+                                                <Span Text="{Binding Quantidade}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

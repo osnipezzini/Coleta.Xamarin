@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:SOColeta.ViewModels"
              xmlns:views="clr-namespace:SOColeta.Views"
              xmlns:fonts="clr-namespace:SOFramework.Fonts;assembly=SOFramework.Xamarin"
+             xmlns:mdl="clr-namespace:SOColeta"
              xmlns:models="clr-namespace:SOColeta.Models"
              x:DataType="vm:CriarInventarioViewModel"
              x:Class="SOColeta.Views.CriarInventarioPage"
@@ -30,26 +31,31 @@
                     </Button.ImageSource>
                 </Button>
             </StackLayout>
-            <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadColetasCommand}">
-                <CollectionView 
+            <CollectionView 
                                 ItemsSource="{Binding Coletas}"
                                 x:Name="ListColeta"
                                 SelectionMode="Single">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Coleta">
-                            <SwipeView>
-                                <SwipeView.RightItems>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Coleta">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="{x:Static mdl:Module.SwipeMode}">
                                     <SwipeItem IsDestructive="True" Text="Editar"
                                                Command="{Binding Path=BindingContext.EditColetaCommand, Source={x:Reference CurrentPage}}" 
                                                CommandParameter="{Binding .}"/>
-                                </SwipeView.RightItems>
-                                        <views:ColetasView />
-                            </SwipeView>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </RefreshView>
-            <Button Text="Finalizar inventário" Command="{Binding SaveCommand}" FontSize="25" Margin="20, 20" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <SwipeView.LeftItems>
+                                <SwipeItem IsDestructive="True" Text="Excluir"
+                                               Command="{Binding Path=BindingContext.RemoveColetaCommand, Source={x:Reference CurrentPage}}" 
+                                               CommandParameter="{Binding .}"/>
+                            </SwipeView.LeftItems>
+                            <views:ColetasView />
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Text="Finalizar inventário" Command="{Binding SaveCommand}" Margin="15"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

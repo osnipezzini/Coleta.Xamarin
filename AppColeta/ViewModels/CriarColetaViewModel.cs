@@ -5,6 +5,7 @@ using SOColeta.Services;
 using SOFramework.Fonts;
 
 using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -28,18 +29,34 @@ namespace SOColeta.ViewModels
         private readonly IStockService stockService;
         private readonly IQrCodeScanningService scanningService;
 
+        public ObservableCollection<Coleta> LastColetas { get; }
+
         public CriarColetaViewModel(IStockService stockService, IQrCodeScanningService scanningService)
         {
-            Title = "Criar coleta";
+            Title = "Coleta";
             SaveCommand = new Command(OnSave, ValidateSave);
-            CancelCommand = new Command(OnCancel);
+            CancelCommand = new Command(OnCancel);            
             ReadCodeCommand = new Command(OpenScan);
             GetCodigoCommand = new Command(async () => await GetCodigo());
+            GetLastColetasCommand = new Command(async () => await GetLastColetas());
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
             this.stockService = stockService;
             this.scanningService = scanningService;
+
+            LastColetas = new ObservableCollection<Coleta>();
         }
+
+        private async Task GetLastColetas()
+        {
+            LastColetas.Clear();
+
+            await foreach (var inventario in stockService.GetColetasAsync(InventarioId, 3))
+            {
+                LastColetas.Add(inventario);
+            }
+        }
+
         public override async Task OnAppearing()
         {
             if (!string.IsNullOrEmpty(ColetaId))
@@ -48,12 +65,14 @@ namespace SOColeta.ViewModels
 #if ANDROID
                 using var loading = UserDialogs.Instance.Loading("Carregando coleta...");
 #endif
-                var coleta = await stockService.GetAndDeleteColetaAsync(ColetaId);
+                var coleta = await stockService.GetColetaAsync(ColetaId);
                 Codigo = coleta.Codigo;
                 Quantidade = coleta.Quantidade.ToString();
                 InventarioId = coleta.InventarioId;
                 await GetCodigo();
             }
+
+            await GetLastColetas();
         }
         private async void OpenScan(object obj)
         {
@@ -145,6 +164,7 @@ namespace SOColeta.ViewModels
         public Command CancelCommand { get; }
         public Command ReadCodeCommand { get; }
         public Command GetCodigoCommand { get; }
+        public Command GetLastColetasCommand { get; }
 
         private async void OnCancel()
         {
@@ -157,12 +177,14 @@ namespace SOColeta.ViewModels
             var coleta = new Coleta
             {
                 Codigo = codigo,
-                Quantidade = double.Parse(quantidade),
+                Quantidade = double.TryParse(this.quantidade, out var quantidade) ? quantidade : 1,
                 InventarioId = InventarioId
             };
             try
             {
+                await stockService.RemoveColeta(coleta);
                 await stockService.AddColeta(coleta, isEditing);
+                await GetLastColetas();
             }
             catch (ColetaConflictException)
             {
@@ -172,7 +194,7 @@ namespace SOColeta.ViewModels
             }
 
             Codigo = string.Empty;
-            Quantidade = string.Empty;
+            Quantidade = "1";
         }
     }
 }

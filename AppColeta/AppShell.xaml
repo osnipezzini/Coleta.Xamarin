@@ -13,11 +13,14 @@
     -->
     <ShellContent Title="Inicio" Icon="homePage.png" Route="MainPage" ContentTemplate="{DataTemplate local:MainPage}" />
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Criar Inventário" Icon="barcodeReader" Route="CriarInventario" ContentTemplate="{DataTemplate local:CriarInventarioPage}" />
-        <ShellContent Title="Meus inventários" Icon="reminder" Route="MeusInventarios" ContentTemplate="{DataTemplate local:MeusInventariosPage}" />
+        <ShellContent Title="Inventários abertos" Icon="barcodeReader" Route="OpenedInventario" ContentTemplate="{DataTemplate local:OpenedInventarioPage}" />
+        <ShellContent Title="Inventários finalizados" Icon="reminder" Route="MeusInventarios" ContentTemplate="{DataTemplate local:MeusInventariosPage}" />
     </FlyoutItem>
     <ShellContent Title="Importar arquivo" Icon="upload_file" ContentTemplate="{DataTemplate local:ImportFilePage}"/>
-    <ShellContent Title="Configurações" Route="ColetaConfigPage" Icon="job" ContentTemplate="{DataTemplate local:ColetaConfigPage}" />
+    <FlyoutItem Title="Configurações" Icon="job">
+        <ShellContent Title="Gerais" Route="ConfigPage" Icon="job" ContentTemplate="{DataTemplate local:ConfigPage}" />        
+        <ShellContent Title="Leitor de códigos de barras" Route="ColetaConfigPage" Icon="job" ContentTemplate="{DataTemplate local:ColetaConfigPage}" />
+    </FlyoutItem>
     
 
 </Shell>

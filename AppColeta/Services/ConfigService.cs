@@ -7,6 +7,8 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using Xamarin.Forms;
+
 namespace SOColeta.Services
 {
     public class ConfigService : IConfigService
@@ -18,29 +20,35 @@ namespace SOColeta.Services
             config = Load() ?? new Config();           
         }
 
-        private Config? Load()
+        private Config Load()
         {
             if (File.Exists(configFile))
             {
                 try
                 {
                     var jsonConfig = File.ReadAllText(configFile);
-                    var config = JsonSerializer.Deserialize<Config>(jsonConfig);
+                    config = JsonSerializer.Deserialize<Config>(jsonConfig);
+                    Module.SwipeMode = config.SwipeMode;
                     return config;
                 }
                 catch (Exception)
                 {
-                    return null;
+                    return new Config();
                 }
             }
-            return null;
+            return new Config();
         }
 
         public Task<Config> GetConfigAsync()
         {
-            return Task.FromResult(Load() ?? new Config());
+            return Task.FromResult(config ?? Load() ?? new Config());
         }
 
+        public void SetSwipeMode(SwipeMode swipeMode)
+        {
+            config.SwipeMode = swipeMode;
+            SetConfig(config);
+        }
         public Task SetConfig(Config config)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));

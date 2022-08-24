@@ -21,6 +21,7 @@ namespace SOColeta.ViewModels
         private Inventario _selectedItem;
         private readonly IStockService stockService;
         private readonly ILogger<MeusInventariosViewModel> logger;
+
         public ObservableCollection<Inventario> Inventarios { get; }
         public Command ExportFileCommand { get; }
         public Command<Inventario> SelectedItemCommand { get; }
@@ -29,6 +30,7 @@ namespace SOColeta.ViewModels
         public override async Task OnAppearing()
         {
             Inventarios.Clear();
+
             IsBusy = true;
             try
             {
@@ -49,7 +51,7 @@ namespace SOColeta.ViewModels
         public Command LoadInventariosCommand { get; set; }
         public MeusInventariosViewModel(IStockService stockService, ILogger<MeusInventariosViewModel> logger)
         {
-            Title = "Meus inventários";
+            Title = "Inventários finalizados";
             ExportFileCommand = new Command<Inventario>(async (x) =>
             {
                 var tipoInventario = await Shell
@@ -62,11 +64,17 @@ namespace SOColeta.ViewModels
             LoadInventariosCommand = new Command(ExecuteLoadInventariosCommand);
             Inventarios = new ObservableCollection<Inventario>();
             SelectedItemCommand = new Command<Inventario>(OnItemSelected);
-            EditInventarioCommand = new Command<Inventario>(async(x) => await Shell.Current.GoToAsync($"///CriarInventario?InventarioId={x.Id}"));
+            EditInventarioCommand = new Command<Inventario>(async(x) => await EditInventario(x));
             PropertyChanged +=
                 (_, __) => ExportFileCommand.ChangeCanExecute();
             this.stockService = stockService;
             this.logger = logger;
+        }
+
+        private async Task EditInventario(Inventario inventario)
+        {
+            await stockService.ReopenInventario(inventario);
+            await Shell.Current.GoToAsync($"/CriarInventario?InventarioId={inventario.Id}");
         }
 
         private void OnItemSelected(Inventario obj)
@@ -87,6 +95,12 @@ namespace SOColeta.ViewModels
             var arquivo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), inventario.NomeArquivo);
             if (!Path.HasExtension(arquivo))
                 arquivo = $"{arquivo}.txt";
+
+            var names = arquivo.Split('-');
+            if (names.Length == 2)
+            {
+                arquivo = $"{names[0]}-{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}.txt";
+            }
 
             var arquivoString = string.Empty;            
 
@@ -136,5 +150,6 @@ namespace SOColeta.ViewModels
 
         public string NomeArquivo { get => nomeArquivo; set => SetProperty(ref nomeArquivo, value); }
         public DateTime DataCriacao { get => dataCriacao; set => SetProperty(ref dataCriacao, value); }
+        public Config Config { get; private set; }
     }
 }

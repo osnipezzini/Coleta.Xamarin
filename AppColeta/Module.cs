@@ -5,6 +5,8 @@ using SOColeta.Services;
 
 using SOFramework;
 
+using Xamarin.Forms;
+
 namespace SOColeta
 {
     public static class Module
@@ -14,6 +16,8 @@ namespace SOColeta
         public const string AppCenter = "android=22d5ba01-c5fb-42f1-ab9c-df098519a182;" +
                   "uwp=17841cc0-4811-4e23-ae1c-6aa8c5afe9f9;" +
                   "ios=cc9cf015-9548-4a26-a5f6-862bdf1b0d45;";
+
+        public static SwipeMode SwipeMode { get; internal set; }
 
         private static IServiceCollection _services = new ServiceCollection();
 

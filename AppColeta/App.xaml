@@ -13,9 +13,6 @@
                 <framework:SOShellStyle />
                 <framework:SOAppStyle />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="NavigationPage" ApplyToDerivedTypes="True">
-                <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Dark={StaticResource SOHigh}, Light={StaticResource SOLow}}"/>
-            </Style>
         </ResourceDictionary>        
     </Application.Resources>
 </Application>

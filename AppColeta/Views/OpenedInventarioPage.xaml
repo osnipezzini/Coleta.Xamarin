@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SOColeta.ViewModels"
+             xmlns:models="clr-namespace:SOColeta.Models"
+             xmlns:converters="clr-namespace:SOColeta.Converters"
+             xmlns:mdl="clr-namespace:SOColeta"
+             x:Class="SOColeta.Views.OpenedInventarioPage"
+             x:DataType="vm:OpenedInventarioViewModel"
+             x:Name="this"
+             Title="Inventários abertos">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Novo" Command="{Binding CreateInventarioCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ListToCountConverter x:Key="ListToCount"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <CollectionView ItemsSource="{Binding Inventarios}">
+                <CollectionView.EmptyView>
+                    <StackLayout VerticalOptions="CenterAndExpand">
+                        <Label Text="Nenhum inventário aberto localizado!" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                        <Label Text="Clique em 'Criar novo' para iniciar um inventário." HorizontalTextAlignment="Center" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Inventario">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="{x:Static mdl:Module.SwipeMode}">
+                                    <SwipeItem Text="Continuar" IsDestructive="True" 
+                                           Command="{Binding Path=BindingContext.EditInventarioCommand, Source={x:Reference this}}"
+                                           CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <SwipeView.LeftItems>
+                                <SwipeItem Text="Excluir" IsDestructive="True"
+                                           Command="{Binding Path=BindingContext.DeleteInventarioCommand, Source={x:Reference this}}"
+                                           CommandParameter="{Binding .}"/>
+                            </SwipeView.LeftItems>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding NomeArquivo}"/>
+                                <Label>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Produtos coletados: "/>
+                                            <Span Text="{Binding ., Converter={StaticResource ListToCount}}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </StackLayout>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
