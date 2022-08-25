@@ -21,8 +21,8 @@
             <DatePicker HorizontalOptions="Center" Format="dd/MM/yyyy" Date="{Binding DataCriacao, Mode=TwoWay}" 
                         TextColor="{StaticResource Primary}"/>
             <StackLayout Orientation="Horizontal">
-                <Entry Text="{Binding InventarioName}" x:Name="InventarioNameEntry" 
-                       HorizontalOptions="StartAndExpand" Margin="5"/>
+                <Entry Text="{Binding InventarioName}" x:Name="InventarioNameEntry" HorizontalTextAlignment="Center"
+                       HorizontalOptions="FillAndExpand" Margin="5"/>
                 <Button Command="{Binding SaveInventarioNameCommand}" 
                         CommandParameter="{Binding Source={x:Reference InventarioNameEntry}, Path=Text}">
                     <Button.ImageSource>
