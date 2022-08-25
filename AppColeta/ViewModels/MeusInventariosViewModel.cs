@@ -97,7 +97,7 @@ namespace SOColeta.ViewModels
                 arquivo = $"{arquivo}.txt";
 
             var names = arquivo.Split('-');
-            if (names.Length == 2)
+            if (names.Length != 2)
             {
                 arquivo = $"{names[0]}-{inventario.DataCriacao.ToString("ddMMyyyyHHmm")}.txt";
             }
