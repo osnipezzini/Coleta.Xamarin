@@ -150,6 +150,5 @@ namespace SOColeta.ViewModels
 
         public string NomeArquivo { get => nomeArquivo; set => SetProperty(ref nomeArquivo, value); }
         public DateTime DataCriacao { get => dataCriacao; set => SetProperty(ref dataCriacao, value); }
-        public Config Config { get; private set; }
     }
 }
