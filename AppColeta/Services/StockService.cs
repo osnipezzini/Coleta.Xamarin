@@ -93,6 +93,7 @@ namespace SOColeta.Services
         {
             Debug.WriteLine("Criando query de busca");
             var query = dbContext.Coletas
+                .AsNoTracking()
                 .Where(x => x.InventarioId == id)
                 .AsQueryable();
             
@@ -112,6 +113,7 @@ namespace SOColeta.Services
             logger.LogDebug("Buscando inventarios finalizados...");
             var inventarios = dbContext.Inventarios
                 .Where(x => x.IsFinished)
+                .AsNoTracking()
                 .ToArrayAsync();
 
             foreach (var inventario in await inventarios)
@@ -187,6 +189,7 @@ namespace SOColeta.Services
             logger.LogDebug("Buscando inventarios abertos...");
             var inventarios = dbContext.Inventarios
                 .Where(x => !x.IsFinished)
+                .AsNoTracking()
                 .ToArrayAsync();
 
             foreach (var inventario in await inventarios)

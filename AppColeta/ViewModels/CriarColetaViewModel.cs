@@ -182,7 +182,6 @@ namespace SOColeta.ViewModels
             };
             try
             {
-                await stockService.RemoveColeta(coleta);
                 await stockService.AddColeta(coleta, isEditing);
                 await GetLastColetas();
             }
