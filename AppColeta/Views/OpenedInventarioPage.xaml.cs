@@ -1,7 +1,4 @@
-﻿using SOColeta.Models;
-using SOColeta.ViewModels;
-
-using System.Linq;
+﻿using SOColeta.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -23,12 +20,6 @@ namespace SOColeta.Views
 		{
 			base.OnAppearing();
 			await viewModel.OnAppearing();
-		}
-
-		private void InventarioSelected(object sender, SelectionChangedEventArgs e)
-		{
-			if (e.CurrentSelection.Any() && e.CurrentSelection.First() is Inventario inventario)
-				viewModel.EditInventarioCommand.Execute(inventario);
 		}
 	}
 }
