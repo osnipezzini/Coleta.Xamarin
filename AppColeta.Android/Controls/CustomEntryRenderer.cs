@@ -19,10 +19,7 @@ namespace SOColeta.Droid.Controls
 
             if (Control != null)
             {
-                Color color = Application.Current.RequestedTheme == OSAppTheme.Dark 
-                    ? (Color)Application.Current.Resources["Gray600"] 
-                    : (Color)Application.Current.Resources["Gray200"];
-                Control.SetBackgroundColor(color.ToAndroid());
+                Control.SetBackgroundColor(Color.Transparent.ToAndroid());
             }
         }
     }
