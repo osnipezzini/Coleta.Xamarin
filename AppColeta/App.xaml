@@ -13,6 +13,9 @@
                 <framework:SOShellStyle />
                 <framework:SOAppStyle />
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>        
+            <Style TargetType="Entry" ApplyToDerivedTypes="True">
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Dark={StaticResource Gray400}, Light={StaticResource Gray500}}"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
