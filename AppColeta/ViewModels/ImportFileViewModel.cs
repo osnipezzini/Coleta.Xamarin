@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using SOColeta.Data;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace SOColeta.ViewModels
 {
@@ -20,7 +24,7 @@ namespace SOColeta.ViewModels
     {
         private string filename;
         private FileResult fullpath;
-        private readonly IStockService stockService;
+        private readonly AppDbContext dbContext;
         private readonly ILogger<ImportFileViewModel> logger;
         private string busyMessage;
         private bool cancelImport = false; 
@@ -28,13 +32,13 @@ namespace SOColeta.ViewModels
         public Command ChooseFileCommand { get; }
         public Command StartImportCommand { get; }
         public Command StopImportCommand { get; }
-        public ImportFileViewModel(IStockService stockService, ILogger<ImportFileViewModel> logger)
+        public ImportFileViewModel(AppDbContext dbContext, ILogger<ImportFileViewModel> logger)
         {
             Title = "Importar arquivo";
             ChooseFileCommand = new Command(async () => await PickAndShow());
             StartImportCommand = new Command(async () => await ImportFile());
             StopImportCommand = new Command(() => cancelImport = true);
-            this.stockService = stockService;
+            this.dbContext = dbContext;
             this.logger = logger;
         }
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
@@ -75,6 +79,7 @@ namespace SOColeta.ViewModels
         private async Task ImportFile()
         {
             IsBusy = true;
+            var cts = new CancellationTokenSource();
             var stream = await fullpath.OpenReadAsync();
             var readerStream = new StreamReader(stream);
             var contents = await readerStream.ReadToEndAsync();
@@ -82,11 +87,11 @@ namespace SOColeta.ViewModels
             int processedLine = 1;
             BusyMessage = "Iniciando importação de produtos...";
             using (var loading = UserDialogs.Instance.Loading("Iniciando importação de produtos...", 
-                maskType: MaskType.Gradient, show:true))
+                maskType: MaskType.Gradient, show:true, cancelText: "Cancelar", onCancel: cts.Cancel))
                 foreach (string line in file)
                 {
-                    if (cancelImport)
-                        return;
+                    if (cancelImport || cts.IsCancellationRequested)
+                        break;
                     loading.Title = BusyMessage = $"Processando linha {processedLine} / {file.Length} ...";
                     loading.PercentComplete = (processedLine / file.Length) * 100;
 
@@ -104,10 +109,12 @@ namespace SOColeta.ViewModels
                             if (reader.Length >= 3)
                                 double.TryParse(reader[2].Replace('.', ','), out venda);
 
-                            await stockService.AddProduto(new Produto
+                            if (await dbContext.Produtos.AnyAsync(p => p.Codigo == reader[0].Trim()))
+
+                            dbContext.Produtos.Add(new Produto
                             {
-                                Codigo = reader[0],
-                                Nome = reader[1],
+                                Codigo = reader[0].Trim(),
+                                Nome = reader[1].Trim(),
                                 PrecoVenda = venda,
                                 PrecoCusto = custo,
                             });
@@ -119,6 +126,7 @@ namespace SOColeta.ViewModels
 
                     }
                 }
+            await dbContext.SaveChangesAsync(cts.Token);
             IsBusy = false;
             await Shell.Current.DisplayAlert("Produtos importados", $"Foram importados {file.Length} produtos.", "Ok");
         }
